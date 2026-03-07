@@ -599,7 +599,10 @@
         const ownMap = {
             'none': { text: 'YOK', icon: 'fa-times-circle', color: 'bg-slate-100 text-slate-600 border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-600' },
             'physical': { text: 'Fiziksel', icon: 'fa-book', color: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-800' },
-            'digital': { text: 'Dijital', icon: 'fa-tablet-alt', color: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-300 dark:border-indigo-800' }
+            'digital': { text: 'Dijital', icon: 'fa-tablet-alt', color: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-300 dark:border-indigo-800' },
+            // Geriye dönük uyumluluk (Eski veriler)
+            'owned': { text: 'Fiziksel', icon: 'fa-book', color: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-800' },
+            'borrowed': { text: 'YOK', icon: 'fa-times-circle', color: 'bg-slate-100 text-slate-600 border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-600' }
         };
 
         // --- DOM ETKİLEŞİMLERİNİ PENCEREYE (WINDOW) BAĞLAMA ---
@@ -769,6 +772,7 @@
         });
 
         function loadSettings(targetUid) {
+            if(isOfflineMode) return;
             if(settingsUnsubscribe) settingsUnsubscribe();
             settingsUnsubscribe = onSnapshot(doc(db, 'artifacts', appId, 'users', targetUid), (docSnap) => {
                 if(docSnap.exists() && docSnap.data().readingGoal) {
@@ -781,16 +785,21 @@
         }
         
         function loadBooks(targetUid) {
-            if (booksUnsubscribe) booksUnsubscribe();
-            try {
-                booksUnsubscribe = onSnapshot(collection(db, 'artifacts', appId, 'users', targetUid, 'books'), (snapshot) => {
-                    allBooks = [];
-                    snapshot.forEach(doc => { allBooks.push({ id: doc.id, ...doc.data() }); });
-                    updateCategoryDatalists(); updateDashboardStats(); applyFiltersAndRender();
-                }, (error) => {
-                    showNotification("Veriler yüklenemedi: " + error.message, "error");
-                });
-            } catch (err) {}
+            if (isOfflineMode) {
+                updateCategoryDatalists(); updateDashboardStats(); applyFiltersAndRender();
+            } else {
+                if (booksUnsubscribe) booksUnsubscribe();
+                try {
+                    booksUnsubscribe = onSnapshot(collection(db, 'artifacts', appId, 'users', targetUid, 'books'), (snapshot) => {
+                        allBooks = [];
+                        snapshot.forEach(doc => { allBooks.push({ id: doc.id, ...doc.data() }); });
+                        updateCategoryDatalists(); updateDashboardStats(); applyFiltersAndRender();
+                    }, (error) => {
+                        console.error("Firestore Dinleme Hatası:", error);
+                        showNotification("Veriler yüklenemedi: " + error.message, "error");
+                    });
+                } catch (err) {}
+            }
         }
 
         // FİLTRELEME & GÖRÜNÜM
@@ -908,8 +917,8 @@
         function renderBooks(booksToRender) {
             try {
                 bookListEl.innerHTML = '';
-                if (booksToRender.length === 0) { emptyStateEl.style.display = 'flex'; return; }
-                emptyStateEl.style.display = 'none';
+                if (booksToRender.length === 0) { document.getElementById('empty-state').style.display = 'flex'; return; }
+                document.getElementById('empty-state').style.display = 'none';
 
                 booksToRender.forEach(book => {
                     const s = statusMap[book.status] || statusMap['read'];
@@ -1423,6 +1432,36 @@
             }
         });
 
+        function applyBookSuggestion(item) {
+            const info = item.volumeInfo;
+            if(info.title) inputs.title.value = info.title;
+            if(info.authors) inputs.author.value = info.authors.join(', ');
+            if(info.description) inputs.summary.value = info.description;
+            if(info.categories && info.categories.length > 0) {
+                info.categories.forEach(catGroup => {
+                    const parts = catGroup.split(' / ');
+                    parts.forEach(part => {
+                        const cleanPart = part.trim();
+                        if (cleanPart && !currentCategories.includes(cleanPart)) currentCategories.push(cleanPart);
+                    });
+                });
+                updateTagsUI('cat');
+            }
+            if (info.imageLinks) {
+                let url = info.imageLinks.thumbnail || info.imageLinks.smallThumbnail;
+                url = url.replace('http:', 'https:');
+                updateCoverPreview(url);
+            }
+        }
+
+        function updateCoverPreview(url) {
+            inputs.coverUrl.value = url;
+            const img = document.getElementById('cover-img-preview');
+            const icon = document.getElementById('cover-placeholder-icon');
+            if (url) { img.src = url; img.classList.remove('hidden'); icon.classList.add('hidden'); } 
+            else { img.src = ''; img.classList.add('hidden'); icon.classList.remove('hidden'); }
+        }
+
         // --- FORM KAYDETME ---
         document.getElementById('save-book-action-btn').addEventListener('click', async (e) => {
             e.preventDefault();
@@ -1643,28 +1682,14 @@
             });
         });
 
-        // TEMA VE AUTH EVENT LİSTENERLARI EN SONA TAŞINDI
-        document.getElementById('theme-toggle-menu').addEventListener('click', () => {
-            htmlEl.classList.toggle('dark');
-            localStorage.setItem('theme', htmlEl.classList.contains('dark') ? 'dark' : 'light');
-            
-            const themeText = document.getElementById('theme-text');
-            if (htmlEl.classList.contains('dark')) {
-                themeText.textContent = 'Açık';
-                themeText.className = 'text-[10px] font-bold text-indigo-100 bg-indigo-500 px-2 py-1 rounded uppercase';
-            } else {
-                themeText.textContent = 'Kapalı';
-                themeText.className = 'text-[10px] font-bold text-slate-500 bg-slate-200 px-2 py-1 rounded uppercase';
-            }
-            updateStatsChart(); 
+        // GLOBAL HATA YAKALAYICI (Kilitlenmeyi Önler)
+        window.addEventListener('error', function(e) {
+            console.error("Sistem Hatası:", e);
+            const loading = document.getElementById('loading');
+            if(loading) loading.style.display = 'none';
         });
 
-        // Initialize Theme UI based on local storage
-        if (htmlEl.classList.contains('dark')) {
-            document.getElementById('theme-text').textContent = 'Açık';
-            document.getElementById('theme-text').className = 'text-[10px] font-bold text-indigo-100 bg-indigo-500 px-2 py-1 rounded uppercase';
-        }
-
+        // KULLANICI GİRİŞ KONTROLÜ (AUTH)
         onAuthStateChanged(auth, async (user) => {
             loadingScreen.style.display = 'none';
 
@@ -1727,6 +1752,7 @@
                 fabBtn.classList.add('hidden'); fabBtn.classList.remove('flex');
             }
         });
+
     </script>
 </body>
 </html>
