@@ -199,6 +199,7 @@
                 <h3 class="font-bold text-lg text-slate-800 dark:text-white flex items-center gap-2"><i class="fas fa-chart-pie text-indigo-500"></i> Okuma Analizi</h3>
                 <button type="button" id="close-stats-btn" class="text-slate-400 hover:text-red-500 text-xl"><i class="fas fa-times"></i></button>
             </div>
+            <!-- Pasta Grafik Canvas -->
             <div class="relative w-full h-64 flex items-center justify-center">
                 <canvas id="categoryChart"></canvas>
             </div>
@@ -506,7 +507,13 @@
         </div>
     </div>
 
-    <!-- Script Kodları: Tüm Fonksiyonlar Doğru Sırada Tanımlanır -->
+    <!-- Notification Toast -->
+    <div id="toast" class="toast fixed top-4 md:top-auto md:bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-800 dark:bg-slate-700 text-white px-6 py-3.5 rounded-full md:rounded-xl shadow-2xl flex items-center gap-3 z-[60]">
+        <i id="toast-icon" class="fas fa-check-circle text-emerald-400 text-lg"></i>
+        <span id="toast-message" class="text-sm font-bold">İşlem başarılı.</span>
+    </div>
+
+    <!-- Firebase & App Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -528,7 +535,7 @@
         const provider = new GoogleAuthProvider();
         const db = getFirestore(app);
 
-        // GLOBAL DEĞİŞKENLER
+        // GLOBALS
         let currentUser = null; 
         let allBooks = []; 
         let editModeId = null;
@@ -547,6 +554,11 @@
         let readingSeconds = 0;
         let settingsUnsubscribe = null;
         let booksUnsubscribe = null;
+
+        // Dark Mode Başlangıç Ayarı
+        const htmlEl = document.documentElement;
+        if (localStorage.getItem('theme') === 'dark') htmlEl.classList.add('dark');
+        else htmlEl.classList.remove('dark');
 
         // URL PARAMS
         const urlParams = new URLSearchParams(window.location.search);
@@ -598,11 +610,41 @@
             'none': { text: 'YOK', icon: 'fa-times-circle', color: 'bg-slate-100 text-slate-600 border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-600' },
             'physical': { text: 'Fiziksel', icon: 'fa-book', color: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-800' },
             'digital': { text: 'Dijital', icon: 'fa-tablet-alt', color: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-300 dark:border-indigo-800' },
+            // Geriye dönük uyumluluk (Eski veriler)
             'owned': { text: 'Fiziksel', icon: 'fa-book', color: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-800' },
             'borrowed': { text: 'YOK', icon: 'fa-times-circle', color: 'bg-slate-100 text-slate-600 border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-600' }
         };
 
         // --- YARDIMCI FONKSİYONLAR ---
+
+        window.addDynamicFilter = function(type, value) {
+            if(!activeFiltersList.find(f => f.type === type && f.value === value)) {
+                activeFiltersList.push({type, value});
+                updateActiveFiltersUI(); applyFiltersAndRender();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        window.openViewModal = function(bookId) {
+             const book = allBooks.find(b => b.id === bookId);
+             if (book) openViewModalInternal(book);
+        }
+
+        window.startEditMode = function(bookId) {
+            const book = allBooks.find(b => b.id === bookId);
+            if (book) startEdit(book);
+        }
+        
+        window.deleteBook = async function(bookId, bookTitle) {
+             if(confirm(`"${bookTitle}" kitabını silmek istiyor musunuz?`)) {
+                try {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'books', bookId));
+                    showNotification("Kitap silindi.", "info");
+                } catch(err) {
+                    showNotification("Silme başarısız: Yetki kurallarınızı kontrol edin.", "error");
+                }
+            }
+        }
 
         function formatTimer(totalSeconds) {
             const h = Math.floor(totalSeconds / 3600);
@@ -642,7 +684,7 @@
             return str.replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t]));
         }
 
-        // --- YILDIZ PUANLAMA MANTIĞI (DÜZELTİLDİ) ---
+        // --- YILDIZ PUANLAMA MANTIĞI ---
         const stars = document.querySelectorAll('.star-rating i');
         
         function updateStarsUI(val) {
@@ -898,14 +940,6 @@
             });
         }
 
-        function addDynamicFilter(type, value) {
-            if(!activeFiltersList.find(f => f.type === type && f.value === value)) {
-                activeFiltersList.push({type, value});
-                updateActiveFiltersUI(); applyFiltersAndRender();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        }
-
         document.getElementById('clear-filters-btn').addEventListener('click', () => {
             activeFiltersList = []; updateActiveFiltersUI(); applyFiltersAndRender();
         });
@@ -1004,14 +1038,14 @@
                         ratingHtml += '</div>';
                     }
 
-                    let badgesHtml = `<span class="badge-filter cursor-pointer hover:opacity-75 transition-opacity ${o.color} px-2 py-1 rounded-md text-[10px] font-bold tracking-wide border" data-type="status" data-val="${bOwn}"><i class="fas ${o.icon} mr-1"></i>${o.text}</span>`;
+                    let badgesHtml = `<button type="button" onclick="addDynamicFilter('status', '${bOwn}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity ${o.color} px-2 py-1 rounded-md text-[10px] font-bold tracking-wide border"><i class="fas ${o.icon} mr-1"></i>${o.text}</button>`;
                     const bookCats = Array.isArray(book.category) ? book.category : (book.category ? book.category.split(',').map(str=>str.trim()) : []);
-                    bookCats.forEach(c => { if(c) badgesHtml += `<span class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide" data-type="cat" data-val="${escapeHTML(c)}">${escapeHTML(c)}</span>`; });
+                    bookCats.forEach(c => { if(c) badgesHtml += `<button type="button" onclick="addDynamicFilter('cat', '${escapeHTML(c)}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide">${escapeHTML(c)}</button>`; });
 
                     const bookSubCats = Array.isArray(book.subCategory) ? book.subCategory : (book.subCategory ? book.subCategory.split(',').map(str=>str.trim()) : []);
-                    bookSubCats.forEach(c => { if(c) badgesHtml += `<span class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide" data-type="cat" data-val="${escapeHTML(c)}">${escapeHTML(c)}</span>`; });
+                    bookSubCats.forEach(c => { if(c) badgesHtml += `<button type="button" onclick="addDynamicFilter('cat', '${escapeHTML(c)}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide">${escapeHTML(c)}</button>`; });
 
-                    if(book.format) badgesHtml += `<span class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide" data-type="format" data-val="${escapeHTML(book.format)}"><i class="fas fa-file-alt mr-1"></i>${escapeHTML(book.format)}</span>`;
+                    if(book.format) badgesHtml += `<button type="button" onclick="addDynamicFilter('format', '${escapeHTML(book.format)}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide"><i class="fas fa-file-alt mr-1"></i>${escapeHTML(book.format)}</button>`;
 
                     const card = document.createElement('div');
                     
@@ -1022,19 +1056,19 @@
                                 <div class="flex justify-between items-start gap-2 mb-1">
                                     <div class="w-full">
                                         ${ratingHtml}
-                                        <h3 class="view-trigger text-lg sm:text-xl font-bold text-slate-900 dark:text-white book-title leading-tight cursor-pointer hover:text-indigo-600 transition-colors">${escapeHTML(book.title)}</h3>
+                                        <h3 onclick="openViewModal('${book.id}')" class="view-trigger text-lg sm:text-xl font-bold text-slate-900 dark:text-white book-title leading-tight cursor-pointer hover:text-indigo-600 transition-colors">${escapeHTML(book.title)}</h3>
                                         <p class="text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm mt-1">${escapeHTML(book.author)}</p>
                                     </div>
                                     <div class="hide-auth-elements flex shrink-0 gap-1 bg-slate-50 dark:bg-slate-900/50 p-1 rounded-xl border border-slate-100 dark:border-slate-700">
-                                        <button type="button" class="edit-btn p-1.5 md:p-2 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg transition-colors active:scale-90" title="Düzenle"><i class="fas fa-edit"></i></button>
-                                        <button type="button" class="delete-btn p-1.5 md:p-2 text-slate-500 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-colors active:scale-90" title="Sil"><i class="fas fa-trash-alt"></i></button>
+                                        <button type="button" onclick="startEditMode('${book.id}')" class="edit-btn p-1.5 md:p-2 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg transition-colors active:scale-90" title="Düzenle"><i class="fas fa-edit"></i></button>
+                                        <button type="button" onclick="deleteBook('${book.id}', '${escapeHTML(book.title.replace(/'/g, "\\'"))}')" class="delete-btn p-1.5 md:p-2 text-slate-500 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-colors active:scale-90" title="Sil"><i class="fas fa-trash-alt"></i></button>
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap gap-1.5 mb-2 mt-2">${badgesHtml}</div>
                                 <div class="mb-2">
-                                    <span class="badge-filter cursor-pointer hover:opacity-75 transition-opacity inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${s.color}" data-type="status" data-val="${book.status}">
+                                    <button type="button" onclick="addDynamicFilter('status', '${book.status}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${s.color}">
                                         <i class="fas ${s.icon}"></i> ${s.text}
-                                    </span>
+                                    </button>
                                 </div>
                             </div>
                         `;
@@ -1042,15 +1076,15 @@
                         card.className = 'bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-row gap-4';
                         
                         const coverHtml = book.coverUrl 
-                            ? `<div class="view-trigger cursor-pointer hover:opacity-80 transition-opacity w-full h-40 md:h-48 bg-slate-50 dark:bg-slate-900 rounded-xl flex items-center justify-center overflow-hidden shadow shrink-0"><img src="${book.coverUrl}" class="w-full h-full object-contain"></div>`
-                            : `<div class="view-trigger cursor-pointer hover:bg-slate-200 transition-colors w-full h-40 md:h-48 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center text-slate-300 dark:text-slate-500 shadow shrink-0"><i class="fas fa-book text-3xl"></i></div>`;
+                            ? `<div onclick="openViewModal('${book.id}')" class="view-trigger cursor-pointer hover:opacity-80 transition-opacity w-full h-40 md:h-48 bg-slate-50 dark:bg-slate-900 rounded-xl flex items-center justify-center overflow-hidden shadow shrink-0"><img src="${book.coverUrl}" class="w-full h-full object-contain"></div>`
+                            : `<div onclick="openViewModal('${book.id}')" class="view-trigger cursor-pointer hover:bg-slate-200 transition-colors w-full h-40 md:h-48 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center text-slate-300 dark:text-slate-500 shadow shrink-0"><i class="fas fa-book text-3xl"></i></div>`;
 
                         card.innerHTML = `
                             <div class="flex flex-col w-28 md:w-32 shrink-0 gap-2">
                                 ${coverHtml}
                                 <div class="hide-auth-elements flex w-full gap-1">
-                                    <button type="button" class="edit-btn flex-1 bg-slate-50 dark:bg-slate-900/50 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 p-2 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors flex items-center justify-center active:scale-90" title="Düzenle"><i class="fas fa-edit"></i></button>
-                                    <button type="button" class="delete-btn flex-1 bg-slate-50 dark:bg-slate-900/50 text-slate-500 hover:text-red-600 dark:hover:text-red-400 p-2 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors flex items-center justify-center active:scale-90" title="Sil"><i class="fas fa-trash-alt"></i></button>
+                                    <button type="button" onclick="startEditMode('${book.id}')" class="edit-btn flex-1 bg-slate-50 dark:bg-slate-900/50 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 p-2 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors flex items-center justify-center active:scale-90" title="Düzenle"><i class="fas fa-edit"></i></button>
+                                    <button type="button" onclick="deleteBook('${book.id}', '${escapeHTML(book.title.replace(/'/g, "\\'"))}')" class="delete-btn flex-1 bg-slate-50 dark:bg-slate-900/50 text-slate-500 hover:text-red-600 dark:hover:text-red-400 p-2 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors flex items-center justify-center active:scale-90" title="Sil"><i class="fas fa-trash-alt"></i></button>
                                 </div>
                             </div>
 
@@ -1058,15 +1092,15 @@
                                 <div class="flex justify-between items-start gap-2 mb-1">
                                     <div class="w-full">
                                         ${ratingHtml}
-                                        <h3 class="view-trigger text-lg font-bold text-slate-900 dark:text-white book-title leading-tight line-clamp-2 cursor-pointer hover:text-indigo-600 transition-colors">${escapeHTML(book.title)}</h3>
+                                        <h3 onclick="openViewModal('${book.id}')" class="view-trigger text-lg font-bold text-slate-900 dark:text-white book-title leading-tight line-clamp-2 cursor-pointer hover:text-indigo-600 transition-colors">${escapeHTML(book.title)}</h3>
                                         <p class="text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm mt-1">${escapeHTML(book.author)}</p>
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap gap-1.5 mb-2 mt-2">${badgesHtml}</div>
                                 <div class="mb-2">
-                                    <span class="badge-filter cursor-pointer hover:opacity-75 transition-opacity inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${s.color}" data-type="status" data-val="${book.status}">
+                                    <button type="button" onclick="addDynamicFilter('status', '${book.status}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${s.color}">
                                         <i class="fas ${s.icon}"></i> ${s.text}
-                                    </span>
+                                    </button>
                                 </div>
                             </div>
                         `;
@@ -1076,24 +1110,6 @@
                         card.querySelectorAll('.hide-auth-elements').forEach(el => el.style.display = 'none');
                     }
 
-                    // Dinleyiciler
-                    card.querySelectorAll('.view-trigger').forEach(btn => { btn.addEventListener('click', () => openViewModal(book)); });
-                    card.querySelectorAll('.badge-filter').forEach(btn => { btn.addEventListener('click', (e) => { e.stopPropagation(); addDynamicFilter(btn.getAttribute('data-type'), btn.getAttribute('data-val')); }); });
-                    card.querySelectorAll('.edit-btn').forEach(btn => { btn.addEventListener('click', () => startEdit(book)); });
-                    
-                    card.querySelectorAll('.delete-btn').forEach(btn => {
-                        btn.addEventListener('click', async () => {
-                            if(confirm(`"${book.title}" kitabını silmek istiyor musunuz?`)) {
-                                try {
-                                    await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'books', book.id));
-                                    showNotification("Kitap silindi.", "info");
-                                } catch(err) {
-                                    showNotification("Silme başarısız: Yetki kurallarınızı kontrol edin.", "error");
-                                }
-                            }
-                        });
-                    });
-
                     bookListEl.appendChild(card);
                 });
             } catch(err) {
@@ -1101,45 +1117,8 @@
             }
         }
 
-        // --- Modals & Drawers MANTIĞI ---
-        const addModal = document.getElementById('add-modal');
-        const addBackdrop = document.getElementById('add-backdrop');
-        const addPanel = document.getElementById('add-panel');
-        const settingsDrawer = document.getElementById('settings-drawer');
-        const settingsBackdrop = document.getElementById('settings-backdrop');
-        const settingsPanel = document.getElementById('settings-panel');
-
-        function openAddModal() {
-            addModal.classList.remove('hidden'); addModal.classList.add('flex');
-            setTimeout(() => { addBackdrop.classList.remove('opacity-0'); addPanel.classList.remove('translate-y-full', 'md:translate-y-10', 'md:scale-95'); }, 10);
-            document.body.style.overflow = 'hidden';
-            if(html5QrcodeScanner && html5QrcodeScanner.isScanning) { html5QrcodeScanner.stop().catch(e=>console.log(e)); }
-        }
-        function closeAddModal() {
-            addBackdrop.classList.add('opacity-0'); addPanel.classList.add('translate-y-full', 'md:translate-y-10', 'md:scale-95');
-            setTimeout(() => { addModal.classList.add('hidden'); addModal.classList.remove('flex'); document.body.style.overflow = ''; }, 300);
-            if(editModeId) exitEdit(); 
-            if(html5QrcodeScanner && html5QrcodeScanner.isScanning) { html5QrcodeScanner.stop().catch(e=>console.log(e)); }
-        }
-        function openSettingsDrawer() {
-            settingsDrawer.classList.remove('hidden'); settingsDrawer.classList.add('flex');
-            setTimeout(() => { settingsBackdrop.classList.remove('opacity-0'); settingsPanel.classList.remove('translate-x-full'); }, 10);
-            document.body.style.overflow = 'hidden';
-        }
-        function closeSettingsDrawer() {
-            settingsBackdrop.classList.add('opacity-0'); settingsPanel.classList.add('translate-x-full');
-            setTimeout(() => { settingsDrawer.classList.add('hidden'); settingsDrawer.classList.remove('flex'); document.body.style.overflow = ''; }, 300);
-        }
-
-        document.getElementById('fab-add-btn').addEventListener('click', openAddModal);
-        document.getElementById('close-add-btn').addEventListener('click', closeAddModal);
-        addBackdrop.addEventListener('click', closeAddModal);
-        document.getElementById('menu-btn').addEventListener('click', openSettingsDrawer);
-        document.getElementById('close-settings-btn').addEventListener('click', closeSettingsDrawer);
-        settingsBackdrop.addEventListener('click', closeSettingsDrawer);
-
         // KÜTÜPHANEYİ GÖRÜNTÜLEME MODALI MANTIĞI
-        function openViewModal(book) {
+        function openViewModalInternal(book) {
             currentViewBook = book;
             const contentDiv = document.getElementById('view-modal-content');
             
@@ -1165,13 +1144,15 @@
                 accordionsHTML += `
                     <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-800">
                         <button type="button" class="view-acc-header w-full px-4 py-3 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <div class="flex items-center gap-3">
+                            <div class="flex items-center gap-3 pointer-events-none">
                                 <span class="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
                                     ${sec.icon} ${sec.title}
                                 </span>
-                                <span class="hide-auth-elements hidden text-[10px] bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-2 py-1 rounded font-bold hover:bg-amber-200 inline-edit-trigger" data-field="${sec.dbField}">Düzenle <i class="fas fa-pen ml-1"></i></span>
                             </div>
-                            <i class="fas fa-chevron-down text-slate-400 text-xs transition-transform transform"></i>
+                            <div class="flex items-center gap-3">
+                                <span class="hide-auth-elements hidden text-[10px] bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-2 py-1 rounded font-bold hover:bg-amber-200 inline-edit-trigger" data-field="${sec.dbField}">Düzenle <i class="fas fa-pen ml-1"></i></span>
+                                <i class="fas fa-chevron-down text-slate-400 text-xs transition-transform transform pointer-events-none"></i>
+                            </div>
                         </button>
                         <div class="view-acc-content hidden px-4 pb-4 pt-2 border-t border-slate-100 dark:border-slate-700">
                             <div class="inline-view-state text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">${sec.val ? escapeHTML(sec.val) : '<em class="text-slate-400">Girilmemiş...</em>'}</div>
@@ -1202,8 +1183,8 @@
             accordionsHTML += `
                 <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-800">
                     <button type="button" class="view-acc-header w-full px-4 py-3 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                        <span class="text-sm font-bold text-amber-700 dark:text-amber-500 flex items-center gap-2">💬 Alıntılar</span>
-                        <i class="fas fa-chevron-down text-slate-400 text-xs transition-transform transform"></i>
+                        <span class="text-sm font-bold text-amber-700 dark:text-amber-500 flex items-center gap-2 pointer-events-none">💬 Alıntılar</span>
+                        <i class="fas fa-chevron-down text-slate-400 text-xs transition-transform transform pointer-events-none"></i>
                     </button>
                     <div class="view-acc-content hidden px-4 pb-4 pt-2 border-t border-slate-100 dark:border-slate-700">
                         <div class="hide-auth-elements text-xs text-slate-400 italic mb-3">Alıntıları düzenlemek için sol üstteki "Notları Düzenle" butonunu kullanın.</div>
@@ -1220,7 +1201,11 @@
                 ratingHtml += '</div>';
             }
 
-            const o = ownMap[book.ownership || 'none'] || ownMap['none']; 
+            let bOwn = book.ownership || 'none';
+            if (bOwn === 'owned') bOwn = 'physical';
+            if (bOwn === 'borrowed') bOwn = 'none';
+
+            const o = ownMap[bOwn] || ownMap['none']; 
             const s = statusMap[book.status] || statusMap['read'];
 
             let metadataHtml = '';
@@ -1359,143 +1344,11 @@
             document.body.style.overflow = 'hidden';
         }
 
-        function closeViewModal() {
-            clearInterval(readingTimerInterval); 
-            document.getElementById('reading-timer-container').classList.add('hidden');
-            document.getElementById('start-timer-btn').classList.remove('hidden');
-
-            const viewModal = document.getElementById('view-modal');
-            const viewBackdrop = document.getElementById('view-backdrop');
-            const viewPanel = document.getElementById('view-panel');
-            viewBackdrop.classList.add('opacity-0'); viewPanel.classList.add('translate-y-full', 'md:translate-y-10', 'md:scale-95');
-            setTimeout(() => { viewModal.classList.add('hidden'); viewModal.classList.remove('flex'); document.body.style.overflow = ''; }, 300);
-            currentViewBook = null;
-        }
-
-        document.getElementById('close-view-btn').addEventListener('click', closeViewModal);
-        document.getElementById('view-backdrop').addEventListener('click', closeViewModal);
-
-        document.getElementById('view-edit-all-btn').addEventListener('click', () => {
-            if(currentViewBook) {
-                const b = currentViewBook;
-                closeViewModal();
-                setTimeout(() => { startEdit(b); }, 300);
-            }
-        });
-
-
-        // --- FORM İÇİ AKORDİYONLAR ---
-        document.querySelectorAll('.form-acc-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault(); // Sayfanın yenilenmesini engelle
-                const content = btn.nextElementSibling;
-                const icon = btn.querySelector('.fa-chevron-down');
-                content.classList.toggle('hidden');
-                icon.classList.toggle('rotate-180');
-            });
-        });
-
-        // --- GOOGLE ARAMA ---
-        document.getElementById('search-isbn-btn').addEventListener('click', async (e) => { e.preventDefault(); fetchFromGoogle('isbn'); });
-        document.getElementById('fetch-cover-btn').addEventListener('click', async (e) => { e.preventDefault(); fetchFromGoogle('title'); });
-        inputs.coverUrl.addEventListener('input', (e) => updateCoverPreview(e.target.value));
-
-        async function fetchFromGoogle(mode = 'title') {
-            const suggestionsContainer = document.getElementById('book-suggestions-container');
-            const suggestionsList = document.getElementById('book-suggestions-list');
-            suggestionsContainer.classList.add('hidden'); suggestionsList.innerHTML = '';
-            let data = { items: [] };
-            const btn = mode === 'isbn' ? document.getElementById('search-isbn-btn') : document.getElementById('fetch-cover-btn');
-            const originalHtml = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true;
-
-            try {
-                if (mode === 'isbn') {
-                    let isbn = inputs.isbn.value.trim().replace(/[- ]/g, '');
-                    if (!isbn) { showNotification("Lütfen ISBN numarası girin.", "error"); return; }
-                    let res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${encodeURIComponent(isbn)}&maxResults=3`);
-                    let tempData = await res.json();
-                    if (!tempData.items || tempData.items.length === 0) { res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(isbn)}&maxResults=3`); tempData = await res.json(); }
-                    data = tempData;
-                } else {
-                    const title = inputs.title.value.trim(); const author = inputs.author.value.trim();
-                    if (!title) { showNotification("Önce Kitap Adı yazın.", "error"); return; }
-                    let res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(title)}+inauthor:${encodeURIComponent(author)}&maxResults=5`); data = await res.json();
-                    if (!data.items || data.items.length === 0) { 
-                        res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(title + ' ' + author)}&maxResults=5`); 
-                        data = await res.json(); 
-                    }
-                }
-
-                if (data.items && data.items.length > 0) {
-                    if (mode === 'isbn' && data.items.length === 1) {
-                        applyBookSuggestion(data.items[0]); showNotification("Kitap bulundu ve otomatik eklendi!", "success");
-                    } else {
-                        suggestionsContainer.classList.remove('hidden');
-                        data.items.forEach(item => {
-                            const info = item.volumeInfo;
-                            const title = info.title || 'Bilinmeyen'; const author = info.authors ? info.authors.join(', ') : 'Yazar Yok';
-                            let imgUrl = info.imageLinks ? (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail) : '';
-                            if (imgUrl) imgUrl = imgUrl.replace('http:', 'https:');
-                            const div = document.createElement('div');
-                            div.className = "shrink-0 w-20 md:w-24 cursor-pointer hover:scale-105 transition-transform bg-white dark:bg-slate-800 rounded-lg p-1.5 border border-indigo-100 dark:border-indigo-800 shadow-sm flex flex-col";
-                            div.innerHTML = `
-                                <div class="w-full h-28 md:h-32 bg-slate-100 dark:bg-slate-700 rounded-md mb-1.5 overflow-hidden flex items-center justify-center shrink-0">${imgUrl ? `<img src="${imgUrl}" class="w-full h-full object-cover">` : `<i class="fas fa-book text-slate-400 text-xl"></i>`}</div>
-                                <div class="text-[9px] font-bold text-slate-800 dark:text-slate-200 truncate" title="${escapeHTML(title)}">${escapeHTML(title)}</div>
-                                <div class="text-[8px] text-slate-500 dark:text-slate-400 truncate" title="${escapeHTML(author)}">${escapeHTML(author)}</div>
-                            `;
-                            div.onclick = () => { applyBookSuggestion(item); suggestionsContainer.classList.add('hidden'); showNotification("Bilgiler aktarıldı!", "success"); };
-                            suggestionsList.appendChild(div);
-                        });
-                    }
-                } else { showNotification("Google Kitaplarda bulunamadı.", "error"); }
-            } catch (e) { showNotification("Arama sırasında bağlantı hatası oluştu.", "error");
-            } finally { btn.innerHTML = originalHtml; btn.disabled = false; }
-        }
-
-        // --- KAMERA İLE BARKOD OKUMA (GÜVENLİ) ---
-        document.getElementById('start-camera-btn').addEventListener('click', async (e) => {
-            e.preventDefault();
-            const readerDiv = document.getElementById('reader');
-            const btn = document.getElementById('start-camera-btn');
-            
-            if (!html5QrcodeScanner) {
-                html5QrcodeScanner = new window.Html5Qrcode("reader");
-            }
-
-            if(readerDiv.classList.contains('hidden')) {
-                readerDiv.classList.remove('hidden');
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Kamera Açılıyor...';
-                
-                try {
-                    await html5QrcodeScanner.start(
-                        { facingMode: "environment" }, 
-                        { fps: 10, qrbox: { width: 250, height: 150 } }, 
-                        (decodedText) => {
-                            document.getElementById('book-isbn').value = decodedText;
-                            html5QrcodeScanner.stop().then(() => {
-                                readerDiv.classList.add('hidden');
-                                btn.innerHTML = '<i class="fas fa-camera"></i> Kamera ile Barkod Okut';
-                                showNotification("Barkod okundu!", "success");
-                                fetchFromGoogle('isbn'); 
-                            });
-                        },
-                        (error) => {} // ignoring continuous scanning errors
-                    );
-                    btn.innerHTML = '<i class="fas fa-times text-red-400"></i> Kamerayı Kapat';
-                } catch(err) {
-                    showNotification("Kamera başlatılamadı. Cihaz izinlerini kontrol edin.", "error");
-                    readerDiv.classList.add('hidden');
-                    btn.innerHTML = '<i class="fas fa-camera"></i> Kamera ile Barkod Okut';
-                }
-            } else {
-                try { await html5QrcodeScanner.stop(); } catch(err){}
-                readerDiv.classList.add('hidden');
-                btn.innerHTML = '<i class="fas fa-camera"></i> Kamera ile Barkod Okut';
-            }
-        });
-
-        // --- FORM KAYDETME (SUBMIT - İZOLE EDİLDİ) ---
+        // Modalları ve Drawarları Başlat
+        const modals = document.querySelectorAll('#add-modal, #view-modal, #stats-modal, #settings-drawer');
+        const backdrops = document.querySelectorAll('#add-backdrop, #view-backdrop, #stats-backdrop, #settings-backdrop');
+        
+        // --- FORM KAYDETME ---
         document.getElementById('save-book-action-btn').addEventListener('click', async (e) => {
             e.preventDefault();
             
@@ -1602,36 +1455,7 @@
             
             openAddModal(); 
         }
-
-        function exitEdit() {
-            editModeId = null;
-            resetForm();
-            document.getElementById('form-title').innerHTML = '<i class="fas fa-plus-circle text-indigo-500"></i> Yeni Kitap Ekle';
-            document.getElementById('cancel-edit-btn').classList.add('hidden');
-        }
-
-        document.getElementById('cancel-edit-btn').addEventListener('click', (e) => { 
-            e.preventDefault(); 
-            exitEdit(); 
-            closeAddModal(); 
-        });
-
-        function resetForm() {
-            form.reset();
-            updateCoverPreview('');
-            setRatingUI(0);
-            inputs.ownership.value = 'none';
-            
-            currentCategories = [];
-            currentSubCategories = [];
-            updateTagsUI('cat');
-            updateTagsUI('subcat');
-
-            quotesContainer.innerHTML = '';
-            document.getElementById('no-quotes-msg').style.display = 'block';
-            document.getElementById('book-suggestions-container').classList.add('hidden');
-        }
-
+        
     </script>
 </body>
 </html>
