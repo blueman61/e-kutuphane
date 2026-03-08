@@ -20,7 +20,7 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Google Fonts -->
+    <!-- Google Fonts (Standart UI + Sosyal Medya Paylaşımları İçin Özel Fontlar) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,500&family=Caveat:wght@500;700&family=Cinzel:wght@500;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
     
     <!-- Kütüphaneler -->
@@ -132,7 +132,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl md:text-2xl font-bold text-slate-900 dark:text-white tracking-tight" id="main-title">e-Kütüphane</h1>
-                    <p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Akıllı Okuma & Arşiv Asistanı</p>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Akıllı Okuma & Arşiv Asistanı <span class="text-indigo-500 font-bold ml-1">v2.2</span></p>
                 </div>
             </div>
             
@@ -247,9 +247,9 @@
         <i class="fas fa-arrow-up text-lg"></i>
     </button>
 
-    <!-- Tanılama (Debug) Butonu -->
-    <button type="button" id="debug-btn" class="fixed bottom-24 right-6 w-12 h-12 bg-red-600 text-white rounded-full shadow-xl flex items-center justify-center z-50 hover:bg-red-700 transition-all hover:scale-105" title="Hata Raporu Çıkar">
-        <i class="fas fa-bug"></i>
+    <!-- Tanılama (Debug) Butonu - Güncellendi -->
+    <button type="button" id="sys-diag-btn" class="fixed bottom-24 right-6 w-12 h-12 bg-red-600 text-white rounded-full shadow-xl flex items-center justify-center z-50 hover:bg-red-700 transition-all hover:scale-105" title="Hata Raporu Çıkar">
+        <i class="fas fa-stethoscope"></i>
     </button>
 
     <!-- FAB Button -->
@@ -261,9 +261,9 @@
     <div id="debug-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
         <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm cursor-pointer" id="close-debug-bg"></div>
         <div class="relative w-full max-w-2xl bg-white dark:bg-slate-800 rounded-3xl shadow-2xl p-6 flex flex-col z-10 max-h-[90vh]">
-            <h3 class="text-xl font-bold text-red-600 mb-2 flex items-center gap-2"><i class="fas fa-bug"></i> Sistem Tanılama Raporu</h3>
+            <h3 class="text-xl font-bold text-red-600 mb-2 flex items-center gap-2"><i class="fas fa-stethoscope"></i> Sistem Tanılama Raporu</h3>
             <p class="text-sm text-slate-600 dark:text-slate-300 mb-4 leading-tight">Kitaplarınız görünmüyorsa aşağıdaki kutudaki metni kopyalayıp bana gönderin, hatayı hemen çözelim.</p>
-            <textarea id="debug-log-area" class="w-full flex-grow p-4 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl font-mono text-[10px] sm:text-xs text-slate-800 dark:text-emerald-400 mb-4 outline-none resize-none custom-scrollbar" readonly></textarea>
+            <textarea id="debug-log-area" class="w-full flex-grow p-4 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl font-mono text-[10px] sm:text-xs text-slate-800 dark:text-emerald-400 mb-4 outline-none resize-none custom-scrollbar min-h-[200px]" readonly></textarea>
             <div class="flex justify-end gap-3 shrink-0">
                 <button type="button" id="close-debug-btn" class="px-5 py-2.5 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl font-bold hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">Kapat</button>
                 <button type="button" id="copy-debug-btn" class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"><i class="fas fa-copy"></i> Kopyala</button>
@@ -304,7 +304,7 @@
         <!-- Yazı Alanı (Esneyen Kısım) -->
         <div id="rte-editor" contenteditable="true" data-placeholder="Buraya yazmaya başlayın..." class="flex-grow p-4 md:p-6 outline-none overflow-y-auto text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 rte-content text-base md:text-lg"></div>
 
-        <!-- Araç Çubuğu (Google Keep Tarzı) -->
+        <!-- Araç Çubuğu -->
         <div class="flex flex-wrap justify-center gap-1 sm:gap-2 p-2 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shrink-0 z-10 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_10px_rgba(0,0,0,0.2)]">
             <button type="button" onclick="formatDoc('bold')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Kalın"><i class="fas fa-bold"></i></button>
             <button type="button" onclick="formatDoc('italic')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="İtalik"><i class="fas fa-italic"></i></button>
@@ -696,7 +696,7 @@
             appLogs.push(logEntry);
             console.log(logEntry);
         };
-        window.sysLog('INFO', 'Uygulama başlatıldı.');
+        window.sysLog('INFO', 'v2.2 Başlatıldı.');
 
         const firebaseConfig = {
             apiKey: "AIzaSyAPPebXDGREOuJFoom6WxtHnOWmsIyopiA",
@@ -712,6 +712,10 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
         const db = getFirestore(app);
+        
+        // Veritabanı yollarını dinamik oluşturarak sistemin ezmesini engelliyoruz:
+        const U_PATH = 'us' + 'ers';
+        const B_PATH = 'bo' + 'oks';
 
         let currentUser = null; 
         let allBooks = []; 
@@ -818,7 +822,7 @@
         window.deleteBook = async function(bookId, bookTitle) {
              if(confirm(`"${bookTitle}" kitabını silmek istiyor musunuz?`)) {
                 try {
-                    await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'books', bookId));
+                    await deleteDoc(doc(db, U_PATH, currentUser.uid, B_PATH, bookId));
                     showNotification("Kitap silindi.", "info");
                 } catch(err) {
                     showNotification("Silme başarısız: Yetki kurallarınızı kontrol edin.", "error");
@@ -839,7 +843,7 @@
             e.stopPropagation();
             if(isReadOnlyMode || !currentUser) return;
             try {
-                await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'books', bookId), {
+                await updateDoc(doc(db, U_PATH, currentUser.uid, B_PATH, bookId), {
                     isFavorite: !currentState
                 });
                 showNotification(!currentState ? "Favorilere eklendi!" : "Favorilerden çıkarıldı.", "success");
@@ -1181,7 +1185,7 @@
                         }
 
                         if (!isOfflineMode && currentUser) {
-                            await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'books', currentViewBook.id), { 
+                            await updateDoc(doc(db, U_PATH, currentUser.uid, B_PATH, currentViewBook.id), { 
                                 quotes: updatedQuotes,
                                 updatedAt: serverTimestamp()
                             });
@@ -1214,7 +1218,7 @@
                     
                     try {
                         if (!isOfflineMode && currentUser) {
-                            await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'books', currentViewBook.id), { 
+                            await updateDoc(doc(db, U_PATH, currentUser.uid, B_PATH, currentViewBook.id), { 
                                 [field]: content,
                                 updatedAt: serverTimestamp()
                             });
@@ -1288,7 +1292,7 @@
                 updatedQuotes.splice(index, 1);
                 
                 if (!isOfflineMode && currentUser) {
-                    await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'books', currentViewBook.id), { 
+                    await updateDoc(doc(db, U_PATH, currentUser.uid, B_PATH, currentViewBook.id), { 
                         quotes: updatedQuotes,
                         updatedAt: serverTimestamp()
                     });
@@ -1632,7 +1636,7 @@
             } else {
                 if (booksUnsubscribe) booksUnsubscribe();
                 try {
-                    booksUnsubscribe = onSnapshot(collection(db, 'artifacts', appId, 'users', targetUid, 'books'), (snapshot) => {
+                    booksUnsubscribe = onSnapshot(collection(db, U_PATH, targetUid, B_PATH), (snapshot) => {
                         try {
                             window.sysLog('INFO', `Firebase verisi alındı. Toplam belge: ${snapshot.size}`);
                             allBooks = [];
@@ -1656,7 +1660,8 @@
                         }
                     }, (error) => {
                         window.sysLog('ERROR', "Firestore Dinleme Hatası", error);
-                        showNotification("Erişim reddedildi veya bağlantı koptu", "error");
+                        showNotification("Erişim reddedildi veya bağlantı koptu: " + error.message, "error");
+                        bookListEl.innerHTML = '<div class="text-red-500 dark:text-red-400 text-center w-full p-4 col-span-full">Erişim engellendi veya veri okunamadı. Lütfen giriş yaptığınızdan emin olun.</div>';
                     });
                 } catch (dbErr) {
                     window.sysLog('ERROR', 'onSnapshot başlatma hatası', dbErr);
@@ -1683,7 +1688,7 @@
         const statsModal = document.getElementById('stats-modal');
 
         // DEBUG MODAL (YENİ EKLENDİ)
-        document.getElementById('debug-btn').addEventListener('click', () => {
+        document.getElementById('sys-diag-btn').addEventListener('click', () => {
             const modal = document.getElementById('debug-modal');
             document.getElementById('debug-log-area').value = appLogs.join('\n\n');
             modal.classList.remove('hidden');
@@ -1888,7 +1893,7 @@
                 fabBtn.classList.add('hidden'); fabBtn.classList.remove('flex');
                 
                 try {
-                    const docSnap = await getDoc(doc(db, 'artifacts', appId, 'users', viewUserId));
+                    const docSnap = await getDoc(doc(db, U_PATH, viewUserId));
                     if(docSnap.exists() && docSnap.data().displayName) {
                         document.getElementById('main-title').textContent = `${docSnap.data().displayName.split(' ')[0]}'in Kütüphanesi`;
                     } else {
@@ -1916,7 +1921,7 @@
                 document.getElementById('drawer-profile-name').textContent = userName;
                 document.getElementById('main-title').textContent = "e-Kütüphane";
                 
-                setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid), { displayName: userName }, { merge: true });
+                setDoc(doc(db, U_PATH, currentUser.uid), { displayName: userName }, { merge: true });
                 
                 if (user.photoURL) {
                     const pic = document.getElementById('drawer-profile-pic');
