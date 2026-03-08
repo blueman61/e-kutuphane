@@ -1263,27 +1263,35 @@
 
         // FİLTRELEME & GÖRÜNÜM
         function updateCategoryDatalists() {
-            const catSet = new Set();
-            const subCatSet = new Set();
-            allBooks.forEach(b => {
-                if (Array.isArray(b.category)) { 
-                    b.category.forEach(c => { if(c && typeof c === 'string' && c.trim()) catSet.add(c.trim()); }); 
-                } else if (typeof b.category === 'string') { 
-                    b.category.split(',').forEach(c => { if(c.trim()) catSet.add(c.trim()); }); 
+            try {
+                const catSet = new Set();
+                const subCatSet = new Set();
+                allBooks.forEach(b => {
+                    if (Array.isArray(b.category)) { 
+                        b.category.forEach(c => { if(c && typeof c === 'string' && c.trim()) catSet.add(c.trim()); }); 
+                    } else if (typeof b.category === 'string') { 
+                        b.category.split(',').forEach(c => { if(c.trim()) catSet.add(c.trim()); }); 
+                    }
+                    
+                    if (Array.isArray(b.subCategory)) { 
+                        b.subCategory.forEach(c => { if(c && typeof c === 'string' && c.trim()) subCatSet.add(c.trim()); }); 
+                    } else if (typeof b.subCategory === 'string') { 
+                        b.subCategory.split(',').forEach(c => { if(c.trim()) subCatSet.add(c.trim()); }); 
+                    }
+                });
+                const catList = document.getElementById('cat-list');
+                if (catList) {
+                    catList.innerHTML = '';
+                    catSet.forEach(c => { const opt = document.createElement('option'); opt.value = c; catList.appendChild(opt); });
                 }
-                
-                if (Array.isArray(b.subCategory)) { 
-                    b.subCategory.forEach(c => { if(c && typeof c === 'string' && c.trim()) subCatSet.add(c.trim()); }); 
-                } else if (typeof b.subCategory === 'string') { 
-                    b.subCategory.split(',').forEach(c => { if(c.trim()) subCatSet.add(c.trim()); }); 
+                const subCatList = document.getElementById('subcat-list');
+                if (subCatList) {
+                    subCatList.innerHTML = '';
+                    subCatSet.forEach(c => { const opt = document.createElement('option'); opt.value = c; subCatList.appendChild(opt); });
                 }
-            });
-            const catList = document.getElementById('cat-list');
-            catList.innerHTML = '';
-            catSet.forEach(c => { const opt = document.createElement('option'); opt.value = c; catList.appendChild(opt); });
-            const subCatList = document.getElementById('subcat-list');
-            subCatList.innerHTML = '';
-            subCatSet.forEach(c => { const opt = document.createElement('option'); opt.value = c; subCatList.appendChild(opt); });
+            } catch (err) {
+                console.error("Datalist güncelleme hatası:", err);
+            }
         }
 
         function updateActiveFiltersUI() {
@@ -1336,10 +1344,10 @@
 
         function applyFiltersAndRender() {
             try {
-                const term = searchInput.value.toLowerCase();
-                const status = filterStatus.value;
-                const ownership = filterOwnership.value;
-                const sort = sortSelect.value;
+                const term = (searchInput.value || '').toLowerCase();
+                const status = filterStatus.value || 'all';
+                const ownership = filterOwnership.value || 'all';
+                const sort = sortSelect.value || 'newest';
 
                 let filtered = allBooks.filter(book => {
                     if(filterOnlyFavorites && !book.isFavorite) return false;
@@ -1402,147 +1410,160 @@
         function renderBooks(booksToRender) {
             try {
                 bookListEl.innerHTML = '';
-                if (booksToRender.length === 0) { document.getElementById('empty-state').style.display = 'flex'; return; }
+                if (!Array.isArray(booksToRender) || booksToRender.length === 0) { 
+                    document.getElementById('empty-state').style.display = 'flex'; 
+                    return; 
+                }
                 document.getElementById('empty-state').style.display = 'none';
 
                 booksToRender.forEach(book => {
-                    const s = statusMap[book.status] || statusMap['read'];
-                    let bOwn = book.ownership || 'none';
-                    if (bOwn === 'owned') bOwn = 'physical';
-                    if (bOwn === 'borrowed') bOwn = 'none';
-                    const o = ownMap[bOwn] || ownMap['none']; 
-                    
-                    let ratingHtml = '';
-                    const rating = Number(book.rating) || 0;
-                    if(rating > 0) {
-                        ratingHtml = '<div class="flex text-amber-400 text-[10px] mb-2">';
-                        for(let i=1; i<=5; i++) ratingHtml += i <= rating ? '<i class="fas fa-star"></i>' : '<i class="far fa-star text-slate-300 dark:text-slate-600"></i>';
-                        ratingHtml += '</div>';
-                    }
-
-                    const favIconClass = book.isFavorite ? 'fas fa-heart text-red-500' : 'far fa-heart text-slate-400 hover:text-red-400';
-                    const favBtnHtml = `<button type="button" onclick="window.toggleFavorite(event, '${book.id}', ${!!book.isFavorite})" class="absolute top-3 right-3 z-20 text-lg transition-transform active:scale-75" title="Favorilere Ekle/Çıkar"><i class="${favIconClass}"></i></button>`;
-
-                    let badgesHtml = `<button type="button" onclick="window.addDynamicFilter('status', '${bOwn}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity ${o.color} px-2 py-1 rounded-md text-[10px] font-bold tracking-wide border"><i class="fas ${o.icon} mr-1"></i>${o.text}</button>`;
-                    
-                    const bookCats = Array.isArray(book.category) ? book.category : (typeof book.category === 'string' ? book.category.split(',').map(str=>str.trim()) : []);
-                    bookCats.forEach(c => { if(c) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('cat', '${escapeHTML(c)}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide">${escapeHTML(c)}</button>`; });
-
-                    const bookSubCats = Array.isArray(book.subCategory) ? book.subCategory : (typeof book.subCategory === 'string' ? book.subCategory.split(',').map(str=>str.trim()) : []);
-                    bookSubCats.forEach(c => { if(c) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('cat', '${escapeHTML(c)}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide">${escapeHTML(c)}</button>`; });
-
-                    if(book.format) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('format', '${escapeHTML(book.format)}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide"><i class="fas fa-file-alt mr-1"></i>${escapeHTML(book.format)}</button>`;
-
-                    const card = document.createElement('div');
-                    
-                    const safeTitle = (book.title && typeof book.title === 'string') ? book.title : 'İsimsiz';
-                    const safeAuthor = (book.author && typeof book.author === 'string') ? book.author : 'Bilinmeyen Yazar';
-                    const escapedTitle = escapeHTML(safeTitle);
-                    const escapedAuthor = escapeHTML(safeAuthor);
-                    const jsSafeTitle = escapeHTML(safeTitle.replace(/'/g, "\\'"));
-                    
-                    if (currentViewMode === 'list') {
-                        card.className = 'bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-col cursor-pointer group';
-                        card.onclick = (e) => { if(!e.target.closest('button')) window.openViewModal(book.id); };
-                        card.innerHTML = `
-                            ${favBtnHtml}
-                            <div class="flex-grow min-w-0 flex flex-col z-10 pr-6">
-                                <div class="flex justify-between items-start gap-2 mb-1">
-                                    <div class="w-full">
-                                        ${ratingHtml}
-                                        <h3 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white book-title leading-tight group-hover:text-indigo-600 transition-colors">${escapedTitle}</h3>
-                                        <p class="text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm mt-1">${escapedAuthor}</p>
-                                    </div>
-                                    <div class="hide-auth-elements flex shrink-0 gap-1 bg-slate-50 dark:bg-slate-900/50 p-1 rounded-xl border border-slate-100 dark:border-slate-700">
-                                        <button type="button" onclick="event.stopPropagation(); window.startEditMode('${book.id}')" class="edit-btn p-1.5 md:p-2 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg transition-colors active:scale-90" title="Düzenle"><i class="fas fa-edit"></i></button>
-                                        <button type="button" onclick="event.stopPropagation(); window.deleteBook('${book.id}', '${jsSafeTitle}')" class="delete-btn p-1.5 md:p-2 text-slate-500 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-colors active:scale-90" title="Sil"><i class="fas fa-trash-alt"></i></button>
-                                    </div>
-                                </div>
-                                <div class="flex flex-wrap gap-1.5 mb-2 mt-2" onclick="event.stopPropagation()">${badgesHtml}</div>
-                                <div class="mb-2 flex items-center gap-2">
-                                    <button type="button" onclick="event.stopPropagation(); window.addDynamicFilter('status', '${book.status}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${s.color}">
-                                        <i class="fas ${s.icon}"></i> ${s.text}
-                                    </button>
-                                    ${book.pageCount ? `<span class="text-[10px] text-slate-400"><i class="fas fa-file-alt"></i> ${escapeHTML(book.pageCount)} syf</span>` : ''}
-                                </div>
-                            </div>
-                        `;
-                    } else if (currentViewMode === 'grid') {
-                        card.className = 'bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-row gap-4 cursor-pointer group';
-                        card.onclick = (e) => { if(!e.target.closest('button')) window.openViewModal(book.id); };
+                    try {
+                        const s = statusMap[book.status] || statusMap['read'];
+                        let bOwn = book.ownership || 'none';
+                        if (bOwn === 'owned') bOwn = 'physical';
+                        if (bOwn === 'borrowed') bOwn = 'none';
+                        const o = ownMap[bOwn] || ownMap['none']; 
                         
-                        const coverHtml = book.coverUrl 
-                            ? `<div class="w-full h-40 md:h-48 bg-slate-50 dark:bg-slate-900 rounded-xl flex items-center justify-center overflow-hidden shadow shrink-0 group-hover:opacity-90 transition-opacity"><img src="${book.coverUrl}" class="w-full h-full object-contain"></div>`
-                            : `<div class="w-full h-40 md:h-48 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center text-slate-300 dark:text-slate-500 shadow shrink-0 group-hover:bg-slate-200 transition-colors"><i class="fas fa-book text-3xl"></i></div>`;
+                        let ratingHtml = '';
+                        const rating = Number(book.rating) || 0;
+                        if(rating > 0) {
+                            ratingHtml = '<div class="flex text-amber-400 text-[10px] mb-2">';
+                            for(let i=1; i<=5; i++) ratingHtml += i <= rating ? '<i class="fas fa-star"></i>' : '<i class="far fa-star text-slate-300 dark:text-slate-600"></i>';
+                            ratingHtml += '</div>';
+                        }
 
-                        card.innerHTML = `
-                            ${favBtnHtml}
-                            <div class="flex flex-col w-28 md:w-32 shrink-0 gap-2">
+                        const favIconClass = book.isFavorite ? 'fas fa-heart text-red-500' : 'far fa-heart text-slate-400 hover:text-red-400';
+                        const favBtnHtml = `<button type="button" onclick="window.toggleFavorite(event, '${book.id}', ${!!book.isFavorite})" class="absolute top-3 right-3 z-20 text-lg transition-transform active:scale-75" title="Favorilere Ekle/Çıkar"><i class="${favIconClass}"></i></button>`;
+
+                        let badgesHtml = `<button type="button" onclick="window.addDynamicFilter('status', '${bOwn}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity ${o.color} px-2 py-1 rounded-md text-[10px] font-bold tracking-wide border"><i class="fas ${o.icon} mr-1"></i>${o.text}</button>`;
+                        
+                        const bookCats = Array.isArray(book.category) ? book.category : (typeof book.category === 'string' ? book.category.split(',').map(str=>str.trim()) : []);
+                        bookCats.forEach(c => { if(c) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('cat', '${escapeHTML(String(c))}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide">${escapeHTML(String(c))}</button>`; });
+
+                        const bookSubCats = Array.isArray(book.subCategory) ? book.subCategory : (typeof book.subCategory === 'string' ? book.subCategory.split(',').map(str=>str.trim()) : []);
+                        bookSubCats.forEach(c => { if(c) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('cat', '${escapeHTML(String(c))}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide">${escapeHTML(String(c))}</button>`; });
+
+                        if(book.format) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('format', '${escapeHTML(String(book.format))}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide"><i class="fas fa-file-alt mr-1"></i>${escapeHTML(String(book.format))}</button>`;
+
+                        const card = document.createElement('div');
+                        
+                        const safeTitle = (book.title && typeof book.title === 'string') ? book.title : 'İsimsiz';
+                        const safeAuthor = (book.author && typeof book.author === 'string') ? book.author : 'Bilinmeyen Yazar';
+                        const escapedTitle = escapeHTML(safeTitle);
+                        const escapedAuthor = escapeHTML(safeAuthor);
+                        const jsSafeTitle = escapeHTML(safeTitle.replace(/'/g, "\\'"));
+                        
+                        if (currentViewMode === 'list') {
+                            card.className = 'bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-col cursor-pointer group';
+                            card.onclick = (e) => { if(!e.target.closest('button')) window.openViewModal(book.id); };
+                            card.innerHTML = `
+                                ${favBtnHtml}
+                                <div class="flex-grow min-w-0 flex flex-col z-10 pr-6">
+                                    <div class="flex justify-between items-start gap-2 mb-1">
+                                        <div class="w-full">
+                                            ${ratingHtml}
+                                            <h3 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white book-title leading-tight group-hover:text-indigo-600 transition-colors">${escapedTitle}</h3>
+                                            <p class="text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm mt-1">${escapedAuthor}</p>
+                                        </div>
+                                        <div class="hide-auth-elements flex shrink-0 gap-1 bg-slate-50 dark:bg-slate-900/50 p-1 rounded-xl border border-slate-100 dark:border-slate-700">
+                                            <button type="button" onclick="event.stopPropagation(); window.startEditMode('${book.id}')" class="edit-btn p-1.5 md:p-2 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg transition-colors active:scale-90" title="Düzenle"><i class="fas fa-edit"></i></button>
+                                            <button type="button" onclick="event.stopPropagation(); window.deleteBook('${book.id}', '${jsSafeTitle}')" class="delete-btn p-1.5 md:p-2 text-slate-500 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-colors active:scale-90" title="Sil"><i class="fas fa-trash-alt"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-wrap gap-1.5 mb-2 mt-2" onclick="event.stopPropagation()">${badgesHtml}</div>
+                                    <div class="mb-2 flex items-center gap-2">
+                                        <button type="button" onclick="event.stopPropagation(); window.addDynamicFilter('status', '${book.status}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${s.color}">
+                                            <i class="fas ${s.icon}"></i> ${s.text}
+                                        </button>
+                                        ${book.pageCount ? `<span class="text-[10px] text-slate-400"><i class="fas fa-file-alt"></i> ${escapeHTML(String(book.pageCount))} syf</span>` : ''}
+                                    </div>
+                                </div>
+                            `;
+                        } else if (currentViewMode === 'grid') {
+                            card.className = 'bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-row gap-4 cursor-pointer group';
+                            card.onclick = (e) => { if(!e.target.closest('button')) window.openViewModal(book.id); };
+                            
+                            const coverHtml = book.coverUrl 
+                                ? `<div class="w-full h-40 md:h-48 bg-slate-50 dark:bg-slate-900 rounded-xl flex items-center justify-center overflow-hidden shadow shrink-0 group-hover:opacity-90 transition-opacity"><img src="${escapeHTML(book.coverUrl)}" class="w-full h-full object-contain"></div>`
+                                : `<div class="w-full h-40 md:h-48 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center text-slate-300 dark:text-slate-500 shadow shrink-0 group-hover:bg-slate-200 transition-colors"><i class="fas fa-book text-3xl"></i></div>`;
+
+                            card.innerHTML = `
+                                ${favBtnHtml}
+                                <div class="flex flex-col w-28 md:w-32 shrink-0 gap-2">
+                                    ${coverHtml}
+                                    <div class="hide-auth-elements flex w-full gap-1">
+                                        <button type="button" onclick="event.stopPropagation(); window.startEditMode('${book.id}')" class="edit-btn flex-1 bg-slate-50 dark:bg-slate-900/50 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 p-2 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors flex items-center justify-center active:scale-90" title="Düzenle"><i class="fas fa-edit"></i></button>
+                                        <button type="button" onclick="event.stopPropagation(); window.deleteBook('${book.id}', '${jsSafeTitle}')" class="delete-btn flex-1 bg-slate-50 dark:bg-slate-900/50 text-slate-500 hover:text-red-600 dark:hover:text-red-400 p-2 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors flex items-center justify-center active:scale-90" title="Sil"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </div>
+                                <div class="flex-grow min-w-0 flex flex-col z-10 pr-5">
+                                    <div class="flex justify-between items-start gap-2 mb-1">
+                                        <div class="w-full">
+                                            ${ratingHtml}
+                                            <h3 class="text-lg font-bold text-slate-900 dark:text-white book-title leading-tight line-clamp-2 group-hover:text-indigo-600 transition-colors">${escapedTitle}</h3>
+                                            <p class="text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm mt-1">${escapedAuthor}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-wrap gap-1.5 mb-2 mt-2" onclick="event.stopPropagation()">${badgesHtml}</div>
+                                    <div class="mb-2 flex flex-col items-start gap-1">
+                                        <button type="button" onclick="event.stopPropagation(); window.addDynamicFilter('status', '${book.status}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${s.color}">
+                                            <i class="fas ${s.icon}"></i> ${s.text}
+                                        </button>
+                                        ${book.pageCount ? `<span class="text-[10px] text-slate-400 font-medium"><i class="fas fa-file-alt"></i> ${escapeHTML(String(book.pageCount))} sayfa</span>` : ''}
+                                    </div>
+                                </div>
+                            `;
+                        } else if (currentViewMode === 'shelf') {
+                            card.className = 'relative flex flex-col items-center justify-end h-40 md:h-48 group cursor-pointer px-1 sm:px-2';
+                            card.onclick = () => window.openViewModal(book.id);
+                            
+                            const coverHtml = book.coverUrl 
+                                ? `<img src="${escapeHTML(book.coverUrl)}" class="w-auto h-full max-h-[90%] object-contain rounded shadow-md z-10 group-hover:-translate-y-3 group-active:scale-95 transition-all duration-300">`
+                                : `<div class="w-20 sm:w-24 h-full max-h-[90%] bg-slate-200 dark:bg-slate-700 rounded flex items-center justify-center text-slate-400 shadow-md z-10 group-hover:-translate-y-3 transition-transform duration-300 px-2 text-center text-[10px] font-bold overflow-hidden">${escapedTitle}</div>`;
+
+                            const shelfFavIcon = book.isFavorite ? '<i class="fas fa-heart text-red-500"></i>' : '';
+
+                            card.innerHTML = `
+                                ${book.isFavorite ? `<div class="absolute top-0 right-2 z-20 text-lg drop-shadow-md pointer-events-none">${shelfFavIcon}</div>` : ''}
                                 ${coverHtml}
-                                <div class="hide-auth-elements flex w-full gap-1">
-                                    <button type="button" onclick="event.stopPropagation(); window.startEditMode('${book.id}')" class="edit-btn flex-1 bg-slate-50 dark:bg-slate-900/50 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 p-2 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors flex items-center justify-center active:scale-90" title="Düzenle"><i class="fas fa-edit"></i></button>
-                                    <button type="button" onclick="event.stopPropagation(); window.deleteBook('${book.id}', '${jsSafeTitle}')" class="delete-btn flex-1 bg-slate-50 dark:bg-slate-900/50 text-slate-500 hover:text-red-600 dark:hover:text-red-400 p-2 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors flex items-center justify-center active:scale-90" title="Sil"><i class="fas fa-trash-alt"></i></button>
-                                </div>
-                            </div>
-                            <div class="flex-grow min-w-0 flex flex-col z-10 pr-5">
-                                <div class="flex justify-between items-start gap-2 mb-1">
-                                    <div class="w-full">
-                                        ${ratingHtml}
-                                        <h3 class="text-lg font-bold text-slate-900 dark:text-white book-title leading-tight line-clamp-2 group-hover:text-indigo-600 transition-colors">${escapedTitle}</h3>
-                                        <p class="text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm mt-1">${escapedAuthor}</p>
-                                    </div>
-                                </div>
-                                <div class="flex flex-wrap gap-1.5 mb-2 mt-2" onclick="event.stopPropagation()">${badgesHtml}</div>
-                                <div class="mb-2 flex flex-col items-start gap-1">
-                                    <button type="button" onclick="event.stopPropagation(); window.addDynamicFilter('status', '${book.status}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${s.color}">
-                                        <i class="fas ${s.icon}"></i> ${s.text}
-                                    </button>
-                                    ${book.pageCount ? `<span class="text-[10px] text-slate-400 font-medium"><i class="fas fa-file-alt"></i> ${escapeHTML(book.pageCount)} sayfa</span>` : ''}
-                                </div>
-                            </div>
-                        `;
-                    } else if (currentViewMode === 'shelf') {
-                        card.className = 'relative flex flex-col items-center justify-end h-40 md:h-48 group cursor-pointer px-1 sm:px-2';
-                        card.onclick = () => window.openViewModal(book.id);
-                        
-                        const coverHtml = book.coverUrl 
-                            ? `<img src="${book.coverUrl}" class="w-auto h-full max-h-[90%] object-contain rounded shadow-md z-10 group-hover:-translate-y-3 group-active:scale-95 transition-all duration-300">`
-                            : `<div class="w-20 sm:w-24 h-full max-h-[90%] bg-slate-200 dark:bg-slate-700 rounded flex items-center justify-center text-slate-400 shadow-md z-10 group-hover:-translate-y-3 transition-transform duration-300 px-2 text-center text-[10px] font-bold overflow-hidden">${escapedTitle}</div>`;
+                                <div class="absolute bottom-0 left-0 w-full h-3 sm:h-4 bg-gradient-to-b from-amber-800 to-amber-950 dark:from-slate-700 dark:to-slate-800 rounded-sm shadow-[0_4px_6px_rgba(0,0,0,0.3)] z-0 border-t border-amber-700/50 dark:border-slate-600"></div>
+                                <div class="absolute -bottom-6 bg-slate-900 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-30 pointer-events-none max-w-[150%] truncate shadow-lg border border-slate-700">${escapedTitle}</div>
+                            `;
+                        }
 
-                        const shelfFavIcon = book.isFavorite ? '<i class="fas fa-heart text-red-500"></i>' : '';
-
-                        card.innerHTML = `
-                            ${book.isFavorite ? `<div class="absolute top-0 right-2 z-20 text-lg drop-shadow-md pointer-events-none">${shelfFavIcon}</div>` : ''}
-                            ${coverHtml}
-                            <div class="absolute bottom-0 left-0 w-full h-3 sm:h-4 bg-gradient-to-b from-amber-800 to-amber-950 dark:from-slate-700 dark:to-slate-800 rounded-sm shadow-[0_4px_6px_rgba(0,0,0,0.3)] z-0 border-t border-amber-700/50 dark:border-slate-600"></div>
-                            <div class="absolute -bottom-6 bg-slate-900 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-30 pointer-events-none max-w-[150%] truncate shadow-lg border border-slate-700">${escapedTitle}</div>
-                        `;
+                        if(isReadOnlyMode) {
+                            card.querySelectorAll('.hide-auth-elements').forEach(el => el.style.display = 'none');
+                        }
+                        bookListEl.appendChild(card);
+                    } catch(err) {
+                        console.error("Kitap render hatası:", err, book);
                     }
-
-                    if(isReadOnlyMode) {
-                        card.querySelectorAll('.hide-auth-elements').forEach(el => el.style.display = 'none');
-                    }
-                    bookListEl.appendChild(card);
                 });
             } catch(err) {
-                console.error("Render hatası:", err);
+                console.error("Genel Render hatası:", err);
             }
         }
 
         // --- ARAMA ÖNERİLERİ GÜNCELLEMESİ ---
         function updateSearchSuggestions() {
-            const suggestionSet = new Set();
-            allBooks.forEach(b => {
-                if(b.title && typeof b.title === 'string') suggestionSet.add(b.title.trim());
-                if(b.author && typeof b.author === 'string') suggestionSet.add(b.author.trim());
-            });
-            const dataList = document.getElementById('search-suggestions');
-            dataList.innerHTML = '';
-            suggestionSet.forEach(s => {
-                const opt = document.createElement('option');
-                opt.value = s;
-                dataList.appendChild(opt);
-            });
+            try {
+                const suggestionSet = new Set();
+                allBooks.forEach(b => {
+                    if(b.title && typeof b.title === 'string') suggestionSet.add(b.title.trim());
+                    if(b.author && typeof b.author === 'string') suggestionSet.add(b.author.trim());
+                });
+                const dataList = document.getElementById('search-suggestions');
+                if (dataList) {
+                    dataList.innerHTML = '';
+                    suggestionSet.forEach(s => {
+                        const opt = document.createElement('option');
+                        opt.value = s;
+                        dataList.appendChild(opt);
+                    });
+                }
+            } catch (err) {
+                console.error("Search suggestions hatası", err);
+            }
         }
 
         // --- VERİTABANI DİNLEME ---
@@ -1570,7 +1591,8 @@
                     }
                 }, (error) => {
                     console.error("Firestore Dinleme Hatası:", error);
-                    showNotification("Veriler yüklenemedi: " + error.message, "error");
+                    showNotification("Erişim reddedildi veya bağlantı koptu: " + error.message, "error");
+                    bookListEl.innerHTML = '<div class="text-red-500 dark:text-red-400 text-center w-full p-4 col-span-full">Erişim engellendi veya veri okunamadı. Lütfen giriş yaptığınızdan emin olun.</div>';
                 });
             }
         }
