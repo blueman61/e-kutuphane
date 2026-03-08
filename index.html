@@ -255,17 +255,20 @@
         </div>
     </div>
 
-    <!-- Zengin Metin Editörü (RTE) Modal (YENİ EKLENDİ) -->
-    <div id="rte-modal" class="fixed inset-0 z-[60] hidden flex-col bg-slate-50 dark:bg-slate-900 transition-transform transform translate-y-full duration-300">
+    <!-- Zengin Metin Editörü (RTE) Modal (YENİ EKLENDİ - KLAVYE DOSTU DÜZEN) -->
+    <div id="rte-modal" class="fixed inset-0 z-[60] hidden flex-col bg-slate-50 dark:bg-slate-900 transition-transform transform translate-y-full duration-300 h-[100dvh] w-full">
         <!-- Header -->
-        <div class="flex justify-between items-center p-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shadow-sm shrink-0">
+        <div class="flex justify-between items-center p-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shadow-sm shrink-0 z-10">
             <button type="button" id="rte-cancel-btn" class="w-10 h-10 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 transition-all"><i class="fas fa-arrow-left text-xl"></i></button>
             <h3 id="rte-title" class="font-bold text-slate-800 dark:text-white text-lg">Not Düzenle</h3>
             <button type="button" id="rte-save-btn" class="text-indigo-600 dark:text-indigo-400 font-bold px-4 py-2 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/30 active:scale-95 transition-all">Bitti</button>
         </div>
         
-        <!-- Araç Çubuğu (Google Keep Tarzı) -->
-        <div class="flex gap-2 p-2 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shrink-0 overflow-x-auto hide-scrollbar">
+        <!-- Yazı Alanı (Esneyen Kısım) -->
+        <div id="rte-editor" contenteditable="true" data-placeholder="Buraya yazmaya başlayın..." class="flex-grow p-4 md:p-6 outline-none overflow-y-auto text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 rte-content text-base md:text-lg"></div>
+
+        <!-- Araç Çubuğu (Google Keep Tarzı - ALT KISIM) -->
+        <div class="flex gap-2 p-2 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shrink-0 overflow-x-auto hide-scrollbar z-10 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_10px_rgba(0,0,0,0.2)]">
             <button type="button" onclick="formatDoc('bold')" class="shrink-0 w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600" title="Kalın"><i class="fas fa-bold"></i></button>
             <button type="button" onclick="formatDoc('italic')" class="shrink-0 w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600" title="İtalik"><i class="fas fa-italic"></i></button>
             <button type="button" onclick="formatDoc('underline')" class="shrink-0 w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600" title="Altı Çizili"><i class="fas fa-underline"></i></button>
@@ -277,9 +280,6 @@
             <button type="button" onclick="formatDoc('insertUnorderedList')" class="shrink-0 w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600" title="Madde İşaretleri"><i class="fas fa-list-ul"></i></button>
             <button type="button" onclick="formatDoc('removeFormat')" class="shrink-0 w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600" title="Biçimi Temizle"><i class="fas fa-eraser"></i></button>
         </div>
-        
-        <!-- Yazı Alanı -->
-        <div id="rte-editor" contenteditable="true" data-placeholder="Buraya yazmaya başlayın..." class="flex-grow p-4 md:p-6 outline-none overflow-y-auto text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 rte-content text-base md:text-lg"></div>
     </div>
 
     <!-- Settings Drawer -->
