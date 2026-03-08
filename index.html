@@ -20,7 +20,7 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Google Fonts (Standart UI + Sosyal Medya Paylaşımları İçin Özel Fontlar) -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,500&family=Caveat:wght@500;700&family=Cinzel:wght@500;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
     
     <!-- Kütüphaneler -->
@@ -247,10 +247,29 @@
         <i class="fas fa-arrow-up text-lg"></i>
     </button>
 
+    <!-- Tanılama (Debug) Butonu -->
+    <button type="button" id="debug-btn" class="fixed bottom-24 right-6 w-12 h-12 bg-red-600 text-white rounded-full shadow-xl flex items-center justify-center z-50 hover:bg-red-700 transition-all hover:scale-105" title="Hata Raporu Çıkar">
+        <i class="fas fa-bug"></i>
+    </button>
+
     <!-- FAB Button -->
     <button type="button" id="fab-add-btn" class="hidden fixed bottom-6 right-6 md:bottom-10 md:right-10 w-14 h-14 md:w-16 md:h-16 bg-indigo-600 text-white rounded-full shadow-lg shadow-indigo-300/50 dark:shadow-none items-center justify-center text-xl md:text-2xl hover:scale-105 active:scale-95 hover:bg-indigo-700 transition-all z-40" title="Yeni Kitap Ekle">
         <i class="fas fa-plus"></i>
     </button>
+
+    <!-- Modal: Tanılama Raporu -->
+    <div id="debug-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm cursor-pointer" id="close-debug-bg"></div>
+        <div class="relative w-full max-w-2xl bg-white dark:bg-slate-800 rounded-3xl shadow-2xl p-6 flex flex-col z-10 max-h-[90vh]">
+            <h3 class="text-xl font-bold text-red-600 mb-2 flex items-center gap-2"><i class="fas fa-bug"></i> Sistem Tanılama Raporu</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 mb-4 leading-tight">Kitaplarınız görünmüyorsa aşağıdaki kutudaki metni kopyalayıp bana gönderin, hatayı hemen çözelim.</p>
+            <textarea id="debug-log-area" class="w-full flex-grow p-4 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl font-mono text-[10px] sm:text-xs text-slate-800 dark:text-emerald-400 mb-4 outline-none resize-none custom-scrollbar" readonly></textarea>
+            <div class="flex justify-end gap-3 shrink-0">
+                <button type="button" id="close-debug-btn" class="px-5 py-2.5 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl font-bold hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">Kapat</button>
+                <button type="button" id="copy-debug-btn" class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"><i class="fas fa-copy"></i> Kopyala</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal: Gelişmiş İstatistikler (Grafik) -->
     <div id="stats-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
@@ -663,7 +682,21 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, setDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, Timestamp, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, setDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, Timestamp, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // GLOBAL HATA VE LOGLAMA SİSTEMİ
+        const appLogs = [];
+        window.sysLog = function(type, msg, data = null) {
+            const time = new Date().toLocaleTimeString('tr-TR');
+            let logEntry = `[${time}] [${type}] ${msg}`;
+            if (data) {
+                try { logEntry += `\nDATA: ${JSON.stringify(data, null, 2)}`; } 
+                catch(e) { logEntry += `\nDATA: [Dönüştürülemeyen Veri]`; }
+            }
+            appLogs.push(logEntry);
+            console.log(logEntry);
+        };
+        window.sysLog('INFO', 'Uygulama başlatıldı.');
 
         const firebaseConfig = {
             apiKey: "AIzaSyAPPebXDGREOuJFoom6WxtHnOWmsIyopiA",
@@ -834,19 +867,19 @@
             printElement.style.backgroundColor = '#ffffff';
             
             let htmlContent = `
-                <h1 style="font-size: 32px; font-weight: bold; font-family: 'Inter', sans-serif; color: #0f172a; margin-bottom: 5px; line-height: 1.2;">${escapeHTML(currentViewBook.title || 'İsimsiz')}</h1>
-                <h2 style="font-size: 18px; color: #475569; margin-bottom: 25px;">Yazar: ${escapeHTML(currentViewBook.author || 'Bilinmeyen Yazar')}</h2>
+                <h1 style="font-size: 32px; font-weight: bold; font-family: 'Inter', sans-serif; color: #0f172a; margin-bottom: 5px; line-height: 1.2;">${escapeHTML(String(currentViewBook.title || 'İsimsiz'))}</h1>
+                <h2 style="font-size: 18px; color: #475569; margin-bottom: 25px;">Yazar: ${escapeHTML(String(currentViewBook.author || 'Bilinmeyen Yazar'))}</h2>
                 
                 <div style="font-size: 12px; margin-bottom: 30px; display: flex; gap: 15px; color: #64748b; font-family: 'Inter', sans-serif;">
                     <span><b>Durum:</b> ${statusMap[currentViewBook.status]?.text || ''}</span>
                     <span><b>Puan:</b> ${currentViewBook.rating ? currentViewBook.rating + '/5' : '-'}</span>
-                    ${currentViewBook.pageCount ? `<span><b>Sayfa:</b> ${escapeHTML(currentViewBook.pageCount)}</span>` : ''}
+                    ${currentViewBook.pageCount ? `<span><b>Sayfa:</b> ${escapeHTML(String(currentViewBook.pageCount))}</span>` : ''}
                 </div>
                 <hr style="border: none; border-top: 1px solid #e2e8f0; margin-bottom: 30px;">
             `;
 
             const addSection = (title, content) => {
-                if(content && content.trim() !== '') {
+                if(content && typeof content === 'string' && content.trim() !== '') {
                     htmlContent += `
                         <h3 style="font-size: 14px; font-family: 'Inter', sans-serif; color: #4f46e5; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">${title}</h3>
                         <div style="font-size: 14px; line-height: 1.6; margin-bottom: 30px;">${content}</div>
@@ -862,7 +895,7 @@
                     htmlContent += `
                         <blockquote style="border-left: 4px solid #fcd34d; padding-left: 15px; margin-left: 0; margin-bottom: 20px; font-style: italic; font-size: 15px; color: #334155;">
                             "${escapeHTML(stripHTML(q.text)).replace(/\n/g, '<br>')}"
-                            ${q.page ? `<br><span style="font-size: 11px; font-weight: bold; color: #94a3b8; font-style: normal; font-family: 'Inter', sans-serif;">- Syf. ${escapeHTML(q.page)}</span>` : ''}
+                            ${q.page ? `<br><span style="font-size: 11px; font-weight: bold; color: #94a3b8; font-style: normal; font-family: 'Inter', sans-serif;">- Syf. ${escapeHTML(String(q.page))}</span>` : ''}
                         </blockquote>
                     `;
                 });
@@ -978,9 +1011,9 @@
                 </div>
                 <div style="margin-top: 80px; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; align-items: center; opacity: 0.9;">
                     <div style="width: 60px; height: 3px; background-color: #fcd34d; margin-bottom: 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>
-                    <div style="font-size: 32px; font-weight: bold; letter-spacing: 1px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${escapeHTML(currentViewBook.title || 'İsimsiz')}</div>
-                    <div style="font-size: 24px; margin-top: 15px; color: #e2e8f0; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${escapeHTML(currentViewBook.author || 'Bilinmeyen Yazar')}</div>
-                    ${q.page ? `<div style="font-size: 18px; margin-top: 15px; color: #94a3b8;">Syf. ${escapeHTML(q.page)}</div>` : ''}
+                    <div style="font-size: 32px; font-weight: bold; letter-spacing: 1px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${escapeHTML(String(currentViewBook.title || 'İsimsiz'))}</div>
+                    <div style="font-size: 24px; margin-top: 15px; color: #e2e8f0; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${escapeHTML(String(currentViewBook.author || 'Bilinmeyen Yazar'))}</div>
+                    ${q.page ? `<div style="font-size: 18px; margin-top: 15px; color: #94a3b8;">Syf. ${escapeHTML(String(q.page))}</div>` : ''}
                 </div>
             `;
 
@@ -1004,6 +1037,7 @@
                                 title: currentViewBook.title || 'Kitap',
                                 text: 'Bu harika alıntıyı okumalısın!'
                             });
+                            window.sysLog('INFO', 'Paylaşım menüsü başarıyla açıldı.');
                             showNotification("Paylaşım menüsü açıldı!", "success");
                         } else {
                             triggerDownload(dataUrl, filename);
@@ -1017,7 +1051,7 @@
                     showNotification("Görsel başarıyla indirildi!", "success");
                 }
             } catch(err) {
-                console.error(err);
+                window.sysLog('ERROR', 'Görsel oluşturma hatası', err);
                 showNotification("Görsel oluşturulamadı.", "error");
             } finally {
                 document.body.removeChild(container);
@@ -1157,6 +1191,7 @@
                         showNotification("Alıntı kaydedildi!", "success");
                         closeRTE();
                     } catch(err) {
+                        window.sysLog('ERROR', 'Alıntı kaydetme hatası', err);
                         showNotification("Bağlantı hatası.", "error");
                     } finally {
                         btn.innerHTML = ogHtml;
@@ -1189,6 +1224,7 @@
                         showNotification("Not güncellendi!", "success");
                         closeRTE();
                     } catch(err) {
+                        window.sysLog('ERROR', 'Not kaydetme hatası', err);
                         showNotification("Bağlantı hatası.", "error");
                     } finally {
                         btn.innerHTML = ogHtml;
@@ -1211,29 +1247,33 @@
         });
 
         function renderFormQuotes() {
-            const container = document.getElementById('quotes-container');
-            container.innerHTML = '';
-            if (currentEditQuotes.length === 0) {
-                document.getElementById('no-quotes-msg').style.display = 'block';
-                return;
-            }
-            document.getElementById('no-quotes-msg').style.display = 'none';
+            try {
+                const container = document.getElementById('quotes-container');
+                container.innerHTML = '';
+                if (currentEditQuotes.length === 0) {
+                    document.getElementById('no-quotes-msg').style.display = 'block';
+                    return;
+                }
+                document.getElementById('no-quotes-msg').style.display = 'none';
 
-            currentEditQuotes.forEach((q, index) => {
-                const div = document.createElement('div');
-                div.className = 'flex gap-2 items-start relative bg-white dark:bg-slate-900 p-3 rounded-lg border border-amber-200 dark:border-amber-900/50 shadow-sm';
-                div.innerHTML = `
-                    <div class="flex-grow min-w-0">
-                        <div class="text-sm text-slate-700 dark:text-slate-300 rte-content line-clamp-3">${q.text}</div>
-                        ${q.page ? `<div class="text-[10px] font-bold text-slate-400 mt-1">Syf: ${escapeHTML(q.page)}</div>` : ''}
-                    </div>
-                    <div class="flex flex-col gap-1 shrink-0">
-                        <button type="button" onclick="window.openRTE('quote', 'Alıntı Düzenle', false, ${index})" class="text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 p-2 rounded-lg transition-colors border border-indigo-100 dark:border-indigo-800" title="Düzenle"><i class="fas fa-edit text-xs"></i></button>
-                        <button type="button" onclick="window.deleteFormQuote(${index})" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 p-2 rounded-lg transition-colors border border-red-100 dark:border-red-800" title="Sil"><i class="fas fa-trash-alt text-xs"></i></button>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
+                currentEditQuotes.forEach((q, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'flex gap-2 items-start relative bg-white dark:bg-slate-900 p-3 rounded-lg border border-amber-200 dark:border-amber-900/50 shadow-sm';
+                    div.innerHTML = `
+                        <div class="flex-grow min-w-0">
+                            <div class="text-sm text-slate-700 dark:text-slate-300 rte-content line-clamp-3">${q.text}</div>
+                            ${q.page ? `<div class="text-[10px] font-bold text-slate-400 mt-1">Syf: ${escapeHTML(String(q.page))}</div>` : ''}
+                        </div>
+                        <div class="flex flex-col gap-1 shrink-0">
+                            <button type="button" onclick="window.openRTE('quote', 'Alıntı Düzenle', false, ${index})" class="text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 p-2 rounded-lg transition-colors border border-indigo-100 dark:border-indigo-800" title="Düzenle"><i class="fas fa-edit text-xs"></i></button>
+                            <button type="button" onclick="window.deleteFormQuote(${index})" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 p-2 rounded-lg transition-colors border border-red-100 dark:border-red-800" title="Sil"><i class="fas fa-trash-alt text-xs"></i></button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            } catch (err) {
+                window.sysLog('ERROR', 'Alıntı form render hatası', err);
+            }
         }
         
         window.deleteFormQuote = function(index) {
@@ -1257,6 +1297,7 @@
                 openViewModalInternal(currentViewBook); 
                 showNotification("Alıntı silindi.", "info");
             } catch(e) {
+                window.sysLog('ERROR', 'Alıntı silme hatası', e);
                 showNotification("Hata oluştu.", "error");
             }
         };
@@ -1290,25 +1331,29 @@
                     subCatSet.forEach(c => { const opt = document.createElement('option'); opt.value = c; subCatList.appendChild(opt); });
                 }
             } catch (err) {
-                console.error("Datalist güncelleme hatası:", err);
+                window.sysLog('ERROR', 'Datalist güncelleme hatası', err);
             }
         }
 
         function updateActiveFiltersUI() {
-            if(activeFiltersList.length === 0) {
-                activeFiltersBar.classList.add('hidden'); activeFiltersBar.classList.remove('flex');
-            } else {
-                activeFiltersBar.classList.remove('hidden'); activeFiltersBar.classList.add('flex');
+            try {
+                if(activeFiltersList.length === 0) {
+                    activeFiltersBar.classList.add('hidden'); activeFiltersBar.classList.remove('flex');
+                } else {
+                    activeFiltersBar.classList.remove('hidden'); activeFiltersBar.classList.add('flex');
+                }
+                activeFiltersContainer.innerHTML = '';
+                activeFiltersList.forEach((filter, index) => {
+                    const el = document.createElement('span');
+                    el.className = "bg-indigo-500 text-white px-2 py-1 rounded-md text-[10px] font-bold flex items-center gap-1 shadow-sm cursor-pointer hover:bg-red-500 transition-colors";
+                    let label = filter.type === 'cat' ? 'Kategori' : (filter.type === 'format' ? 'Tür' : 'Durum');
+                    el.innerHTML = `${label}: ${escapeHTML(String(filter.value))} <i class="fas fa-times ml-1"></i>`;
+                    el.addEventListener('click', (e) => { e.stopPropagation(); activeFiltersList.splice(index, 1); updateActiveFiltersUI(); applyFiltersAndRender(); });
+                    activeFiltersContainer.appendChild(el);
+                });
+            } catch (err) {
+                window.sysLog('ERROR', 'Filtre UI hatası', err);
             }
-            activeFiltersContainer.innerHTML = '';
-            activeFiltersList.forEach((filter, index) => {
-                const el = document.createElement('span');
-                el.className = "bg-indigo-500 text-white px-2 py-1 rounded-md text-[10px] font-bold flex items-center gap-1 shadow-sm cursor-pointer hover:bg-red-500 transition-colors";
-                let label = filter.type === 'cat' ? 'Kategori' : (filter.type === 'format' ? 'Tür' : 'Durum');
-                el.innerHTML = `${label}: ${escapeHTML(filter.value)} <i class="fas fa-times ml-1"></i>`;
-                el.addEventListener('click', (e) => { e.stopPropagation(); activeFiltersList.splice(index, 1); updateActiveFiltersUI(); applyFiltersAndRender(); });
-                activeFiltersContainer.appendChild(el);
-            });
         }
 
         document.getElementById('clear-filters-btn').addEventListener('click', () => {
@@ -1344,66 +1389,73 @@
 
         function applyFiltersAndRender() {
             try {
+                window.sysLog('INFO', 'Filtreleme ve çizim (applyFiltersAndRender) başlatıldı.');
                 const term = (searchInput.value || '').toLowerCase();
                 const status = filterStatus.value || 'all';
                 const ownership = filterOwnership.value || 'all';
                 const sort = sortSelect.value || 'newest';
 
                 let filtered = allBooks.filter(book => {
-                    if(filterOnlyFavorites && !book.isFavorite) return false;
+                    try {
+                        if(filterOnlyFavorites && !book.isFavorite) return false;
 
-                    const matchStatus = status === 'all' || book.status === status;
-                    let bookOwn = book.ownership || 'none';
-                    if (bookOwn === 'owned') bookOwn = 'physical';
-                    if (bookOwn === 'borrowed') bookOwn = 'none';
-                    const matchOwn = ownership === 'all' || bookOwn === ownership;
-                    
-                    const catStr = Array.isArray(book.category) ? book.category.join(' ') : (typeof book.category === 'string' ? book.category : '');
-                    const subCatStr = Array.isArray(book.subCategory) ? book.subCategory.join(' ') : (typeof book.subCategory === 'string' ? book.subCategory : '');
-                    
-                    const titleStr = typeof book.title === 'string' ? book.title : '';
-                    const authorStr = typeof book.author === 'string' ? book.author : '';
-                    const notesStr = typeof book.notes === 'string' ? book.notes : '';
-                    const summaryStr = typeof book.summary === 'string' ? book.summary : '';
+                        const matchStatus = status === 'all' || book.status === status;
+                        let bookOwn = book.ownership || 'none';
+                        if (bookOwn === 'owned') bookOwn = 'physical';
+                        if (bookOwn === 'borrowed') bookOwn = 'none';
+                        const matchOwn = ownership === 'all' || bookOwn === ownership;
+                        
+                        const catStr = Array.isArray(book.category) ? book.category.join(' ') : (typeof book.category === 'string' ? book.category : '');
+                        const subCatStr = Array.isArray(book.subCategory) ? book.subCategory.join(' ') : (typeof book.subCategory === 'string' ? book.subCategory : '');
+                        
+                        const titleStr = typeof book.title === 'string' ? book.title : '';
+                        const authorStr = typeof book.author === 'string' ? book.author : '';
+                        const notesStr = typeof book.notes === 'string' ? book.notes : '';
+                        const summaryStr = typeof book.summary === 'string' ? book.summary : '';
 
-                    const searchStr = `${titleStr} ${authorStr} ${catStr} ${subCatStr} ${notesStr} ${summaryStr}`.toLowerCase();
-                    const matchSearch = searchStr.includes(term);
-                    
-                    let matchDynamic = true;
-                    if(activeFiltersList.length > 0) {
-                        const bookCats = Array.isArray(book.category) ? book.category : (typeof book.category === 'string' ? book.category.split(',').map(s=>s.trim()) : []);
-                        const bookSubCats = Array.isArray(book.subCategory) ? book.subCategory : (typeof book.subCategory === 'string' ? book.subCategory.split(',').map(s=>s.trim()) : []);
-                        activeFiltersList.forEach(f => {
-                            if(f.type === 'cat') { if(!bookCats.includes(f.value) && !bookSubCats.includes(f.value)) matchDynamic = false; } 
-                            else if(f.type === 'format') { if(book.format !== f.value) matchDynamic = false; } 
-                            else if(f.type === 'status') { if(book.status !== f.value && bookOwn !== f.value) matchDynamic = false; }
-                        });
+                        const searchStr = `${titleStr} ${authorStr} ${catStr} ${subCatStr} ${notesStr} ${summaryStr}`.toLowerCase();
+                        const matchSearch = searchStr.includes(term);
+                        
+                        let matchDynamic = true;
+                        if(activeFiltersList.length > 0) {
+                            const bookCats = Array.isArray(book.category) ? book.category : (typeof book.category === 'string' ? book.category.split(',').map(s=>s.trim()) : []);
+                            const bookSubCats = Array.isArray(book.subCategory) ? book.subCategory : (typeof book.subCategory === 'string' ? book.subCategory.split(',').map(s=>s.trim()) : []);
+                            activeFiltersList.forEach(f => {
+                                if(f.type === 'cat') { if(!bookCats.includes(f.value) && !bookSubCats.includes(f.value)) matchDynamic = false; } 
+                                else if(f.type === 'format') { if(book.format !== f.value) matchDynamic = false; } 
+                                else if(f.type === 'status') { if(book.status !== f.value && bookOwn !== f.value) matchDynamic = false; }
+                            });
+                        }
+                        return matchStatus && matchOwn && matchSearch && matchDynamic;
+                    } catch(err) {
+                        return false; 
                     }
-                    return matchStatus && matchOwn && matchSearch && matchDynamic;
                 });
 
                 filtered.sort((a, b) => {
-                    const getMillis = (item) => {
-                        if (!item) return 0;
-                        if (typeof item.toMillis === 'function') return item.toMillis();
-                        if (typeof item.seconds === 'number') return item.seconds * 1000;
-                        if (typeof item === 'number') return item;
+                    try {
+                        const getMillis = (item) => {
+                            if (!item) return 0;
+                            if (typeof item.toMillis === 'function') return item.toMillis();
+                            if (typeof item.seconds === 'number') return item.seconds * 1000;
+                            if (typeof item === 'number') return item;
+                            return 0;
+                        };
+                        if (sort === 'newest') return getMillis(b.createdAt) - getMillis(a.createdAt);
+                        if (sort === 'oldest') return getMillis(a.createdAt) - getMillis(b.createdAt);
+                        if (sort === 'titleAZ') {
+                            const tA = typeof a.title === 'string' ? a.title : '';
+                            const tB = typeof b.title === 'string' ? b.title : '';
+                            return tA.localeCompare(tB);
+                        }
+                        if (sort === 'ratingDesc') return (Number(b.rating) || 0) - (Number(a.rating) || 0);
                         return 0;
-                    };
-                    if (sort === 'newest') return getMillis(b.createdAt) - getMillis(a.createdAt);
-                    if (sort === 'oldest') return getMillis(a.createdAt) - getMillis(b.createdAt);
-                    if (sort === 'titleAZ') {
-                        const tA = typeof a.title === 'string' ? a.title : '';
-                        const tB = typeof b.title === 'string' ? b.title : '';
-                        return tA.localeCompare(tB);
-                    }
-                    if (sort === 'ratingDesc') return (Number(b.rating) || 0) - (Number(a.rating) || 0);
-                    return 0;
+                    } catch(e) { return 0; }
                 });
 
                 renderBooks(filtered);
             } catch(err) {
-                console.error("Filtreleme hatası:", err);
+                window.sysLog('ERROR', 'Filtreleme Ana Hatası', err);
             }
         }
 
@@ -1536,11 +1588,11 @@
                         }
                         bookListEl.appendChild(card);
                     } catch(err) {
-                        console.error("Kitap render hatası:", err, book);
+                        window.sysLog('ERROR', `Tekil Kitap Render Hatası (ID: ${book.id || '?'})`, err.toString());
                     }
                 });
             } catch(err) {
-                console.error("Genel Render hatası:", err);
+                window.sysLog('ERROR', 'Genel Render Hatası', err);
             }
         }
 
@@ -1562,44 +1614,62 @@
                     });
                 }
             } catch (err) {
-                console.error("Search suggestions hatası", err);
+                window.sysLog('ERROR', 'Search suggestions hatası', err);
             }
         }
 
         // --- VERİTABANI DİNLEME ---
         function loadBooks(targetUid) {
+            window.sysLog('INFO', `Kitaplar yükleniyor (UID: ${targetUid})`);
             if(!initialLoadDone) renderSkeletons();
             
             if (isOfflineMode) {
                 initialLoadDone = true;
-                try { updateCategoryDatalists(); } catch (e) { console.error(e); }
-                try { updateSearchSuggestions(); } catch (e) { console.error(e); }
-                try { updateDashboardStats(); } catch (e) { console.error(e); }
-                try { applyFiltersAndRender(); } catch (e) { console.error(e); }
+                try { updateCategoryDatalists(); } catch (e) { window.sysLog('ERROR', e); }
+                try { updateSearchSuggestions(); } catch (e) { window.sysLog('ERROR', e); }
+                try { updateDashboardStats(); } catch (e) { window.sysLog('ERROR', e); }
+                try { applyFiltersAndRender(); } catch (e) { window.sysLog('ERROR', e); }
             } else {
                 if (booksUnsubscribe) booksUnsubscribe();
-                booksUnsubscribe = onSnapshot(collection(db, 'artifacts', appId, 'users', targetUid, 'books'), (snapshot) => {
-                    allBooks = [];
-                    snapshot.forEach(doc => { allBooks.push({ id: doc.id, ...doc.data() }); });
-                    initialLoadDone = true;
-                    
-                    // BAĞIMSIZ HATA YÖNETİMİ
-                    try { updateCategoryDatalists(); } catch(e) { console.error("Kategori Hatası:", e); }
-                    try { updateSearchSuggestions(); } catch(e) { console.error("Arama Öneri Hatası:", e); }
-                    try { updateDashboardStats(); } catch(e) { console.error("İstatistik Hatası:", e); }
-                    
-                    try {
-                        applyFiltersAndRender();
-                    } catch (innerErr) {
-                        console.error("Filtreleme Çizim Hatası:", innerErr);
-                        showNotification("Kitaplar yüklenirken ekran çizim hatası oluştu.", "error");
-                        bookListEl.innerHTML = '<div class="text-slate-500 dark:text-slate-400 text-center w-full p-4 col-span-full">Veri gösterim hatası. Lütfen sayfayı yenileyin.</div>';
-                    }
-                }, (error) => {
-                    console.error("Firestore Dinleme Hatası:", error);
-                    showNotification("Erişim reddedildi veya bağlantı koptu: " + error.message, "error");
-                    bookListEl.innerHTML = '<div class="text-red-500 dark:text-red-400 text-center w-full p-4 col-span-full">Erişim engellendi veya veri okunamadı. Lütfen giriş yaptığınızdan emin olun.</div>';
-                });
+                try {
+                    booksUnsubscribe = onSnapshot(collection(db, 'artifacts', appId, 'users', targetUid, 'books'), (snapshot) => {
+                        try {
+                            window.sysLog('INFO', `Firebase verisi alındı. Toplam belge: ${snapshot.size}`);
+                            allBooks = [];
+                            snapshot.forEach(doc => { allBooks.push({ id: doc.id, ...doc.data() }); });
+                            initialLoadDone = true;
+                            
+                            try { updateCategoryDatalists(); } catch(e) { window.sysLog('ERROR', "Kategori Hatası", e); }
+                            try { updateSearchSuggestions(); } catch(e) { window.sysLog('ERROR', "Arama Öneri Hatası", e); }
+                            try { updateDashboardStats(); } catch(e) { window.sysLog('ERROR', "İstatistik Hatası", e); }
+                            
+                            try {
+                                applyFiltersAndRender();
+                                window.sysLog('INFO', 'Ekrana çizim tamamlandı.');
+                            } catch (innerErr) {
+                                window.sysLog('ERROR', "Filtreleme/Çizim Hatası", innerErr);
+                                showNotification("Kitaplar yüklenirken ekran çizim hatası oluştu.", "error");
+                                bookListEl.innerHTML = '<div class="text-slate-500 dark:text-slate-400 text-center w-full p-4 col-span-full">Veri gösterim hatası. Rapor düğmesine basın.</div>';
+                            }
+                        } catch (fatalErr) {
+                            window.sysLog('ERROR', 'Veri İşleme (Snapshot) Hatası', fatalErr);
+                        }
+                    }, (error) => {
+                        window.sysLog('ERROR', "Firestore Dinleme Hatası", error);
+                        showNotification("Erişim reddedildi veya bağlantı koptu", "error");
+                    });
+                } catch (dbErr) {
+                    window.sysLog('ERROR', 'onSnapshot başlatma hatası', dbErr);
+                }
+                
+                // SADECE TANILAMA AMAÇLI (Kullanıcının eski verisi var mı diye kontrol et)
+                try {
+                    getDocs(collection(db, 'users', targetUid, 'books')).then(snap => {
+                        window.sysLog('INFO', `DİKKAT: Eski dizin (users/${targetUid}/books) kontrol edildi. ${snap.size} adet kitap bulundu.`);
+                    }).catch(e => {
+                        window.sysLog('INFO', `Eski dizin erişimi yok veya boş.`);
+                    });
+                } catch(e) {}
             }
         }
 
@@ -1611,6 +1681,30 @@
         const settingsBackdrop = document.getElementById('settings-backdrop');
         const settingsPanel = document.getElementById('settings-panel');
         const statsModal = document.getElementById('stats-modal');
+
+        // DEBUG MODAL (YENİ EKLENDİ)
+        document.getElementById('debug-btn').addEventListener('click', () => {
+            const modal = document.getElementById('debug-modal');
+            document.getElementById('debug-log-area').value = appLogs.join('\n\n');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        });
+        document.getElementById('close-debug-btn').addEventListener('click', () => {
+            document.getElementById('debug-modal').classList.add('hidden');
+            document.getElementById('debug-modal').classList.remove('flex');
+        });
+        document.getElementById('close-debug-bg').addEventListener('click', () => {
+            document.getElementById('debug-modal').classList.add('hidden');
+            document.getElementById('debug-modal').classList.remove('flex');
+        });
+        document.getElementById('copy-debug-btn').addEventListener('click', () => {
+            const textArea = document.getElementById('debug-log-area');
+            navigator.clipboard.writeText(textArea.value).then(() => {
+                showNotification("Rapor kopyalandı! Lütfen yapay zekaya yapıştırın.", "success");
+            }).catch(err => {
+                showNotification("Kopyalanamadı, metni seçip manuel kopyalayın.", "error");
+            });
+        });
 
         function openAddModal() {
             addModal.classList.remove('hidden');
@@ -1698,9 +1792,13 @@
         });
 
         window.addEventListener('error', function(e) {
-            console.error("Sistem Hatası:", e);
+            window.sysLog('ERROR', `Global Hata: ${e.message} at ${e.filename}:${e.lineno}`);
             const loading = document.getElementById('loading');
             if(loading) loading.style.display = 'none';
+        });
+        
+        window.addEventListener('unhandledrejection', function(e) {
+            window.sysLog('ERROR', `Promise Hatası: ${e.reason}`);
         });
 
         document.getElementById('email-login-btn').addEventListener('click', async () => {
@@ -1806,6 +1904,8 @@
 
             if (user) {
                 currentUser = user;
+                window.sysLog('INFO', `Kullanıcı giriş yaptı. UID: ${user.uid}`);
+                
                 loginScreen.classList.add('hidden'); loginScreen.classList.remove('flex');
                 appContent.classList.remove('hidden');
                 fabBtn.classList.remove('hidden'); fabBtn.classList.add('flex');
