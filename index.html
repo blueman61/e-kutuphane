@@ -20,7 +20,7 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Google Fonts (Standart UI + Sosyal Medya Paylaşımları İçin Özel Fontlar) -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,500&family=Caveat:wght@500;700&family=Cinzel:wght@500;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
     
     <!-- Kütüphaneler -->
@@ -132,7 +132,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl md:text-2xl font-bold text-slate-900 dark:text-white tracking-tight" id="main-title">e-Kütüphane</h1>
-                    <p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Akıllı Okuma & Arşiv Asistanı <span class="text-indigo-500 font-bold ml-1">v2.3</span></p>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Akıllı Okuma & Arşiv Asistanı <span class="text-indigo-500 font-bold ml-1">v2.4</span></p>
                 </div>
             </div>
             
@@ -306,20 +306,20 @@
 
         <!-- Araç Çubuğu -->
         <div class="flex flex-wrap justify-center gap-1 sm:gap-2 p-2 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shrink-0 z-10 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_10px_rgba(0,0,0,0.2)]">
-            <button type="button" onclick="formatDoc('bold')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Kalın"><i class="fas fa-bold"></i></button>
-            <button type="button" onclick="formatDoc('italic')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="İtalik"><i class="fas fa-italic"></i></button>
-            <button type="button" onclick="formatDoc('underline')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Altı Çizili"><i class="fas fa-underline"></i></button>
-            <button type="button" onclick="formatDoc('strikeThrough')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Üstü Çizili"><i class="fas fa-strikethrough"></i></button>
+            <button type="button" onclick="window.formatDoc('bold')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Kalın"><i class="fas fa-bold"></i></button>
+            <button type="button" onclick="window.formatDoc('italic')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="İtalik"><i class="fas fa-italic"></i></button>
+            <button type="button" onclick="window.formatDoc('underline')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Altı Çizili"><i class="fas fa-underline"></i></button>
+            <button type="button" onclick="window.formatDoc('strikeThrough')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Üstü Çizili"><i class="fas fa-strikethrough"></i></button>
             
             <div class="hidden sm:block w-px h-6 bg-slate-300 dark:bg-slate-700 my-auto mx-0 sm:mx-1 shrink-0"></div>
             
-            <button type="button" onclick="formatDoc('formatBlock', 'H1')" class="px-2 sm:px-3 h-8 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-xs sm:text-sm transition-colors" title="Büyük Başlık">H1</button>
-            <button type="button" onclick="formatDoc('formatBlock', 'H2')" class="px-2 sm:px-3 h-8 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-xs sm:text-sm transition-colors" title="Küçük Başlık">H2</button>
+            <button type="button" onclick="window.formatDoc('formatBlock', 'H1')" class="px-2 sm:px-3 h-8 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-xs sm:text-sm transition-colors" title="Büyük Başlık">H1</button>
+            <button type="button" onclick="window.formatDoc('formatBlock', 'H2')" class="px-2 sm:px-3 h-8 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-xs sm:text-sm transition-colors" title="Küçük Başlık">H2</button>
             
             <div class="hidden sm:block w-px h-6 bg-slate-300 dark:bg-slate-700 my-auto mx-0 sm:mx-1 shrink-0"></div>
             
-            <button type="button" onclick="formatDoc('insertUnorderedList')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Madde İşaretleri"><i class="fas fa-list-ul"></i></button>
-            <button type="button" onclick="formatDoc('removeFormat')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Biçimi Temizle"><i class="fas fa-eraser"></i></button>
+            <button type="button" onclick="window.formatDoc('insertUnorderedList')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Madde İşaretleri"><i class="fas fa-list-ul"></i></button>
+            <button type="button" onclick="window.formatDoc('removeFormat')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Biçimi Temizle"><i class="fas fa-eraser"></i></button>
         </div>
     </div>
 
@@ -356,102 +356,6 @@
         </div>
     </div>
 
-    <!-- Settings Drawer -->
-    <div id="settings-drawer" class="fixed inset-0 z-50 hidden justify-end">
-        <div id="settings-backdrop" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
-        <div id="settings-panel" class="relative w-72 md:w-80 bg-slate-50 dark:bg-slate-900 h-full shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 border-l border-slate-200 dark:border-slate-700">
-            <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-white dark:bg-slate-800 shrink-0">
-                <h2 class="font-bold text-lg text-slate-800 dark:text-white"><i class="fas fa-cog text-slate-400 mr-2"></i> Ayarlar</h2>
-                <button type="button" id="close-settings-btn" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 hover:text-red-50 active:scale-95 transition-all"><i class="fas fa-times"></i></button>
-            </div>
-            
-            <div class="p-4 space-y-4 overflow-y-auto flex-grow hide-auth-elements">
-                <!-- USER PROFILE -->
-                <div class="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm mb-6">
-                    <img id="drawer-profile-pic" src="" class="w-12 h-12 rounded-full object-cover hidden border-2 border-indigo-100 dark:border-slate-600">
-                    <div id="drawer-profile-icon" class="w-12 h-12 rounded-full bg-indigo-100 dark:bg-slate-700 text-indigo-500 dark:text-slate-400 flex items-center justify-center text-xl"><i class="fas fa-user"></i></div>
-                    <div class="flex-grow min-w-0">
-                        <h4 id="drawer-profile-name" class="font-bold text-sm text-slate-800 dark:text-white truncate">Kullanıcı</h4>
-                        <p class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold"><i class="fas fa-circle text-[8px] mr-1"></i>Çevrimiçi</p>
-                    </div>
-                </div>
-
-                <!-- Paylaşım Linki -->
-                <button type="button" id="share-library-btn" class="w-full flex items-center justify-between p-3.5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-xl text-blue-600 dark:text-blue-400 font-bold hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors shadow-sm">
-                    <span class="flex items-center gap-2"><i class="fas fa-link"></i> Kütüphanemi Paylaş</span>
-                    <i id="share-icon" class="fas fa-share-alt text-sm"></i>
-                </button>
-
-                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1 mt-6">Görünüm & Hedef</div>
-                <div class="mb-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 shadow-sm">
-                    <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase mb-2">Yıllık Okuma Hedefi</label>
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-bullseye text-indigo-500 text-lg shrink-0"></i>
-                        <input type="number" id="setting-reading-goal" value="30" min="1" max="1000" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-1.5 text-sm font-bold text-slate-700 dark:text-slate-200 outline-none focus:border-indigo-500 transition-colors">
-                        <button type="button" id="save-goal-btn" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-700 transition-colors shrink-0">Kaydet</button>
-                    </div>
-                    <p class="text-[9px] text-slate-400 mt-2 italic">* Sayıyı yazdıktan sonra Kaydet'e basın.</p>
-                </div>
-
-                <button type="button" id="theme-toggle-menu" class="w-full flex items-center justify-between p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm">
-                    <span class="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-3"><i class="fas fa-moon text-indigo-500 text-lg dark:hidden"></i><i class="fas fa-sun text-amber-500 text-lg hidden dark:inline"></i> Karanlık Mod</span>
-                    <span class="text-xs font-bold text-slate-400 bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded" id="theme-text">Kapalı</span>
-                </button>
-                
-                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1 mt-6">Veri (Dışa/İçe Aktar)</div>
-                <div class="flex flex-col gap-2">
-                    <button type="button" id="import-btn-trigger" class="w-full flex items-center justify-between p-3.5 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-xl hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors shadow-sm text-indigo-700 dark:text-indigo-400">
-                        <span class="text-xs font-semibold flex items-center gap-2"><i class="fas fa-file-import text-lg"></i> JSON İçe Aktar</span><i class="fas fa-upload text-xs opacity-70"></i>
-                    </button>
-                    <input type="file" id="import-file" accept=".json" class="hidden">
-                    
-                    <button type="button" id="export-btn" class="w-full flex items-center justify-between p-3.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm">
-                        <span class="text-xs font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2"><i class="fas fa-file-export text-slate-500 dark:text-slate-400 text-lg"></i> JSON İndir</span><i class="fas fa-download text-slate-400 text-xs"></i>
-                    </button>
-
-                    <button type="button" id="csv-import-btn-trigger" class="w-full flex items-center justify-between p-3.5 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/50 rounded-xl text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors shadow-sm mt-2">
-                        <span class="text-xs font-semibold flex items-center gap-2"><i class="fas fa-table text-lg"></i> Goodreads / CSV Yükle</span><i class="fas fa-upload text-xs opacity-70"></i>
-                    </button>
-                    <input type="file" id="csv-import-file" accept=".csv" class="hidden">
-                </div>
-            </div>
-
-            <!-- Logout Button -->
-            <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shrink-0 hide-auth-elements">
-                <button type="button" id="logout-btn" class="w-full flex items-center justify-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800/50 rounded-xl text-red-600 dark:text-red-400 font-bold hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors active:scale-95">
-                    <i class="fas fa-sign-out-alt"></i> Çıkış Yap
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- View Only Book Modal -->
-    <div id="view-modal" class="fixed inset-0 z-40 hidden items-end md:items-center justify-center md:p-4">
-        <div id="view-backdrop" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
-        <div id="view-panel" class="relative w-full md:max-w-2xl bg-white dark:bg-slate-800 h-[90vh] md:h-auto md:max-h-[90vh] rounded-t-3xl md:rounded-2xl shadow-2xl flex flex-col transform translate-y-full md:translate-y-10 md:scale-95 transition-all duration-300 ease-out">
-            <div class="p-4 md:p-5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center shrink-0 bg-slate-50 dark:bg-slate-800/50 rounded-t-3xl md:rounded-t-2xl relative">
-                
-                <div class="flex gap-2">
-                    <button type="button" onclick="window.exportPDF()" class="text-xs bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 p-2 rounded-xl transition-colors hover:bg-slate-300 active:scale-95" title="Tüm Notları İndir (PDF)"><i class="fas fa-file-pdf"></i> PDF'e Çıkar</button>
-                    <button type="button" id="view-edit-all-btn" class="hide-auth-elements text-xs bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 font-bold py-2 px-3 rounded-xl transition-colors hover:bg-indigo-200 active:scale-95 flex items-center gap-2 border border-indigo-200 dark:border-indigo-800">
-                        <i class="fas fa-edit"></i> Düzenle
-                    </button>
-                </div>
-                <div class="w-1 block show-only-readonly"></div>
-
-                <div class="flex gap-2">
-                    <button type="button" id="search-web-btn" class="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-bold py-2 px-3 rounded-xl transition-colors hover:bg-blue-200 active:scale-95 flex items-center gap-2 border border-blue-200 dark:border-blue-800" onclick="window.searchBookOnWeb()">
-                        <i class="fas fa-search"></i> Web'de Ara
-                    </button>
-                    <button type="button" id="close-view-btn" class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-300 hover:text-slate-900 transition-colors active:scale-95"><i class="fas fa-chevron-down md:fa-times"></i></button>
-                </div>
-            </div>
-            <div class="overflow-y-auto p-4 md:p-6 pb-20 md:pb-6 custom-scrollbar flex-grow" id="view-modal-content">
-                <!-- İçerik JS ile buraya basılacak -->
-            </div>
-        </div>
-    </div>
-
     <!-- SCRIPT EKRANI -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -460,7 +364,7 @@
 
         // GLOBAL HATA VE LOGLAMA SİSTEMİ
         const appLogs = [];
-        window.sysLog = function(type, msg, data = null) {
+        function sysLog(type, msg, data = null) {
             const time = new Date().toLocaleTimeString('tr-TR');
             let logEntry = `[${time}] [${type}] ${msg}`;
             if (data) {
@@ -469,11 +373,12 @@
             }
             appLogs.push(logEntry);
             console.log(logEntry);
-        };
-        window.sysLog('INFO', 'v2.3 Başlatıldı.');
+        }
+        window.sysLog = sysLog;
+        sysLog('INFO', 'v2.4 Başlatıldı.');
 
-        // --- YARDIMCI FONKSİYONLAR (GERİ EKLENDİ VE GÜVENCE ALTINA ALINDI) ---
-        window.showNotification = function(msg, type = 'success') {
+        // --- YARDIMCI FONKSİYONLAR ---
+        function showNotification(msg, type = 'success') {
             const toast = document.getElementById('toast');
             if(!toast) return;
             document.getElementById('toast-message').textContent = msg;
@@ -481,8 +386,9 @@
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
+        window.showNotification = showNotification;
 
-        window.formatDate = function(timestamp) {
+        function formatDate(timestamp) {
             if (!timestamp) return null;
             let dateObj;
             if (typeof timestamp.toDate === 'function') dateObj = timestamp.toDate();
@@ -494,18 +400,21 @@
             const year = dateObj.getFullYear();
             return `${day}.${month}.${year}`;
         }
+        window.formatDate = formatDate;
         
-        window.formatTimer = function(totalSeconds) {
+        function formatTimer(totalSeconds) {
             const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
             const s = (totalSeconds % 60).toString().padStart(2, '0');
             return `${m}:${s}`;
         }
+        window.formatTimer = formatTimer;
 
-        window.escapeHTML = function(str) {
+        function escapeHTML(str) {
             if (!str && str !== 0) return '';
             if (typeof str !== 'string') str = String(str);
             return str.replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t]));
         }
+        window.escapeHTML = escapeHTML;
 
         const firebaseConfig = {
             apiKey: "AIzaSyAPPebXDGREOuJFoom6WxtHnOWmsIyopiA",
@@ -628,9 +537,9 @@
              if(confirm(`"${bookTitle}" kitabını silmek istiyor musunuz?`)) {
                 try {
                     await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'books', bookId));
-                    window.showNotification("Kitap silindi.", "info");
+                    showNotification("Kitap silindi.", "info");
                 } catch(err) {
-                    window.showNotification("Silme başarısız: Yetki kurallarınızı kontrol edin.", "error");
+                    showNotification("Silme başarısız: Yetki kurallarınızı kontrol edin.", "error");
                 }
             }
         };
@@ -651,9 +560,9 @@
                 await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'books', bookId), {
                     isFavorite: !currentState
                 });
-                window.showNotification(!currentState ? "Favorilere eklendi!" : "Favorilerden çıkarıldı.", "success");
+                showNotification(!currentState ? "Favorilere eklendi!" : "Favorilerden çıkarıldı.", "success");
             } catch(err) {
-                window.showNotification("Hata oluştu.", "error");
+                showNotification("Hata oluştu.", "error");
             }
         };
 
@@ -667,7 +576,7 @@
 
         window.exportPDF = function() {
             if(!currentViewBook) return;
-            window.showNotification("PDF hazırlanıyor, lütfen bekleyin...", "info");
+            showNotification("PDF hazırlanıyor, lütfen bekleyin...", "info");
             
             const printElement = document.createElement('div');
             printElement.style.padding = '40px';
@@ -676,13 +585,13 @@
             printElement.style.backgroundColor = '#ffffff';
             
             let htmlContent = `
-                <h1 style="font-size: 32px; font-weight: bold; font-family: 'Inter', sans-serif; color: #0f172a; margin-bottom: 5px; line-height: 1.2;">${window.escapeHTML(String(currentViewBook.title || 'İsimsiz'))}</h1>
-                <h2 style="font-size: 18px; color: #475569; margin-bottom: 25px;">Yazar: ${window.escapeHTML(String(currentViewBook.author || 'Bilinmeyen Yazar'))}</h2>
+                <h1 style="font-size: 32px; font-weight: bold; font-family: 'Inter', sans-serif; color: #0f172a; margin-bottom: 5px; line-height: 1.2;">${escapeHTML(String(currentViewBook.title || 'İsimsiz'))}</h1>
+                <h2 style="font-size: 18px; color: #475569; margin-bottom: 25px;">Yazar: ${escapeHTML(String(currentViewBook.author || 'Bilinmeyen Yazar'))}</h2>
                 
                 <div style="font-size: 12px; margin-bottom: 30px; display: flex; gap: 15px; color: #64748b; font-family: 'Inter', sans-serif;">
                     <span><b>Durum:</b> ${statusMap[currentViewBook.status]?.text || ''}</span>
                     <span><b>Puan:</b> ${currentViewBook.rating ? currentViewBook.rating + '/5' : '-'}</span>
-                    ${currentViewBook.pageCount ? `<span><b>Sayfa:</b> ${window.escapeHTML(String(currentViewBook.pageCount))}</span>` : ''}
+                    ${currentViewBook.pageCount ? `<span><b>Sayfa:</b> ${escapeHTML(String(currentViewBook.pageCount))}</span>` : ''}
                 </div>
                 <hr style="border: none; border-top: 1px solid #e2e8f0; margin-bottom: 30px;">
             `;
@@ -703,8 +612,8 @@
                 currentViewBook.quotes.forEach(q => {
                     htmlContent += `
                         <blockquote style="border-left: 4px solid #fcd34d; padding-left: 15px; margin-left: 0; margin-bottom: 20px; font-style: italic; font-size: 15px; color: #334155;">
-                            "${window.escapeHTML(stripHTML(q.text)).replace(/\n/g, '<br>')}"
-                            ${q.page ? `<br><span style="font-size: 11px; font-weight: bold; color: #94a3b8; font-style: normal; font-family: 'Inter', sans-serif;">- Syf. ${window.escapeHTML(String(q.page))}</span>` : ''}
+                            "${escapeHTML(stripHTML(q.text)).replace(/\n/g, '<br>')}"
+                            ${q.page ? `<br><span style="font-size: 11px; font-weight: bold; color: #94a3b8; font-style: normal; font-family: 'Inter', sans-serif;">- Syf. ${escapeHTML(String(q.page))}</span>` : ''}
                         </blockquote>
                     `;
                 });
@@ -730,7 +639,7 @@
 
             html2pdf().set(opt).from(printElement).save().then(() => {
                 document.body.removeChild(printElement); 
-                window.showNotification("Notlar PDF olarak indirildi!", "success");
+                showNotification("Notlar PDF olarak indirildi!", "success");
             });
         };
 
@@ -764,7 +673,7 @@
             const q = window.activeShareQuote;
             if(!q) return;
 
-            window.showNotification("Görsel hazırlanıyor...", "info");
+            showNotification("Görsel hazırlanıyor...", "info");
 
             const fonts = ["'Lora', serif", "'Caveat', cursive", "'Cinzel', serif", "'Merriweather', serif", "'Playfair Display', serif", "'Dancing Script', cursive", "'Inter', sans-serif"];
             const backgrounds = [
@@ -820,9 +729,9 @@
                 </div>
                 <div style="margin-top: 80px; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; align-items: center; opacity: 0.9;">
                     <div style="width: 60px; height: 3px; background-color: #fcd34d; margin-bottom: 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>
-                    <div style="font-size: 32px; font-weight: bold; letter-spacing: 1px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${window.escapeHTML(String(currentViewBook.title || 'İsimsiz'))}</div>
-                    <div style="font-size: 24px; margin-top: 15px; color: #e2e8f0; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${window.escapeHTML(String(currentViewBook.author || 'Bilinmeyen Yazar'))}</div>
-                    ${q.page ? `<div style="font-size: 18px; margin-top: 15px; color: #94a3b8;">Syf. ${window.escapeHTML(String(q.page))}</div>` : ''}
+                    <div style="font-size: 32px; font-weight: bold; letter-spacing: 1px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${escapeHTML(String(currentViewBook.title || 'İsimsiz'))}</div>
+                    <div style="font-size: 24px; margin-top: 15px; color: #e2e8f0; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${escapeHTML(String(currentViewBook.author || 'Bilinmeyen Yazar'))}</div>
+                    ${q.page ? `<div style="font-size: 18px; margin-top: 15px; color: #94a3b8;">Syf. ${escapeHTML(String(q.page))}</div>` : ''}
                 </div>
             `;
 
@@ -846,22 +755,22 @@
                                 title: currentViewBook.title || 'Kitap',
                                 text: 'Bu harika alıntıyı okumalısın!'
                             });
-                            window.sysLog('INFO', 'Paylaşım menüsü başarıyla açıldı.');
-                            window.showNotification("Paylaşım menüsü açıldı!", "success");
+                            sysLog('INFO', 'Paylaşım menüsü başarıyla açıldı.');
+                            showNotification("Paylaşım menüsü açıldı!", "success");
                         } else {
                             triggerDownload(dataUrl, filename);
-                            window.showNotification("Cihazınız doğrudan dosya paylaşımını desteklemiyor, görsel indirildi.", "info");
+                            showNotification("Cihazınız doğrudan dosya paylaşımını desteklemiyor, görsel indirildi.", "info");
                         }
                     } catch(e) {
                          if (e.name !== 'AbortError') triggerDownload(dataUrl, filename);
                     }
                 } else {
                     triggerDownload(dataUrl, filename);
-                    window.showNotification("Görsel başarıyla indirildi!", "success");
+                    showNotification("Görsel başarıyla indirildi!", "success");
                 }
             } catch(err) {
-                window.sysLog('ERROR', 'Görsel oluşturma hatası', err);
-                window.showNotification("Görsel oluşturulamadı.", "error");
+                sysLog('ERROR', 'Görsel oluşturma hatası', err);
+                showNotification("Görsel oluşturulamadı.", "error");
             } finally {
                 document.body.removeChild(container);
             }
@@ -967,7 +876,7 @@
                 const plain = stripHTML(content).trim();
                 
                 if (!plain) {
-                    window.showNotification("Alıntı metni boş olamaz.", "error");
+                    showNotification("Alıntı metni boş olamaz.", "error");
                     return;
                 }
                 if (!page && !confirm("Sayfa numarası girmediniz. Yine de sayfasız kaydedilsin mi?")) {
@@ -997,11 +906,11 @@
                         }
                         currentViewBook.quotes = updatedQuotes;
                         openViewModalInternal(currentViewBook); 
-                        window.showNotification("Alıntı kaydedildi!", "success");
+                        showNotification("Alıntı kaydedildi!", "success");
                         closeRTE();
                     } catch(err) {
-                        window.sysLog('ERROR', 'Alıntı kaydetme hatası', err);
-                        window.showNotification("Bağlantı hatası.", "error");
+                        sysLog('ERROR', 'Alıntı kaydetme hatası', err);
+                        showNotification("Bağlantı hatası.", "error");
                     } finally {
                         btn.innerHTML = ogHtml;
                     }
@@ -1030,11 +939,11 @@
                         }
                         currentViewBook[field] = content;
                         openViewModalInternal(currentViewBook); 
-                        window.showNotification("Not güncellendi!", "success");
+                        showNotification("Not güncellendi!", "success");
                         closeRTE();
                     } catch(err) {
-                        window.sysLog('ERROR', 'Not kaydetme hatası', err);
-                        window.showNotification("Bağlantı hatası.", "error");
+                        sysLog('ERROR', 'Not kaydetme hatası', err);
+                        showNotification("Bağlantı hatası.", "error");
                     } finally {
                         btn.innerHTML = ogHtml;
                     }
@@ -1071,7 +980,7 @@
                     div.innerHTML = `
                         <div class="flex-grow min-w-0">
                             <div class="text-sm text-slate-700 dark:text-slate-300 rte-content line-clamp-3">${q.text}</div>
-                            ${q.page ? `<div class="text-[10px] font-bold text-slate-400 mt-1">Syf: ${window.escapeHTML(String(q.page))}</div>` : ''}
+                            ${q.page ? `<div class="text-[10px] font-bold text-slate-400 mt-1">Syf: ${escapeHTML(String(q.page))}</div>` : ''}
                         </div>
                         <div class="flex flex-col gap-1 shrink-0">
                             <button type="button" onclick="window.openRTE('quote', 'Alıntı Düzenle', false, ${index})" class="text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 p-2 rounded-lg transition-colors border border-indigo-100 dark:border-indigo-800" title="Düzenle"><i class="fas fa-edit text-xs"></i></button>
@@ -1081,7 +990,7 @@
                     container.appendChild(div);
                 });
             } catch (err) {
-                window.sysLog('ERROR', 'Alıntı form render hatası', err);
+                sysLog('ERROR', 'Alıntı form render hatası', err);
             }
         }
         
@@ -1104,10 +1013,10 @@
                 }
                 currentViewBook.quotes = updatedQuotes;
                 openViewModalInternal(currentViewBook); 
-                window.showNotification("Alıntı silindi.", "info");
+                showNotification("Alıntı silindi.", "info");
             } catch(e) {
-                window.sysLog('ERROR', 'Alıntı silme hatası', e);
-                window.showNotification("Hata oluştu.", "error");
+                sysLog('ERROR', 'Alıntı silme hatası', e);
+                showNotification("Hata oluştu.", "error");
             }
         };
 
@@ -1140,7 +1049,7 @@
                     subCatSet.forEach(c => { const opt = document.createElement('option'); opt.value = c; subCatList.appendChild(opt); });
                 }
             } catch (err) {
-                window.sysLog('ERROR', 'Datalist güncelleme hatası', err);
+                sysLog('ERROR', 'Datalist güncelleme hatası', err);
             }
         }
 
@@ -1156,12 +1065,12 @@
                     const el = document.createElement('span');
                     el.className = "bg-indigo-500 text-white px-2 py-1 rounded-md text-[10px] font-bold flex items-center gap-1 shadow-sm cursor-pointer hover:bg-red-500 transition-colors";
                     let label = filter.type === 'cat' ? 'Kategori' : (filter.type === 'format' ? 'Tür' : 'Durum');
-                    el.innerHTML = `${label}: ${window.escapeHTML(String(filter.value))} <i class="fas fa-times ml-1"></i>`;
+                    el.innerHTML = `${label}: ${escapeHTML(String(filter.value))} <i class="fas fa-times ml-1"></i>`;
                     el.addEventListener('click', (e) => { e.stopPropagation(); activeFiltersList.splice(index, 1); updateActiveFiltersUI(); applyFiltersAndRender(); });
                     activeFiltersContainer.appendChild(el);
                 });
             } catch (err) {
-                window.sysLog('ERROR', 'Filtre UI hatası', err);
+                sysLog('ERROR', 'Filtre UI hatası', err);
             }
         }
 
@@ -1198,7 +1107,7 @@
 
         function applyFiltersAndRender() {
             try {
-                window.sysLog('INFO', 'Filtreleme ve çizim (applyFiltersAndRender) başlatıldı.');
+                sysLog('INFO', 'Filtreleme ve çizim (applyFiltersAndRender) başlatıldı.');
                 const term = (searchInput.value || '').toLowerCase();
                 const status = filterStatus.value || 'all';
                 const ownership = filterOwnership.value || 'all';
@@ -1264,7 +1173,7 @@
 
                 renderBooks(filtered);
             } catch(err) {
-                window.sysLog('ERROR', 'Filtreleme Ana Hatası', err);
+                sysLog('ERROR', 'Filtreleme Ana Hatası', err);
             }
         }
 
@@ -1299,20 +1208,20 @@
                         let badgesHtml = `<button type="button" onclick="window.addDynamicFilter('status', '${bOwn}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity ${o.color} px-2 py-1 rounded-md text-[10px] font-bold tracking-wide border"><i class="fas ${o.icon} mr-1"></i>${o.text}</button>`;
                         
                         const bookCats = Array.isArray(book.category) ? book.category : (typeof book.category === 'string' ? book.category.split(',').map(str=>str.trim()) : []);
-                        bookCats.forEach(c => { if(c) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('cat', '${window.escapeHTML(String(c))}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide">${window.escapeHTML(String(c))}</button>`; });
+                        bookCats.forEach(c => { if(c) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('cat', '${escapeHTML(String(c))}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide">${escapeHTML(String(c))}</button>`; });
 
                         const bookSubCats = Array.isArray(book.subCategory) ? book.subCategory : (typeof book.subCategory === 'string' ? book.subCategory.split(',').map(str=>str.trim()) : []);
-                        bookSubCats.forEach(c => { if(c) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('cat', '${window.escapeHTML(String(c))}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide">${window.escapeHTML(String(c))}</button>`; });
+                        bookSubCats.forEach(c => { if(c) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('cat', '${escapeHTML(String(c))}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide">${escapeHTML(String(c))}</button>`; });
 
-                        if(book.format) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('format', '${window.escapeHTML(String(book.format))}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide"><i class="fas fa-file-alt mr-1"></i>${window.escapeHTML(String(book.format))}</button>`;
+                        if(book.format) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('format', '${escapeHTML(String(book.format))}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide"><i class="fas fa-file-alt mr-1"></i>${escapeHTML(String(book.format))}</button>`;
 
                         const card = document.createElement('div');
                         
                         const safeTitle = (book.title && typeof book.title === 'string') ? book.title : 'İsimsiz';
                         const safeAuthor = (book.author && typeof book.author === 'string') ? book.author : 'Bilinmeyen Yazar';
-                        const escapedTitle = window.escapeHTML(safeTitle);
-                        const escapedAuthor = window.escapeHTML(safeAuthor);
-                        const jsSafeTitle = window.escapeHTML(safeTitle.replace(/'/g, "\\'"));
+                        const escapedTitle = escapeHTML(safeTitle);
+                        const escapedAuthor = escapeHTML(safeAuthor);
+                        const jsSafeTitle = escapeHTML(safeTitle.replace(/'/g, "\\'"));
                         
                         if (currentViewMode === 'list') {
                             card.className = 'bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-col cursor-pointer group';
@@ -1336,7 +1245,7 @@
                                         <button type="button" onclick="event.stopPropagation(); window.addDynamicFilter('status', '${book.status}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${s.color}">
                                             <i class="fas ${s.icon}"></i> ${s.text}
                                         </button>
-                                        ${book.pageCount ? `<span class="text-[10px] text-slate-400"><i class="fas fa-file-alt"></i> ${window.escapeHTML(String(book.pageCount))} syf</span>` : ''}
+                                        ${book.pageCount ? `<span class="text-[10px] text-slate-400"><i class="fas fa-file-alt"></i> ${escapeHTML(String(book.pageCount))} syf</span>` : ''}
                                     </div>
                                 </div>
                             `;
@@ -1345,7 +1254,7 @@
                             card.onclick = (e) => { if(!e.target.closest('button')) window.openViewModal(book.id); };
                             
                             const coverHtml = book.coverUrl 
-                                ? `<div class="w-full h-40 md:h-48 bg-slate-50 dark:bg-slate-900 rounded-xl flex items-center justify-center overflow-hidden shadow shrink-0 group-hover:opacity-90 transition-opacity"><img src="${window.escapeHTML(book.coverUrl)}" class="w-full h-full object-contain"></div>`
+                                ? `<div class="w-full h-40 md:h-48 bg-slate-50 dark:bg-slate-900 rounded-xl flex items-center justify-center overflow-hidden shadow shrink-0 group-hover:opacity-90 transition-opacity"><img src="${escapeHTML(book.coverUrl)}" class="w-full h-full object-contain"></div>`
                                 : `<div class="w-full h-40 md:h-48 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center text-slate-300 dark:text-slate-500 shadow shrink-0 group-hover:bg-slate-200 transition-colors"><i class="fas fa-book text-3xl"></i></div>`;
 
                             card.innerHTML = `
@@ -1370,7 +1279,7 @@
                                         <button type="button" onclick="event.stopPropagation(); window.addDynamicFilter('status', '${book.status}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${s.color}">
                                             <i class="fas ${s.icon}"></i> ${s.text}
                                         </button>
-                                        ${book.pageCount ? `<span class="text-[10px] text-slate-400 font-medium"><i class="fas fa-file-alt"></i> ${window.escapeHTML(String(book.pageCount))} sayfa</span>` : ''}
+                                        ${book.pageCount ? `<span class="text-[10px] text-slate-400 font-medium"><i class="fas fa-file-alt"></i> ${escapeHTML(String(book.pageCount))} sayfa</span>` : ''}
                                     </div>
                                 </div>
                             `;
@@ -1379,7 +1288,7 @@
                             card.onclick = () => window.openViewModal(book.id);
                             
                             const coverHtml = book.coverUrl 
-                                ? `<img src="${window.escapeHTML(book.coverUrl)}" class="w-auto h-full max-h-[90%] object-contain rounded shadow-md z-10 group-hover:-translate-y-3 group-active:scale-95 transition-all duration-300">`
+                                ? `<img src="${escapeHTML(book.coverUrl)}" class="w-auto h-full max-h-[90%] object-contain rounded shadow-md z-10 group-hover:-translate-y-3 group-active:scale-95 transition-all duration-300">`
                                 : `<div class="w-20 sm:w-24 h-full max-h-[90%] bg-slate-200 dark:bg-slate-700 rounded flex items-center justify-center text-slate-400 shadow-md z-10 group-hover:-translate-y-3 transition-transform duration-300 px-2 text-center text-[10px] font-bold overflow-hidden">${escapedTitle}</div>`;
 
                             const shelfFavIcon = book.isFavorite ? '<i class="fas fa-heart text-red-500"></i>' : '';
@@ -1397,11 +1306,11 @@
                         }
                         bookListEl.appendChild(card);
                     } catch(err) {
-                        window.sysLog('ERROR', `Tekil Kitap Render Hatası (ID: ${book.id || '?'})`, err.toString());
+                        sysLog('ERROR', `Tekil Kitap Render Hatası (ID: ${book.id || '?'})`, err.toString());
                     }
                 });
             } catch(err) {
-                window.sysLog('ERROR', 'Genel Render Hatası', err);
+                sysLog('ERROR', 'Genel Render Hatası', err);
             }
         }
 
@@ -1423,53 +1332,53 @@
                     });
                 }
             } catch (err) {
-                window.sysLog('ERROR', 'Search suggestions hatası', err);
+                sysLog('ERROR', 'Search suggestions hatası', err);
             }
         }
 
         // --- VERİTABANI DİNLEME ---
         function loadBooks(targetUid) {
-            window.sysLog('INFO', `Kitaplar yükleniyor (UID: ${targetUid})`);
+            sysLog('INFO', `Kitaplar yükleniyor (UID: ${targetUid})`);
             if(!initialLoadDone) renderSkeletons();
             
             if (isOfflineMode) {
                 initialLoadDone = true;
-                try { updateCategoryDatalists(); } catch (e) { window.sysLog('ERROR', e); }
-                try { updateSearchSuggestions(); } catch (e) { window.sysLog('ERROR', e); }
-                try { updateDashboardStats(); } catch (e) { window.sysLog('ERROR', e); }
-                try { applyFiltersAndRender(); } catch (e) { window.sysLog('ERROR', e); }
+                try { updateCategoryDatalists(); } catch (e) { sysLog('ERROR', e); }
+                try { updateSearchSuggestions(); } catch (e) { sysLog('ERROR', e); }
+                try { updateDashboardStats(); } catch (e) { sysLog('ERROR', e); }
+                try { applyFiltersAndRender(); } catch (e) { sysLog('ERROR', e); }
             } else {
                 if (booksUnsubscribe) booksUnsubscribe();
                 try {
                     booksUnsubscribe = onSnapshot(collection(db, 'artifacts', appId, 'users', targetUid, 'books'), (snapshot) => {
                         try {
-                            window.sysLog('INFO', `Firebase verisi alındı. Toplam belge: ${snapshot.size}`);
+                            sysLog('INFO', `Firebase verisi alındı. Toplam belge: ${snapshot.size}`);
                             allBooks = [];
                             snapshot.forEach(doc => { allBooks.push({ id: doc.id, ...doc.data() }); });
                             initialLoadDone = true;
                             
-                            try { updateCategoryDatalists(); } catch(e) { window.sysLog('ERROR', "Kategori Hatası", e); }
-                            try { updateSearchSuggestions(); } catch(e) { window.sysLog('ERROR', "Arama Öneri Hatası", e); }
-                            try { updateDashboardStats(); } catch(e) { window.sysLog('ERROR', "İstatistik Hatası", e); }
+                            try { updateCategoryDatalists(); } catch(e) { sysLog('ERROR', "Kategori Hatası", e); }
+                            try { updateSearchSuggestions(); } catch(e) { sysLog('ERROR', "Arama Öneri Hatası", e); }
+                            try { updateDashboardStats(); } catch(e) { sysLog('ERROR', "İstatistik Hatası", e); }
                             
                             try {
                                 applyFiltersAndRender();
-                                window.sysLog('INFO', 'Ekrana çizim tamamlandı.');
+                                sysLog('INFO', 'Ekrana çizim tamamlandı.');
                             } catch (innerErr) {
-                                window.sysLog('ERROR', "Filtreleme/Çizim Hatası", innerErr);
-                                window.showNotification("Kitaplar yüklenirken ekran çizim hatası oluştu.", "error");
+                                sysLog('ERROR', "Filtreleme/Çizim Hatası", innerErr);
+                                showNotification("Kitaplar yüklenirken ekran çizim hatası oluştu.", "error");
                                 bookListEl.innerHTML = '<div class="text-slate-500 dark:text-slate-400 text-center w-full p-4 col-span-full">Veri gösterim hatası. Rapor düğmesine basın.</div>';
                             }
                         } catch (fatalErr) {
-                            window.sysLog('ERROR', 'Veri İşleme (Snapshot) Hatası', fatalErr);
+                            sysLog('ERROR', 'Veri İşleme (Snapshot) Hatası', fatalErr);
                         }
                     }, (error) => {
-                        window.sysLog('ERROR', "Firestore Dinleme Hatası", error);
-                        window.showNotification("Erişim reddedildi veya bağlantı koptu: " + error.message, "error");
+                        sysLog('ERROR', "Firestore Dinleme Hatası", error);
+                        showNotification("Erişim reddedildi veya bağlantı koptu: " + error.message, "error");
                         bookListEl.innerHTML = '<div class="text-red-500 dark:text-red-400 text-center w-full p-4 col-span-full">Erişim engellendi veya veri okunamadı. Lütfen giriş yaptığınızdan emin olun.</div>';
                     });
                 } catch (dbErr) {
-                    window.sysLog('ERROR', 'onSnapshot başlatma hatası', dbErr);
+                    sysLog('ERROR', 'onSnapshot başlatma hatası', dbErr);
                 }
             }
         }
@@ -1501,9 +1410,9 @@
         document.getElementById('copy-debug-btn').addEventListener('click', () => {
             const textArea = document.getElementById('debug-log-area');
             navigator.clipboard.writeText(textArea.value).then(() => {
-                window.showNotification("Rapor kopyalandı! Lütfen yapay zekaya yapıştırın.", "success");
+                showNotification("Rapor kopyalandı! Lütfen yapay zekaya yapıştırın.", "success");
             }).catch(err => {
-                window.showNotification("Kopyalanamadı, metni seçip manuel kopyalayın.", "error");
+                showNotification("Kopyalanamadı, metni seçip manuel kopyalayın.", "error");
             });
         });
 
@@ -1593,19 +1502,19 @@
         });
 
         window.addEventListener('error', function(e) {
-            window.sysLog('ERROR', `Global Hata: ${e.message} at ${e.filename}:${e.lineno}`);
+            sysLog('ERROR', `Global Hata: ${e.message} at ${e.filename}:${e.lineno}`);
             const loading = document.getElementById('loading');
             if(loading) loading.style.display = 'none';
         });
         
         window.addEventListener('unhandledrejection', function(e) {
-            window.sysLog('ERROR', `Promise Hatası: ${e.reason}`);
+            sysLog('ERROR', `Promise Hatası: ${e.reason}`);
         });
 
         document.getElementById('email-login-btn').addEventListener('click', async () => {
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value.trim();
-            if(!email || !password) return window.showNotification("E-posta ve şifre zorunludur.", "error");
+            if(!email || !password) return showNotification("E-posta ve şifre zorunludur.", "error");
             
             const btn = document.getElementById('email-login-btn');
             const ogText = btn.innerHTML;
@@ -1617,11 +1526,11 @@
             } catch (err) {
                 console.error(err);
                 if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
-                    window.showNotification("Hatalı e-posta veya şifre.", "error");
+                    showNotification("Hatalı e-posta veya şifre.", "error");
                 } else if (err.code === 'auth/operation-not-allowed') {
-                    window.showNotification("Firebase'de E-posta girişi kapalı! Console'dan aktifleştirin.", "error");
+                    showNotification("Firebase'de E-posta girişi kapalı! Console'dan aktifleştirin.", "error");
                 } else {
-                    window.showNotification("Giriş yapılamadı: " + err.message, "error");
+                    showNotification("Giriş yapılamadı: " + err.message, "error");
                 }
             } finally {
                 btn.innerHTML = ogText; btn.disabled = false;
@@ -1631,8 +1540,8 @@
         document.getElementById('email-register-btn').addEventListener('click', async () => {
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value.trim();
-            if(!email || !password) return window.showNotification("E-posta ve şifre zorunludur.", "error");
-            if(password.length < 6) return window.showNotification("Şifre en az 6 karakter olmalıdır.", "error");
+            if(!email || !password) return showNotification("E-posta ve şifre zorunludur.", "error");
+            if(password.length < 6) return showNotification("Şifre en az 6 karakter olmalıdır.", "error");
             
             const btn = document.getElementById('email-register-btn');
             const ogText = btn.innerHTML;
@@ -1641,15 +1550,15 @@
                 await createUserWithEmailAndPassword(auth, email, password);
                 document.getElementById('login-email').value = '';
                 document.getElementById('login-password').value = '';
-                window.showNotification("Hesap başarıyla oluşturuldu!", "success");
+                showNotification("Hesap başarıyla oluşturuldu!", "success");
             } catch (err) {
                 console.error(err);
                 if (err.code === 'auth/email-already-in-use') {
-                    window.showNotification("Bu e-posta adresi zaten kullanımda.", "error");
+                    showNotification("Bu e-posta adresi zaten kullanımda.", "error");
                 } else if (err.code === 'auth/operation-not-allowed') {
-                    window.showNotification("Firebase'de E-posta girişi kapalı! Console'dan aktifleştirin.", "error");
+                    showNotification("Firebase'de E-posta girişi kapalı! Console'dan aktifleştirin.", "error");
                 } else {
-                    window.showNotification("Kayıt olunamadı: " + err.message, "error");
+                    showNotification("Kayıt olunamadı: " + err.message, "error");
                 }
             } finally {
                 btn.innerHTML = ogText; btn.disabled = false;
@@ -1658,14 +1567,14 @@
 
         document.getElementById('google-login-btn').addEventListener('click', async () => {
             if (window.location.protocol === 'file:') { 
-                window.showNotification("Google Girişi yerel 'file://' dosyalarında çalışmaz. Sunucuda (GitHub Pages vb.) açın.", "error"); 
+                showNotification("Google Girişi yerel 'file://' dosyalarında çalışmaz. Sunucuda (GitHub Pages vb.) açın.", "error"); 
                 return; 
             }
             try { 
                 await signInWithPopup(auth, provider); 
             } catch (error) { 
                 console.error("Giriş Hatası:", error);
-                window.showNotification("Giriş işlemi iptal edildi veya başarısız oldu.", "error"); 
+                showNotification("Giriş işlemi iptal edildi veya başarısız oldu.", "error"); 
             }
         });
 
@@ -1697,7 +1606,7 @@
                     }
                 } catch(e) {}
 
-                window.showNotification("Misafir modundasınız. Sadece görüntüleme yapılabilir.", "info");
+                showNotification("Misafir modundasınız. Sadece görüntüleme yapılabilir.", "info");
                 loadSettings(viewUserId);
                 loadBooks(viewUserId);
                 return; 
@@ -1705,7 +1614,7 @@
 
             if (user) {
                 currentUser = user;
-                window.sysLog('INFO', `Kullanıcı giriş yaptı. UID: ${user.uid}`);
+                sysLog('INFO', `Kullanıcı giriş yaptı. UID: ${user.uid}`);
                 
                 loginScreen.classList.add('hidden'); loginScreen.classList.remove('flex');
                 appContent.classList.remove('hidden');
@@ -1717,7 +1626,7 @@
                 document.getElementById('drawer-profile-name').textContent = userName;
                 document.getElementById('main-title').textContent = "e-Kütüphane";
                 
-                setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid), { displayName: userName }, { merge: true }).catch(err => window.sysLog('WARN', 'setDoc err', err));
+                setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid), { displayName: userName }, { merge: true }).catch(err => sysLog('WARN', 'setDoc err', err));
                 
                 if (user.photoURL) {
                     const pic = document.getElementById('drawer-profile-pic');
@@ -1728,7 +1637,7 @@
                     headerPic.src = user.photoURL; headerPic.classList.remove('hidden'); headerMenuIcon.classList.add('hidden');
                 }
 
-                window.showNotification(`Hoş geldin, ${userName.split(' ')[0]}!`, "info");
+                showNotification(`Hoş geldin, ${userName.split(' ')[0]}!`, "info");
                 loadSettings(currentUser.uid); 
                 loadBooks(currentUser.uid);
             } else {
