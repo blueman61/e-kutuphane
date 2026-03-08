@@ -2,7 +2,7 @@
 <html lang="tr" class="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
     <title>e-Kütüphane Pro & Sanal Kütüphane</title>
     
     <!-- PWA Kurulumu için Manifest -->
@@ -255,8 +255,8 @@
         </div>
     </div>
 
-    <!-- Zengin Metin Editörü (RTE) Modal (YENİ EKLENDİ - KLAVYE DOSTU DÜZEN) -->
-    <div id="rte-modal" class="fixed inset-0 z-[60] hidden flex-col bg-slate-50 dark:bg-slate-900 transition-transform transform translate-y-full duration-300 h-[100dvh] w-full">
+    <!-- Zengin Metin Editörü (RTE) Modal -->
+    <div id="rte-modal" class="fixed inset-0 z-[60] hidden flex-col bg-slate-50 dark:bg-slate-900 transition-transform transform translate-y-full duration-300 w-full">
         <!-- Header -->
         <div class="flex justify-between items-center p-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shadow-sm shrink-0 z-10">
             <button type="button" id="rte-cancel-btn" class="w-10 h-10 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 transition-all"><i class="fas fa-arrow-left text-xl"></i></button>
@@ -267,18 +267,22 @@
         <!-- Yazı Alanı (Esneyen Kısım) -->
         <div id="rte-editor" contenteditable="true" data-placeholder="Buraya yazmaya başlayın..." class="flex-grow p-4 md:p-6 outline-none overflow-y-auto text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 rte-content text-base md:text-lg"></div>
 
-        <!-- Araç Çubuğu (Google Keep Tarzı - ALT KISIM) -->
-        <div class="flex gap-2 p-2 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shrink-0 overflow-x-auto hide-scrollbar z-10 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_10px_rgba(0,0,0,0.2)]">
-            <button type="button" onclick="formatDoc('bold')" class="shrink-0 w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600" title="Kalın"><i class="fas fa-bold"></i></button>
-            <button type="button" onclick="formatDoc('italic')" class="shrink-0 w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600" title="İtalik"><i class="fas fa-italic"></i></button>
-            <button type="button" onclick="formatDoc('underline')" class="shrink-0 w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600" title="Altı Çizili"><i class="fas fa-underline"></i></button>
-            <button type="button" onclick="formatDoc('strikeThrough')" class="shrink-0 w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600" title="Üstü Çizili"><i class="fas fa-strikethrough"></i></button>
-            <div class="w-px h-6 bg-slate-300 dark:bg-slate-700 my-auto mx-1 shrink-0"></div>
-            <button type="button" onclick="formatDoc('formatBlock', 'H1')" class="shrink-0 px-3 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600" title="Büyük Başlık">H1</button>
-            <button type="button" onclick="formatDoc('formatBlock', 'H2')" class="shrink-0 px-3 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600" title="Küçük Başlık">H2</button>
-            <div class="w-px h-6 bg-slate-300 dark:bg-slate-700 my-auto mx-1 shrink-0"></div>
-            <button type="button" onclick="formatDoc('insertUnorderedList')" class="shrink-0 w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600" title="Madde İşaretleri"><i class="fas fa-list-ul"></i></button>
-            <button type="button" onclick="formatDoc('removeFormat')" class="shrink-0 w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600" title="Biçimi Temizle"><i class="fas fa-eraser"></i></button>
+        <!-- Araç Çubuğu (Google Keep Tarzı - ALT KISIM - DÜZENLENDİ) -->
+        <div class="flex flex-wrap justify-center gap-1 sm:gap-2 p-2 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shrink-0 z-10 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_10px_rgba(0,0,0,0.2)]">
+            <button type="button" onclick="formatDoc('bold')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Kalın"><i class="fas fa-bold"></i></button>
+            <button type="button" onclick="formatDoc('italic')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="İtalik"><i class="fas fa-italic"></i></button>
+            <button type="button" onclick="formatDoc('underline')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Altı Çizili"><i class="fas fa-underline"></i></button>
+            <button type="button" onclick="formatDoc('strikeThrough')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Üstü Çizili"><i class="fas fa-strikethrough"></i></button>
+            
+            <div class="hidden sm:block w-px h-6 bg-slate-300 dark:bg-slate-700 my-auto mx-0 sm:mx-1 shrink-0"></div>
+            
+            <button type="button" onclick="formatDoc('formatBlock', 'H1')" class="px-2 sm:px-3 h-8 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-xs sm:text-sm transition-colors" title="Büyük Başlık">H1</button>
+            <button type="button" onclick="formatDoc('formatBlock', 'H2')" class="px-2 sm:px-3 h-8 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-xs sm:text-sm transition-colors" title="Küçük Başlık">H2</button>
+            
+            <div class="hidden sm:block w-px h-6 bg-slate-300 dark:bg-slate-700 my-auto mx-0 sm:mx-1 shrink-0"></div>
+            
+            <button type="button" onclick="formatDoc('insertUnorderedList')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Madde İşaretleri"><i class="fas fa-list-ul"></i></button>
+            <button type="button" onclick="formatDoc('removeFormat')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Biçimi Temizle"><i class="fas fa-eraser"></i></button>
         </div>
     </div>
 
@@ -738,7 +742,7 @@
             }
         };
 
-        // DIŞA AKTARMA VE PAYLAŞIM (YENİ EKLENDİ)
+        // DIŞA AKTARMA VE PAYLAŞIM
         function stripHTML(html) {
             let tmp = document.createElement("DIV");
             tmp.innerHTML = html;
@@ -825,7 +829,19 @@
 
         // --- ZENGİN METİN EDİTÖRÜ (RTE) MANTIĞI ---
         let activeRteTarget = null;
-        let activeRteViewMode = false; // Form düzenlemesi mi yoksa Inline (View) düzenleme mi?
+        let activeRteViewMode = false;
+
+        // Görsel Viewport API ile klavye desteği
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', () => {
+                const rteModal = document.getElementById('rte-modal');
+                if (rteModal && !rteModal.classList.contains('hidden')) {
+                    // Modal yüksekliğini klavyenin üst sınırına göre dinamik olarak sabitle
+                    rteModal.style.height = window.visualViewport.height + 'px';
+                    rteModal.style.top = window.visualViewport.offsetTop + 'px';
+                }
+            });
+        }
 
         window.formatDoc = function(cmd, value=null) {
             document.execCommand(cmd, false, value);
@@ -837,6 +853,7 @@
             activeRteViewMode = isViewMode;
             document.getElementById('rte-title').textContent = title;
             const editor = document.getElementById('rte-editor');
+            const modal = document.getElementById('rte-modal');
             
             if (isViewMode) {
                 editor.innerHTML = currentViewBook[targetId] || '';
@@ -844,7 +861,12 @@
                 editor.innerHTML = document.getElementById(targetId).value || '';
             }
             
-            const modal = document.getElementById('rte-modal');
+            // Açılırken yüksekliği manuel ayarla
+            if (window.visualViewport) {
+                modal.style.height = window.visualViewport.height + 'px';
+                modal.style.top = window.visualViewport.offsetTop + 'px';
+            }
+
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             setTimeout(() => { modal.classList.remove('translate-y-full'); }, 10);
@@ -866,7 +888,13 @@
         function closeRTE() {
             const modal = document.getElementById('rte-modal');
             modal.classList.add('translate-y-full');
-            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+            setTimeout(() => { 
+                modal.classList.add('hidden'); 
+                modal.classList.remove('flex'); 
+                // Inline stilleri temizle
+                modal.style.height = '';
+                modal.style.top = '';
+            }, 300);
         }
 
         document.getElementById('rte-cancel-btn').addEventListener('click', closeRTE);
@@ -875,7 +903,6 @@
             const content = document.getElementById('rte-editor').innerHTML;
             
             if (activeRteViewMode) {
-                // Görünüm (View) Modalından tetiklendiyse veritabanına anında kaydet
                 const field = activeRteTarget;
                 const btn = document.getElementById('rte-save-btn');
                 const ogHtml = btn.innerHTML;
@@ -889,7 +916,7 @@
                         });
                     }
                     currentViewBook[field] = content;
-                    openViewModalInternal(currentViewBook); // Modal'ı yenilenmiş içerikle tekrar çiz
+                    openViewModalInternal(currentViewBook); 
                     showNotification("Not güncellendi!", "success");
                     closeRTE();
                 } catch(err) {
@@ -898,7 +925,6 @@
                     btn.innerHTML = ogHtml;
                 }
             } else {
-                // Form içerisinden tetiklendiyse sadece değeri gizli inputa ve vitrin div'ine aktar
                 document.getElementById(activeRteTarget).value = content;
                 const displayDiv = document.getElementById(activeRteTarget + '-display');
                 displayDiv.innerHTML = content ? content : `<span class="text-slate-400 italic">Düzenlemek için tıklayın...</span>`;
@@ -906,7 +932,6 @@
             }
         });
 
-        // Form alanlarındaki sahte textarea (div) tetikleyicilerine click event'i
         document.querySelectorAll('.rte-trigger').forEach(trigger => {
             trigger.addEventListener('click', () => {
                 const target = trigger.getAttribute('data-target');
@@ -949,7 +974,7 @@
             return str.replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t]));
         }
 
-        // SCROLL TO TOP MANTIĞI (YENİ EKLENDİ)
+        // SCROLL TO TOP
         window.addEventListener('scroll', () => {
             const btn = document.getElementById('scroll-to-top');
             if (window.scrollY > 400) {
@@ -964,7 +989,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
-        // RASTGELE KİTAP ÖNERİSİ MANTIĞI (YENİ EKLENDİ)
+        // RASTGELE KİTAP
         document.getElementById('random-book-btn').addEventListener('click', () => {
             if(allBooks.length === 0) return showNotification("Arşiviniz henüz boş.", "info");
             const toReadBooks = allBooks.filter(b => b.status === 'toread');
@@ -976,7 +1001,7 @@
             showNotification("Sizin için rastgele seçildi! 🎲", "success");
         });
 
-        // ARAMA ÖNERİLERİNİ (AUTOCOMPLETE) GÜNCELLEME
+        // ARAMA ÖNERİLERİ
         function updateSearchSuggestions() {
             const suggestionSet = new Set();
             allBooks.forEach(b => {
@@ -1058,7 +1083,6 @@
             const readBooksList = allBooks.filter(b => b.status === 'read');
             document.getElementById('stat-read').textContent = readBooksList.length;
             
-            // Sayfa Sayısı Hesaplama (YENİ EKLENDİ)
             const totalPagesRead = readBooksList.reduce((acc, book) => {
                 return acc + (parseInt(book.pageCount) || 0);
             }, 0);
