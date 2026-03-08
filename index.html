@@ -197,7 +197,6 @@
                 <div class="shrink-0 flex bg-slate-100 dark:bg-slate-900 rounded-xl p-1 border border-slate-200 dark:border-slate-700">
                     <button type="button" id="view-list-btn" class="p-1.5 px-3 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all" title="Liste Görünümü"><i class="fas fa-list"></i></button>
                     <button type="button" id="view-grid-btn" class="p-1.5 px-3 rounded-lg text-slate-800 dark:text-white bg-white dark:bg-slate-700 shadow-sm transition-all" title="Izgara Görünümü"><i class="fas fa-th-large"></i></button>
-                    <!-- Yeni Raf Görünümü Butonu -->
                     <button type="button" id="view-shelf-btn" class="p-1.5 px-3 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all" title="Raf Görünümü"><i class="fas fa-layer-group"></i></button>
                 </div>
             </div>
@@ -591,7 +590,7 @@
                             </div>
                         </div>
 
-                        <!-- ALINTILAR Form Kısmı (Yenilendi) -->
+                        <!-- ALINTILAR Form Kısmı -->
                         <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-800">
                             <button type="button" class="form-acc-btn w-full px-4 py-3 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                                 <span class="text-xs font-bold text-amber-700 dark:text-amber-500 flex items-center gap-2">💬 ALINTILAR</span>
@@ -702,7 +701,6 @@
         let booksUnsubscribe = null;
         let initialLoadDone = false;
         
-        // Yeni Alıntı Değişkeni
         let currentEditQuotes = [];
 
         const htmlEl = document.documentElement;
@@ -797,7 +795,9 @@
         
         window.searchBookOnWeb = function() {
             if(currentViewBook) {
-                const query = encodeURIComponent(`${currentViewBook.title || ''} ${currentViewBook.author || ''}`);
+                const title = typeof currentViewBook.title === 'string' ? currentViewBook.title : '';
+                const author = typeof currentViewBook.author === 'string' ? currentViewBook.author : '';
+                const query = encodeURIComponent(`${title} ${author}`);
                 window.open(`https://www.google.com/search?q=${query}`, '_blank');
             }
         };
@@ -876,9 +876,11 @@
             printElement.innerHTML = htmlContent;
             document.body.appendChild(printElement); 
 
+            const safeFilename = (typeof currentViewBook.title === 'string' && currentViewBook.title.trim() !== '') ? currentViewBook.title : 'Kitap';
+
             const opt = {
                 margin:       15,
-                filename:     `${(currentViewBook.title || 'Kitap').replace(/\s+/g, '_')}_Notlari.pdf`,
+                filename:     `${safeFilename.replace(/\s+/g, '_')}_Notlari.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2, windowWidth: 800 }, 
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
@@ -987,7 +989,8 @@
             try {
                 const canvas = await html2canvas(container, { scale: 1.5, useCORS: true, logging: false });
                 const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-                const filename = `Alinti_${(currentViewBook.title || 'Kitap').replace(/\s+/g, '')}.jpg`;
+                const safeTitleForFilename = (typeof currentViewBook.title === 'string' && currentViewBook.title.trim() !== '') ? currentViewBook.title : 'Kitap';
+                const filename = `Alinti_${safeTitleForFilename.replace(/\s+/g, '')}.jpg`;
 
                 if (action === 'share' && navigator.share) {
                     try {
@@ -998,7 +1001,7 @@
                         if (navigator.canShare && navigator.canShare({ files: [file] })) {
                             await navigator.share({
                                 files: [file],
-                                title: currentViewBook.title,
+                                title: currentViewBook.title || 'Kitap',
                                 text: 'Bu harika alıntıyı okumalısın!'
                             });
                             showNotification("Paylaşım menüsü açıldı!", "success");
@@ -1058,7 +1061,6 @@
             const modal = document.getElementById('rte-modal');
             const pageInput = document.getElementById('rte-page-input');
             
-            // Eğer Alıntı Ekleme/Düzenleme modundaysa Sayfa Girdisini Göster
             if (targetId === 'quote') {
                 pageInput.classList.remove('hidden');
                 let qList = isViewMode ? (currentViewBook.quotes || []) : currentEditQuotes;
@@ -1132,7 +1134,6 @@
                 const newQuote = { text: content, page: page };
 
                 if (activeRteViewMode) {
-                    // Vitrin Modunda Doğrudan Veritabanına Kaydet
                     const btn = document.getElementById('rte-save-btn');
                     const ogHtml = btn.innerHTML;
                     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
@@ -1161,7 +1162,6 @@
                         btn.innerHTML = ogHtml;
                     }
                 } else {
-                    // Form Modunda (Sadece Listeye Ekle)
                     if (activeRteQuoteIndex > -1) {
                         currentEditQuotes[activeRteQuoteIndex] = newQuote;
                     } else {
@@ -1171,7 +1171,6 @@
                     closeRTE();
                 }
             } else {
-                // Diğer Standart Text Alanları (Özet, Not, vb.)
                 if (activeRteViewMode) {
                     const field = activeRteTarget;
                     const btn = document.getElementById('rte-save-btn');
@@ -1211,7 +1210,6 @@
             });
         });
 
-        // Form modunda Alıntıları çizen fonksiyon
         function renderFormQuotes() {
             const container = document.getElementById('quotes-container');
             container.innerHTML = '';
@@ -1263,76 +1261,280 @@
             }
         };
 
-        // --- YARDIMCI FONKSİYONLAR ---
-        function showNotification(msg, type = 'success') {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-message').textContent = msg;
-            document.getElementById('toast-icon').className = type === 'error' ? 'fas fa-exclamation-circle text-red-400' : (type === 'info' ? 'fas fa-info-circle text-blue-400' : 'fas fa-check-circle text-emerald-400');
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+        // FİLTRELEME & GÖRÜNÜM
+        function updateCategoryDatalists() {
+            const catSet = new Set();
+            const subCatSet = new Set();
+            allBooks.forEach(b => {
+                if (Array.isArray(b.category)) { 
+                    b.category.forEach(c => { if(c && typeof c === 'string' && c.trim()) catSet.add(c.trim()); }); 
+                } else if (typeof b.category === 'string') { 
+                    b.category.split(',').forEach(c => { if(c.trim()) catSet.add(c.trim()); }); 
+                }
+                
+                if (Array.isArray(b.subCategory)) { 
+                    b.subCategory.forEach(c => { if(c && typeof c === 'string' && c.trim()) subCatSet.add(c.trim()); }); 
+                } else if (typeof b.subCategory === 'string') { 
+                    b.subCategory.split(',').forEach(c => { if(c.trim()) subCatSet.add(c.trim()); }); 
+                }
+            });
+            const catList = document.getElementById('cat-list');
+            catList.innerHTML = '';
+            catSet.forEach(c => { const opt = document.createElement('option'); opt.value = c; catList.appendChild(opt); });
+            const subCatList = document.getElementById('subcat-list');
+            subCatList.innerHTML = '';
+            subCatSet.forEach(c => { const opt = document.createElement('option'); opt.value = c; subCatList.appendChild(opt); });
         }
 
-        function formatDate(timestamp) {
-            if (!timestamp) return null;
-            let dateObj;
-            if (typeof timestamp.toDate === 'function') dateObj = timestamp.toDate();
-            else if (timestamp.seconds) dateObj = new Date(timestamp.seconds * 1000);
-            else if (typeof timestamp === 'number') dateObj = new Date(timestamp);
-            else return null;
-            const day = String(dateObj.getDate()).padStart(2, '0');
-            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const year = dateObj.getFullYear();
-            return `${day}.${month}.${year}`;
-        }
-
-        // SCROLL TO TOP
-        window.addEventListener('scroll', () => {
-            const btn = document.getElementById('scroll-to-top');
-            if (window.scrollY > 400) {
-                btn.classList.remove('hidden');
-                setTimeout(() => btn.classList.remove('opacity-0'), 10);
+        function updateActiveFiltersUI() {
+            if(activeFiltersList.length === 0) {
+                activeFiltersBar.classList.add('hidden'); activeFiltersBar.classList.remove('flex');
             } else {
-                btn.classList.add('opacity-0');
-                setTimeout(() => btn.classList.add('hidden'), 300);
+                activeFiltersBar.classList.remove('hidden'); activeFiltersBar.classList.add('flex');
             }
-        });
-        document.getElementById('scroll-to-top').addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            activeFiltersContainer.innerHTML = '';
+            activeFiltersList.forEach((filter, index) => {
+                const el = document.createElement('span');
+                el.className = "bg-indigo-500 text-white px-2 py-1 rounded-md text-[10px] font-bold flex items-center gap-1 shadow-sm cursor-pointer hover:bg-red-500 transition-colors";
+                let label = filter.type === 'cat' ? 'Kategori' : (filter.type === 'format' ? 'Tür' : 'Durum');
+                el.innerHTML = `${label}: ${escapeHTML(filter.value)} <i class="fas fa-times ml-1"></i>`;
+                el.addEventListener('click', (e) => { e.stopPropagation(); activeFiltersList.splice(index, 1); updateActiveFiltersUI(); applyFiltersAndRender(); });
+                activeFiltersContainer.appendChild(el);
+            });
+        }
+
+        document.getElementById('clear-filters-btn').addEventListener('click', () => {
+            activeFiltersList = []; updateActiveFiltersUI(); applyFiltersAndRender();
         });
 
-        // RASTGELE KİTAP
-        document.getElementById('random-book-btn').addEventListener('click', () => {
-            if(allBooks.length === 0) return showNotification("Arşiviniz henüz boş.", "info");
-            const toReadBooks = allBooks.filter(b => b.status === 'toread');
-            if(toReadBooks.length === 0) {
-                return showNotification("Okunacaklar listenizde kitap yok! Farklı durumdaki rastgele bir kitap için sağ üstteki arama kısmını kullanın.", "info");
-            }
-            const randomBook = toReadBooks[Math.floor(Math.random() * toReadBooks.length)];
-            openViewModalInternal(randomBook);
-            showNotification("Sizin için rastgele seçildi! 🎲", "success");
-        });
+        searchInput.addEventListener('input', applyFiltersAndRender);
+        filterStatus.addEventListener('change', applyFiltersAndRender);
+        filterOwnership.addEventListener('change', applyFiltersAndRender);
+        sortSelect.addEventListener('change', applyFiltersAndRender);
         
-        // SADECE FAVORİLER FİLTRESİ
-        document.getElementById('filter-fav-btn').addEventListener('click', () => {
-            filterOnlyFavorites = !filterOnlyFavorites;
-            const btn = document.getElementById('filter-fav-btn');
-            if(filterOnlyFavorites) {
-                btn.classList.remove('text-rose-400', 'bg-rose-50', 'dark:bg-rose-900/30');
-                btn.classList.add('text-white', 'bg-rose-500', 'border-rose-500');
-                showNotification("Sadece Favoriler gösteriliyor.", "info");
-            } else {
-                btn.classList.add('text-rose-400', 'bg-rose-50', 'dark:bg-rose-900/30');
-                btn.classList.remove('text-white', 'bg-rose-500', 'border-rose-500');
-            }
-            applyFiltersAndRender();
-        });
+        viewListBtn.addEventListener('click', () => { currentViewMode = 'list'; updateViewUI(); applyFiltersAndRender(); });
+        viewGridBtn.addEventListener('click', () => { currentViewMode = 'grid'; updateViewUI(); applyFiltersAndRender(); });
+        viewShelfBtn.addEventListener('click', () => { currentViewMode = 'shelf'; updateViewUI(); applyFiltersAndRender(); });
 
-        // ARAMA ÖNERİLERİ
+        function updateViewUI() {
+            const btns = [viewListBtn, viewGridBtn, viewShelfBtn];
+            btns.forEach(btn => {
+                btn.className = "p-1.5 px-3 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all";
+            });
+
+            if (currentViewMode === 'list') {
+                viewListBtn.className = "p-1.5 px-3 rounded-lg text-slate-800 dark:text-white bg-white dark:bg-slate-700 shadow-sm transition-all";
+                bookListEl.className = "space-y-4";
+            } else if (currentViewMode === 'grid') {
+                viewGridBtn.className = "p-1.5 px-3 rounded-lg text-slate-800 dark:text-white bg-white dark:bg-slate-700 shadow-sm transition-all";
+                bookListEl.className = "grid grid-cols-1 md:grid-cols-2 gap-4"; 
+            } else if (currentViewMode === 'shelf') {
+                viewShelfBtn.className = "p-1.5 px-3 rounded-lg text-slate-800 dark:text-white bg-white dark:bg-slate-700 shadow-sm transition-all";
+                bookListEl.className = "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-x-3 gap-y-8 pt-4"; 
+            }
+        }
+
+        function applyFiltersAndRender() {
+            try {
+                const term = searchInput.value.toLowerCase();
+                const status = filterStatus.value;
+                const ownership = filterOwnership.value;
+                const sort = sortSelect.value;
+
+                let filtered = allBooks.filter(book => {
+                    if(filterOnlyFavorites && !book.isFavorite) return false;
+
+                    const matchStatus = status === 'all' || book.status === status;
+                    let bookOwn = book.ownership || 'none';
+                    if (bookOwn === 'owned') bookOwn = 'physical';
+                    if (bookOwn === 'borrowed') bookOwn = 'none';
+                    const matchOwn = ownership === 'all' || bookOwn === ownership;
+                    
+                    const catStr = Array.isArray(book.category) ? book.category.join(' ') : (typeof book.category === 'string' ? book.category : '');
+                    const subCatStr = Array.isArray(book.subCategory) ? book.subCategory.join(' ') : (typeof book.subCategory === 'string' ? book.subCategory : '');
+                    
+                    const titleStr = typeof book.title === 'string' ? book.title : '';
+                    const authorStr = typeof book.author === 'string' ? book.author : '';
+                    const notesStr = typeof book.notes === 'string' ? book.notes : '';
+                    const summaryStr = typeof book.summary === 'string' ? book.summary : '';
+
+                    const searchStr = `${titleStr} ${authorStr} ${catStr} ${subCatStr} ${notesStr} ${summaryStr}`.toLowerCase();
+                    const matchSearch = searchStr.includes(term);
+                    
+                    let matchDynamic = true;
+                    if(activeFiltersList.length > 0) {
+                        const bookCats = Array.isArray(book.category) ? book.category : (typeof book.category === 'string' ? book.category.split(',').map(s=>s.trim()) : []);
+                        const bookSubCats = Array.isArray(book.subCategory) ? book.subCategory : (typeof book.subCategory === 'string' ? book.subCategory.split(',').map(s=>s.trim()) : []);
+                        activeFiltersList.forEach(f => {
+                            if(f.type === 'cat') { if(!bookCats.includes(f.value) && !bookSubCats.includes(f.value)) matchDynamic = false; } 
+                            else if(f.type === 'format') { if(book.format !== f.value) matchDynamic = false; } 
+                            else if(f.type === 'status') { if(book.status !== f.value && bookOwn !== f.value) matchDynamic = false; }
+                        });
+                    }
+                    return matchStatus && matchOwn && matchSearch && matchDynamic;
+                });
+
+                filtered.sort((a, b) => {
+                    const getMillis = (item) => {
+                        if (!item) return 0;
+                        if (typeof item.toMillis === 'function') return item.toMillis();
+                        if (typeof item.seconds === 'number') return item.seconds * 1000;
+                        if (typeof item === 'number') return item;
+                        return 0;
+                    };
+                    if (sort === 'newest') return getMillis(b.createdAt) - getMillis(a.createdAt);
+                    if (sort === 'oldest') return getMillis(a.createdAt) - getMillis(b.createdAt);
+                    if (sort === 'titleAZ') {
+                        const tA = typeof a.title === 'string' ? a.title : '';
+                        const tB = typeof b.title === 'string' ? b.title : '';
+                        return tA.localeCompare(tB);
+                    }
+                    if (sort === 'ratingDesc') return (Number(b.rating) || 0) - (Number(a.rating) || 0);
+                    return 0;
+                });
+
+                renderBooks(filtered);
+            } catch(err) {
+                console.error("Filtreleme hatası:", err);
+            }
+        }
+
+        function renderBooks(booksToRender) {
+            try {
+                bookListEl.innerHTML = '';
+                if (booksToRender.length === 0) { document.getElementById('empty-state').style.display = 'flex'; return; }
+                document.getElementById('empty-state').style.display = 'none';
+
+                booksToRender.forEach(book => {
+                    const s = statusMap[book.status] || statusMap['read'];
+                    let bOwn = book.ownership || 'none';
+                    if (bOwn === 'owned') bOwn = 'physical';
+                    if (bOwn === 'borrowed') bOwn = 'none';
+                    const o = ownMap[bOwn] || ownMap['none']; 
+                    
+                    let ratingHtml = '';
+                    const rating = Number(book.rating) || 0;
+                    if(rating > 0) {
+                        ratingHtml = '<div class="flex text-amber-400 text-[10px] mb-2">';
+                        for(let i=1; i<=5; i++) ratingHtml += i <= rating ? '<i class="fas fa-star"></i>' : '<i class="far fa-star text-slate-300 dark:text-slate-600"></i>';
+                        ratingHtml += '</div>';
+                    }
+
+                    const favIconClass = book.isFavorite ? 'fas fa-heart text-red-500' : 'far fa-heart text-slate-400 hover:text-red-400';
+                    const favBtnHtml = `<button type="button" onclick="window.toggleFavorite(event, '${book.id}', ${!!book.isFavorite})" class="absolute top-3 right-3 z-20 text-lg transition-transform active:scale-75" title="Favorilere Ekle/Çıkar"><i class="${favIconClass}"></i></button>`;
+
+                    let badgesHtml = `<button type="button" onclick="window.addDynamicFilter('status', '${bOwn}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity ${o.color} px-2 py-1 rounded-md text-[10px] font-bold tracking-wide border"><i class="fas ${o.icon} mr-1"></i>${o.text}</button>`;
+                    
+                    const bookCats = Array.isArray(book.category) ? book.category : (typeof book.category === 'string' ? book.category.split(',').map(str=>str.trim()) : []);
+                    bookCats.forEach(c => { if(c) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('cat', '${escapeHTML(c)}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide">${escapeHTML(c)}</button>`; });
+
+                    const bookSubCats = Array.isArray(book.subCategory) ? book.subCategory : (typeof book.subCategory === 'string' ? book.subCategory.split(',').map(str=>str.trim()) : []);
+                    bookSubCats.forEach(c => { if(c) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('cat', '${escapeHTML(c)}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide">${escapeHTML(c)}</button>`; });
+
+                    if(book.format) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('format', '${escapeHTML(book.format)}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide"><i class="fas fa-file-alt mr-1"></i>${escapeHTML(book.format)}</button>`;
+
+                    const card = document.createElement('div');
+                    
+                    const safeTitle = (book.title && typeof book.title === 'string') ? book.title : 'İsimsiz';
+                    const safeAuthor = (book.author && typeof book.author === 'string') ? book.author : 'Bilinmeyen Yazar';
+                    const escapedTitle = escapeHTML(safeTitle);
+                    const escapedAuthor = escapeHTML(safeAuthor);
+                    const jsSafeTitle = escapeHTML(safeTitle.replace(/'/g, "\\'"));
+                    
+                    if (currentViewMode === 'list') {
+                        card.className = 'bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-col cursor-pointer group';
+                        card.onclick = (e) => { if(!e.target.closest('button')) window.openViewModal(book.id); };
+                        card.innerHTML = `
+                            ${favBtnHtml}
+                            <div class="flex-grow min-w-0 flex flex-col z-10 pr-6">
+                                <div class="flex justify-between items-start gap-2 mb-1">
+                                    <div class="w-full">
+                                        ${ratingHtml}
+                                        <h3 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white book-title leading-tight group-hover:text-indigo-600 transition-colors">${escapedTitle}</h3>
+                                        <p class="text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm mt-1">${escapedAuthor}</p>
+                                    </div>
+                                    <div class="hide-auth-elements flex shrink-0 gap-1 bg-slate-50 dark:bg-slate-900/50 p-1 rounded-xl border border-slate-100 dark:border-slate-700">
+                                        <button type="button" onclick="event.stopPropagation(); window.startEditMode('${book.id}')" class="edit-btn p-1.5 md:p-2 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg transition-colors active:scale-90" title="Düzenle"><i class="fas fa-edit"></i></button>
+                                        <button type="button" onclick="event.stopPropagation(); window.deleteBook('${book.id}', '${jsSafeTitle}')" class="delete-btn p-1.5 md:p-2 text-slate-500 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-colors active:scale-90" title="Sil"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </div>
+                                <div class="flex flex-wrap gap-1.5 mb-2 mt-2" onclick="event.stopPropagation()">${badgesHtml}</div>
+                                <div class="mb-2 flex items-center gap-2">
+                                    <button type="button" onclick="event.stopPropagation(); window.addDynamicFilter('status', '${book.status}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${s.color}">
+                                        <i class="fas ${s.icon}"></i> ${s.text}
+                                    </button>
+                                    ${book.pageCount ? `<span class="text-[10px] text-slate-400"><i class="fas fa-file-alt"></i> ${escapeHTML(book.pageCount)} syf</span>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    } else if (currentViewMode === 'grid') {
+                        card.className = 'bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-row gap-4 cursor-pointer group';
+                        card.onclick = (e) => { if(!e.target.closest('button')) window.openViewModal(book.id); };
+                        
+                        const coverHtml = book.coverUrl 
+                            ? `<div class="w-full h-40 md:h-48 bg-slate-50 dark:bg-slate-900 rounded-xl flex items-center justify-center overflow-hidden shadow shrink-0 group-hover:opacity-90 transition-opacity"><img src="${book.coverUrl}" class="w-full h-full object-contain"></div>`
+                            : `<div class="w-full h-40 md:h-48 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center text-slate-300 dark:text-slate-500 shadow shrink-0 group-hover:bg-slate-200 transition-colors"><i class="fas fa-book text-3xl"></i></div>`;
+
+                        card.innerHTML = `
+                            ${favBtnHtml}
+                            <div class="flex flex-col w-28 md:w-32 shrink-0 gap-2">
+                                ${coverHtml}
+                                <div class="hide-auth-elements flex w-full gap-1">
+                                    <button type="button" onclick="event.stopPropagation(); window.startEditMode('${book.id}')" class="edit-btn flex-1 bg-slate-50 dark:bg-slate-900/50 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 p-2 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors flex items-center justify-center active:scale-90" title="Düzenle"><i class="fas fa-edit"></i></button>
+                                    <button type="button" onclick="event.stopPropagation(); window.deleteBook('${book.id}', '${jsSafeTitle}')" class="delete-btn flex-1 bg-slate-50 dark:bg-slate-900/50 text-slate-500 hover:text-red-600 dark:hover:text-red-400 p-2 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors flex items-center justify-center active:scale-90" title="Sil"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                            </div>
+                            <div class="flex-grow min-w-0 flex flex-col z-10 pr-5">
+                                <div class="flex justify-between items-start gap-2 mb-1">
+                                    <div class="w-full">
+                                        ${ratingHtml}
+                                        <h3 class="text-lg font-bold text-slate-900 dark:text-white book-title leading-tight line-clamp-2 group-hover:text-indigo-600 transition-colors">${escapedTitle}</h3>
+                                        <p class="text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm mt-1">${escapedAuthor}</p>
+                                    </div>
+                                </div>
+                                <div class="flex flex-wrap gap-1.5 mb-2 mt-2" onclick="event.stopPropagation()">${badgesHtml}</div>
+                                <div class="mb-2 flex flex-col items-start gap-1">
+                                    <button type="button" onclick="event.stopPropagation(); window.addDynamicFilter('status', '${book.status}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${s.color}">
+                                        <i class="fas ${s.icon}"></i> ${s.text}
+                                    </button>
+                                    ${book.pageCount ? `<span class="text-[10px] text-slate-400 font-medium"><i class="fas fa-file-alt"></i> ${escapeHTML(book.pageCount)} sayfa</span>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    } else if (currentViewMode === 'shelf') {
+                        card.className = 'relative flex flex-col items-center justify-end h-40 md:h-48 group cursor-pointer px-1 sm:px-2';
+                        card.onclick = () => window.openViewModal(book.id);
+                        
+                        const coverHtml = book.coverUrl 
+                            ? `<img src="${book.coverUrl}" class="w-auto h-full max-h-[90%] object-contain rounded shadow-md z-10 group-hover:-translate-y-3 group-active:scale-95 transition-all duration-300">`
+                            : `<div class="w-20 sm:w-24 h-full max-h-[90%] bg-slate-200 dark:bg-slate-700 rounded flex items-center justify-center text-slate-400 shadow-md z-10 group-hover:-translate-y-3 transition-transform duration-300 px-2 text-center text-[10px] font-bold overflow-hidden">${escapedTitle}</div>`;
+
+                        const shelfFavIcon = book.isFavorite ? '<i class="fas fa-heart text-red-500"></i>' : '';
+
+                        card.innerHTML = `
+                            ${book.isFavorite ? `<div class="absolute top-0 right-2 z-20 text-lg drop-shadow-md pointer-events-none">${shelfFavIcon}</div>` : ''}
+                            ${coverHtml}
+                            <div class="absolute bottom-0 left-0 w-full h-3 sm:h-4 bg-gradient-to-b from-amber-800 to-amber-950 dark:from-slate-700 dark:to-slate-800 rounded-sm shadow-[0_4px_6px_rgba(0,0,0,0.3)] z-0 border-t border-amber-700/50 dark:border-slate-600"></div>
+                            <div class="absolute -bottom-6 bg-slate-900 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-30 pointer-events-none max-w-[150%] truncate shadow-lg border border-slate-700">${escapedTitle}</div>
+                        `;
+                    }
+
+                    if(isReadOnlyMode) {
+                        card.querySelectorAll('.hide-auth-elements').forEach(el => el.style.display = 'none');
+                    }
+                    bookListEl.appendChild(card);
+                });
+            } catch(err) {
+                console.error("Render hatası:", err);
+            }
+        }
+
+        // --- ARAMA ÖNERİLERİ GÜNCELLEMESİ ---
         function updateSearchSuggestions() {
             const suggestionSet = new Set();
             allBooks.forEach(b => {
-                if(b.title) suggestionSet.add(b.title.trim());
-                if(b.author) suggestionSet.add(b.author.trim());
+                if(b.title && typeof b.title === 'string') suggestionSet.add(b.title.trim());
+                if(b.author && typeof b.author === 'string') suggestionSet.add(b.author.trim());
             });
             const dataList = document.getElementById('search-suggestions');
             dataList.innerHTML = '';
@@ -1343,138 +1545,7 @@
             });
         }
 
-        // --- YILDIZ PUANLAMA MANTIĞI ---
-        const stars = document.querySelectorAll('.star-rating i');
-        function updateStarsUI(val) {
-            stars.forEach(s => {
-                const sVal = parseInt(s.getAttribute('data-value'));
-                if (sVal <= val) {
-                    s.classList.remove('text-slate-300', 'dark:text-slate-600', 'far');
-                    s.classList.add('text-amber-400', 'fas');
-                } else {
-                    s.classList.remove('text-amber-400', 'fas');
-                    s.classList.add('text-slate-300', 'dark:text-slate-600', 'far');
-                }
-            });
-        }
-        function setRatingUI(val) {
-            inputs.rating.value = val;
-            updateStarsUI(val);
-        }
-        stars.forEach(star => {
-            star.addEventListener('mouseover', function() { updateStarsUI(parseInt(this.getAttribute('data-value'))); });
-            star.addEventListener('mouseout', function() { updateStarsUI(parseInt(inputs.rating.value) || 0); });
-            star.addEventListener('click', function() { setRatingUI(parseInt(this.getAttribute('data-value'))); });
-        });
-
-        // --- İSTATİSTİK & GRAFİK ---
-        function updateStatsChart() {
-            if(allBooks.length === 0) return;
-            const catCounts = {};
-            allBooks.forEach(b => {
-                if(b.status === 'read') { 
-                    let cats = Array.isArray(b.category) ? b.category : (typeof b.category === 'string' ? b.category.split(',') : ['Diğer']);
-                    if(cats.length === 0) cats = ['Diğer'];
-                    cats.forEach(c => {
-                        let cleanCat = c.trim() || 'Diğer';
-                        catCounts[cleanCat] = (catCounts[cleanCat] || 0) + 1;
-                    });
-                }
-            });
-
-            const labels = Object.keys(catCounts);
-            const data = Object.values(catCounts);
-            if(labels.length === 0) { labels.push('Henüz Okunmadı'); data.push(1); }
-
-            const ctx = document.getElementById('categoryChart');
-            if(categoryChart) categoryChart.destroy();
-            categoryChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#3b82f6', '#ec4899', '#8b5cf6', '#64748b', '#ef4444'], // Kırmızı da eklendi
-                        borderWidth: 2,
-                        borderColor: document.documentElement.classList.contains('dark') ? '#1e293b' : '#ffffff'
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: document.documentElement.classList.contains('dark') ? '#cbd5e1' : '#475569', font: {size: 10} } } } }
-            });
-        }
-
-        function updateDashboardStats() {
-            document.getElementById('stat-total').textContent = allBooks.length;
-            
-            const readBooksList = allBooks.filter(b => b.status === 'read');
-            document.getElementById('stat-read').textContent = readBooksList.length;
-            
-            const totalPagesRead = readBooksList.reduce((acc, book) => {
-                return acc + (parseInt(book.pageCount) || 0);
-            }, 0);
-            document.getElementById('stat-pages').innerHTML = `<i class="fas fa-file-alt mr-1"></i> ${totalPagesRead.toLocaleString('tr-TR')} Sayfa`;
-
-            const ownedBooks = allBooks.filter(b => {
-                let own = b.ownership || 'none';
-                return own === 'physical' || own === 'digital' || own === 'owned';
-            }).length;
-            document.getElementById('stat-owned').textContent = ownedBooks;
-            
-            document.getElementById('goal-text').textContent = `${readBooksList.length}/${savedGoal}`;
-            const percentage = Math.min((readBooksList.length / savedGoal) * 100, 100);
-            document.getElementById('goal-bar').style.width = `${percentage}%`;
-            updateStatsChart();
-        }
-
-        document.getElementById('save-goal-btn').addEventListener('click', async () => {
-            const inputVal = document.getElementById('setting-reading-goal').value;
-            savedGoal = parseInt(inputVal) || 30;
-            savedGoal = Math.max(1, savedGoal);
-            
-            const btn = document.getElementById('save-goal-btn');
-            const ogHtml = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-            btn.disabled = true;
-
-            try {
-                if(currentUser && !isOfflineMode && !isReadOnlyMode) {
-                    const userRef = doc(db, 'artifacts', appId, 'users', currentUser.uid);
-                    await setDoc(userRef, { readingGoal: savedGoal }, { merge: true });
-                    showNotification("Hedef başarıyla buluta kaydedildi.", "success");
-                }
-                localStorage.setItem('readingGoal', savedGoal);
-                updateDashboardStats();
-            } catch(err) {
-                showNotification("Hedef kaydedilemedi. Bağlantınızı kontrol edin.", "error");
-            } finally {
-                btn.innerHTML = ogHtml;
-                btn.disabled = false;
-            }
-        });
-
-        function loadSettings(targetUid) {
-            if(isOfflineMode) return;
-            if(settingsUnsubscribe) settingsUnsubscribe();
-            settingsUnsubscribe = onSnapshot(doc(db, 'artifacts', appId, 'users', targetUid), (docSnap) => {
-                if(docSnap.exists() && docSnap.data().readingGoal) {
-                    savedGoal = Math.max(1, docSnap.data().readingGoal);
-                    if(!isReadOnlyMode) localStorage.setItem('readingGoal', savedGoal);
-                    document.getElementById('setting-reading-goal').value = savedGoal;
-                    updateDashboardStats();
-                }
-            });
-        }
-        
-        function renderSkeletons() {
-            bookListEl.className = "grid grid-cols-1 md:grid-cols-2 gap-4"; // Varsayılan Grid
-            bookListEl.innerHTML = '';
-            for(let i=0; i<4; i++) {
-                const skeleton = document.createElement('div');
-                skeleton.className = 'skeleton bg-slate-200 dark:bg-slate-700/50 rounded-2xl h-40 border border-slate-200 dark:border-slate-700 p-4 w-full';
-                bookListEl.appendChild(skeleton);
-            }
-        }
-
+        // --- VERİTABANI DİNLEME ---
         function loadBooks(targetUid) {
             if(!initialLoadDone) renderSkeletons();
             
@@ -1483,21 +1554,30 @@
                 updateCategoryDatalists(); updateSearchSuggestions(); updateDashboardStats(); applyFiltersAndRender();
             } else {
                 if (booksUnsubscribe) booksUnsubscribe();
-                try {
-                    booksUnsubscribe = onSnapshot(collection(db, 'artifacts', appId, 'users', targetUid, 'books'), (snapshot) => {
+                booksUnsubscribe = onSnapshot(collection(db, 'artifacts', appId, 'users', targetUid, 'books'), (snapshot) => {
+                    try {
                         allBooks = [];
                         snapshot.forEach(doc => { allBooks.push({ id: doc.id, ...doc.data() }); });
                         initialLoadDone = true;
-                        updateCategoryDatalists(); updateSearchSuggestions(); updateDashboardStats(); applyFiltersAndRender();
-                    }, (error) => {
-                        console.error("Firestore Dinleme Hatası:", error);
-                        showNotification("Veriler yüklenemedi: " + error.message, "error");
-                    });
-                } catch (err) {}
+                        updateCategoryDatalists(); 
+                        updateSearchSuggestions(); 
+                        updateDashboardStats(); 
+                        applyFiltersAndRender();
+                    } catch (innerErr) {
+                        console.error("Veri İşleme Hatası:", innerErr);
+                        showNotification("Kitaplar yüklenirken veri hatası oluştu.", "error");
+                        bookListEl.innerHTML = '<div class="text-slate-500 dark:text-slate-400 text-center w-full p-4 col-span-full">Veri gösterim hatası. Bazı kitaplarınız hatalı formatta olabilir.</div>';
+                    }
+                }, (error) => {
+                    console.error("Firestore Dinleme Hatası:", error);
+                    showNotification("Veriler yüklenemedi: " + error.message, "error");
+                });
             }
         }
 
-        // -- MODAL & DRAWER MANTIKLARI --
+        // --- DİĞER KODLAR ---
+        // (Event listener'lar ve Auth gibi diğer fonksiyonlar aynen duruyor)
+        
         const addModal = document.getElementById('add-modal');
         const addBackdrop = document.getElementById('add-backdrop');
         const addPanel = document.getElementById('add-panel');
@@ -1574,7 +1654,6 @@
             statsModal.classList.remove('flex');
         });
 
-        // Tema Mantığı
         if (htmlEl.classList.contains('dark')) {
             document.getElementById('theme-text').textContent = 'Açık';
         }
@@ -1592,14 +1671,12 @@
             updateStatsChart(); 
         });
 
-        // GLOBAL HATA YAKALAYICI
         window.addEventListener('error', function(e) {
             console.error("Sistem Hatası:", e);
             const loading = document.getElementById('loading');
             if(loading) loading.style.display = 'none';
         });
 
-        // --- GİRİŞ VE ÇIKIŞ İŞLEMLERİ ---
         document.getElementById('email-login-btn').addEventListener('click', async () => {
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value.trim();
@@ -1672,7 +1749,6 @@
             closeSettingsDrawer();
         });
 
-        // KULLANICI GİRİŞ KONTROLÜ (AUTH)
         onAuthStateChanged(auth, async (user) => {
             loadingScreen.style.display = 'none';
 
