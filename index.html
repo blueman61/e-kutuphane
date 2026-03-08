@@ -64,7 +64,29 @@
                 <i class="fas fa-book-reader"></i>
             </div>
             <h1 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">e-Kütüphane Pro</h1>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">Kişisel arşivinize erişmek ve okuma istatistiklerinizi yönetmek için lütfen giriş yapın.</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Kişisel arşivinize erişmek ve okuma istatistiklerinizi yönetmek için lütfen giriş yapın.</p>
+            
+            <!-- E-posta / Şifre Giriş Formu -->
+            <div class="w-full flex flex-col gap-3 mb-6 text-left">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">E-POSTA</label>
+                    <input type="email" id="login-email" class="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm dark:bg-slate-900 dark:text-white transition-colors" placeholder="ornek@email.com">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">ŞİFRE</label>
+                    <input type="password" id="login-password" class="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm dark:bg-slate-900 dark:text-white transition-colors" placeholder="••••••••">
+                </div>
+                <div class="flex gap-2 mt-2">
+                    <button id="email-login-btn" class="flex-1 bg-indigo-600 text-white rounded-xl py-3 px-4 font-bold hover:bg-indigo-700 transition-all active:scale-95 text-sm shadow-md">Giriş Yap</button>
+                    <button id="email-register-btn" class="flex-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 rounded-xl py-3 px-4 font-bold hover:bg-slate-200 dark:hover:bg-slate-600 transition-all active:scale-95 text-sm">Kayıt Ol</button>
+                </div>
+            </div>
+
+            <div class="w-full flex items-center justify-between mb-6">
+                <hr class="w-full border-slate-200 dark:border-slate-700">
+                <span class="px-3 text-xs text-slate-400 font-medium whitespace-nowrap">VEYA</span>
+                <hr class="w-full border-slate-200 dark:border-slate-700">
+            </div>
             
             <button id="google-login-btn" class="w-full flex items-center justify-center gap-3 bg-white dark:bg-slate-700 text-slate-700 dark:text-white border border-slate-300 dark:border-slate-600 rounded-xl py-3.5 px-4 font-bold hover:bg-slate-50 dark:hover:bg-slate-600 hover:shadow-md transition-all active:scale-95">
                 <i class="fab fa-google text-red-500 text-lg"></i> Google ile Giriş Yap
@@ -515,7 +537,7 @@
     <!-- SCRIPT (İzole Edildi ve Hatalar Temizlendi) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, setDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, Timestamp, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -1866,6 +1888,56 @@
         });
 
         // --- GİRİŞ VE ÇIKIŞ İŞLEMLERİ (EKLENEN KISIM) ---
+        document.getElementById('email-login-btn').addEventListener('click', async () => {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+            if(!email || !password) return showNotification("E-posta ve şifre zorunludur.", "error");
+            
+            const btn = document.getElementById('email-login-btn');
+            const ogText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true;
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                document.getElementById('login-email').value = '';
+                document.getElementById('login-password').value = '';
+            } catch (err) {
+                console.error(err);
+                if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+                    showNotification("Hatalı e-posta veya şifre.", "error");
+                } else {
+                    showNotification("Giriş yapılamadı: " + err.message, "error");
+                }
+            } finally {
+                btn.innerHTML = ogText; btn.disabled = false;
+            }
+        });
+
+        document.getElementById('email-register-btn').addEventListener('click', async () => {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+            if(!email || !password) return showNotification("E-posta ve şifre zorunludur.", "error");
+            if(password.length < 6) return showNotification("Şifre en az 6 karakter olmalıdır.", "error");
+            
+            const btn = document.getElementById('email-register-btn');
+            const ogText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true;
+            try {
+                await createUserWithEmailAndPassword(auth, email, password);
+                document.getElementById('login-email').value = '';
+                document.getElementById('login-password').value = '';
+                showNotification("Hesap başarıyla oluşturuldu!", "success");
+            } catch (err) {
+                console.error(err);
+                if (err.code === 'auth/email-already-in-use') {
+                    showNotification("Bu e-posta adresi zaten kullanımda.", "error");
+                } else {
+                    showNotification("Kayıt olunamadı: " + err.message, "error");
+                }
+            } finally {
+                btn.innerHTML = ogText; btn.disabled = false;
+            }
+        });
+
         document.getElementById('google-login-btn').addEventListener('click', async () => {
             if (window.location.protocol === 'file:') { 
                 showNotification("Google Girişi yerel 'file://' dosyalarında çalışmaz. Sunucuda (GitHub Pages vb.) açın.", "error"); 
@@ -1923,7 +1995,7 @@
                 document.getElementById('readonly-banner').classList.add('hidden');
                 document.querySelectorAll('.hide-auth-elements').forEach(el => el.classList.remove('hidden'));
 
-                const userName = user.displayName || 'Kullanıcı';
+                const userName = user.displayName || (user.email ? user.email.split('@')[0] : 'Kullanıcı');
                 document.getElementById('drawer-profile-name').textContent = userName;
                 document.getElementById('main-title').textContent = "e-Kütüphane";
                 
