@@ -132,7 +132,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl md:text-2xl font-bold text-slate-900 dark:text-white tracking-tight" id="main-title">e-Kütüphane</h1>
-                    <p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Akıllı Okuma & Arşiv Asistanı <span class="text-indigo-500 font-bold ml-1">v2.2</span></p>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Akıllı Okuma & Arşiv Asistanı <span class="text-indigo-500 font-bold ml-1">v2.3</span></p>
                 </div>
             </div>
             
@@ -247,7 +247,7 @@
         <i class="fas fa-arrow-up text-lg"></i>
     </button>
 
-    <!-- Tanılama (Debug) Butonu - Güncellendi -->
+    <!-- Tanılama (Debug) Butonu -->
     <button type="button" id="sys-diag-btn" class="fixed bottom-24 right-6 w-12 h-12 bg-red-600 text-white rounded-full shadow-xl flex items-center justify-center z-50 hover:bg-red-700 transition-all hover:scale-105" title="Hata Raporu Çıkar">
         <i class="fas fa-stethoscope"></i>
     </button>
@@ -294,14 +294,14 @@
                 <button type="button" id="rte-cancel-btn" class="w-10 h-10 shrink-0 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 transition-all"><i class="fas fa-arrow-left text-xl"></i></button>
                 <h3 id="rte-title" class="font-bold text-slate-800 dark:text-white text-lg truncate flex-grow">Not Düzenle</h3>
                 
-                <!-- Sayfa Numarası Girişi (Sadece Alıntılar için görünecek) -->
+                <!-- Sayfa Numarası Girişi -->
                 <input type="text" id="rte-page-input" placeholder="Sayfa No" class="hidden w-20 md:w-24 shrink-0 px-2 py-2 text-xs border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-200 outline-none focus:ring-1 focus:ring-indigo-500 font-bold text-center">
                 
                 <button type="button" id="rte-save-btn" class="shrink-0 text-indigo-600 dark:text-indigo-400 font-bold px-4 py-2 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/30 active:scale-95 transition-all bg-indigo-50 dark:bg-indigo-900/20">Bitti</button>
             </div>
         </div>
         
-        <!-- Yazı Alanı (Esneyen Kısım) -->
+        <!-- Yazı Alanı -->
         <div id="rte-editor" contenteditable="true" data-placeholder="Buraya yazmaya başlayın..." class="flex-grow p-4 md:p-6 outline-none overflow-y-auto text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 rte-content text-base md:text-lg"></div>
 
         <!-- Araç Çubuğu -->
@@ -323,7 +323,7 @@
         </div>
     </div>
 
-    <!-- Alıntı Paylaşım (Sosyal Medya) Modal'ı -->
+    <!-- Alıntı Paylaşım Modal'ı -->
     <div id="quote-share-modal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4">
         <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm cursor-pointer" onclick="window.closeQuoteShareModal()"></div>
         <div class="relative w-full max-w-sm bg-white dark:bg-slate-800 rounded-3xl shadow-2xl p-6 flex flex-col z-10 border border-slate-200 dark:border-slate-700 transform transition-all">
@@ -452,233 +452,7 @@
         </div>
     </div>
 
-    <!-- Add/Edit Book Modal -->
-    <div id="add-modal" class="fixed inset-0 z-40 hidden items-end md:items-center justify-center md:p-4">
-        <div id="add-backdrop" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
-        <div id="add-panel" class="relative w-full md:max-w-2xl bg-white dark:bg-slate-800 h-[90vh] md:h-auto md:max-h-[90vh] rounded-t-3xl md:rounded-2xl shadow-2xl flex flex-col transform translate-y-full md:translate-y-10 md:scale-95 transition-all duration-300 ease-out">
-            <div class="p-4 md:p-5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center shrink-0 bg-slate-50 dark:bg-slate-800/50 rounded-t-3xl md:rounded-t-2xl">
-                <h2 id="form-title" class="font-bold text-lg dark:text-white flex items-center gap-2">
-                    <i class="fas fa-plus-circle text-indigo-500"></i> Yeni Kitap Ekle
-                </h2>
-                <div class="flex items-center gap-2">
-                    <button type="button" id="cancel-edit-btn" class="hidden text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 font-bold py-1.5 px-3 rounded-full transition-colors border border-amber-200 dark:border-amber-800">İptal Et</button>
-                    <button type="button" id="close-add-btn" class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-300 hover:text-slate-900 transition-colors active:scale-95"><i class="fas fa-chevron-down md:fa-times"></i></button>
-                </div>
-            </div>
-            
-            <div class="overflow-y-auto p-4 md:p-6 pb-20 md:pb-6 custom-scrollbar flex-grow">
-                <form id="book-form" class="flex flex-col gap-6">
-                    <!-- ISBN & Kamera -->
-                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
-                        <label class="block text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-2 uppercase tracking-wider">Hızlı Ekleme (ISBN / BARKOD)</label>
-                        <div class="flex gap-2 items-center mb-3">
-                            <input type="text" id="book-isbn" placeholder="Örn: 9781234567890" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm bg-white dark:bg-slate-800 dark:text-white">
-                            <button type="button" id="search-isbn-btn" class="shrink-0 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 px-4 py-2 rounded-lg text-xs font-bold hover:bg-indigo-200 transition-colors active:scale-95">Bul</button>
-                        </div>
-                        <button type="button" id="start-camera-btn" class="w-full flex items-center justify-center gap-2 py-2 bg-slate-800 text-white dark:bg-slate-700 rounded-lg text-xs font-bold hover:bg-slate-700 transition-colors active:scale-95">
-                            <i class="fas fa-camera"></i> Kamera ile Barkod Okut
-                        </button>
-                        <div id="reader" class="hidden mt-3 shadow-inner"></div>
-                    </div>
-
-                    <!-- Temel Bilgiler -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="col-span-2 md:col-span-1">
-                            <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">KİTAP ADI *</label>
-                            <input type="text" id="book-title" required class="w-full px-3 py-2.5 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm bg-slate-50 dark:bg-slate-900 dark:text-white">
-                        </div>
-                        <div class="col-span-2 md:col-span-1">
-                            <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">YAZAR *</label>
-                            <input type="text" id="book-author" required class="w-full px-3 py-2.5 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm bg-slate-50 dark:bg-slate-900 dark:text-white">
-                        </div>
-                    </div>
-
-                    <!-- Cover Section -->
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-2"><i class="fas fa-image text-indigo-400 mr-1"></i> KİTAP KAPAĞI</label>
-                        <div class="flex gap-4 items-start">
-                            <div class="w-20 h-28 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg overflow-hidden flex items-center justify-center shrink-0 relative shadow-sm">
-                                <i id="cover-placeholder-icon" class="fas fa-book text-slate-300 dark:text-slate-600 text-2xl"></i>
-                                <img id="cover-img-preview" src="" class="hidden w-full h-full object-cover absolute inset-0">
-                            </div>
-                            <div class="flex-grow space-y-2">
-                                <button type="button" id="fetch-cover-btn" class="w-full text-xs font-bold bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-200 py-2.5 px-3 rounded-xl transition-colors flex items-center justify-center gap-2 active:scale-95"><i class="fab fa-google text-sm"></i> Otomatik Bilgi/Kapak Bul</button>
-                                <input type="url" id="book-cover-url" placeholder="Manuel Görsel URL'si..." class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-xs focus:ring-1 focus:ring-indigo-500 outline-none bg-white dark:bg-slate-800 dark:text-white">
-                            </div>
-                        </div>
-                        <div id="book-suggestions-container" class="hidden mt-4 pt-3 border-t border-slate-200 dark:border-slate-700">
-                            <label class="block text-[10px] font-bold text-indigo-500 dark:text-indigo-400 mb-2 uppercase tracking-wider">Önerilen Kitaplar (Seçmek için tıklayın)</label>
-                            <div id="book-suggestions-list" class="flex gap-2 overflow-x-auto pb-2 custom-scrollbar hide-scrollbar"></div>
-                        </div>
-                    </div>
-
-                    <!-- Classification & Ownership -->
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        <div class="col-span-2">
-                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase">Kategori</label>
-                            <input type="text" id="book-category" list="cat-list" placeholder="Örn: Roman" class="w-full px-3 py-2.5 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm dark:bg-slate-800 dark:text-white">
-                            <datalist id="cat-list"></datalist>
-                            <div id="cat-tags-container" class="flex flex-wrap gap-1 mt-1.5"></div>
-                        </div>
-                        <div class="col-span-2">
-                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase">Alt Kategori</label>
-                            <input type="text" id="book-subcategory" list="subcat-list" placeholder="Örn: Bilimkurgu" class="w-full px-3 py-2.5 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm dark:bg-slate-800 dark:text-white">
-                            <datalist id="subcat-list"></datalist>
-                            <div id="subcat-tags-container" class="flex flex-wrap gap-1 mt-1.5"></div>
-                        </div>
-                        <div class="col-span-2 md:col-span-1">
-                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase">Kitap Türü</label>
-                            <select id="book-format" class="w-full px-3 py-2.5 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm bg-white dark:bg-slate-800 dark:text-white">
-                                <option value="Fiziksel">Fiziksel Kitap</option>
-                                <option value="E-Kitap">E-Kitap</option>
-                                <option value="Sesli Kitap">Sesli Kitap</option>
-                                <option value="PDF">PDF / Belge</option>
-                            </select>
-                        </div>
-                        <div class="col-span-2 md:col-span-1">
-                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase">Sayfa Sayısı</label>
-                            <input type="number" id="book-page-count" placeholder="Örn: 320" min="0" class="w-full px-3 py-2.5 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm bg-slate-50 dark:bg-slate-900 dark:text-white">
-                        </div>
-                        <div class="col-span-2 md:col-span-1">
-                            <label class="block text-[10px] font-bold text-indigo-500 dark:text-indigo-400 mb-1 uppercase"><i class="fas fa-home mr-1"></i>Sahiplik Durumu</label>
-                            <select id="book-ownership" class="w-full px-3 py-2.5 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm bg-white dark:bg-slate-800 text-slate-800 dark:text-white font-semibold cursor-pointer">
-                                <option value="none" class="dark:bg-slate-800">YOK (Bende Değil)</option>
-                                <option value="physical" class="dark:bg-slate-800">Fiziksel</option>
-                                <option value="digital" class="dark:bg-slate-800">Dijital</option>
-                            </select>
-                        </div>
-                        <div class="col-span-2 md:col-span-1">
-                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase">Okuma Durumu</label>
-                            <select id="book-status" class="w-full px-3 py-2.5 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm bg-white dark:bg-slate-800 dark:text-white">
-                                <option value="read">Okundu</option>
-                                <option value="reading">Okunuyor</option>
-                                <option value="toread">Okunacak</option>
-                                <option value="dnf">Yarım Bıraktım</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <hr class="border-slate-200 dark:border-slate-700">
-
-                    <!-- Rating & Dates -->
-                    <div class="space-y-4">
-                        <h3 class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                            <i class="fas fa-star text-amber-500"></i> Puan & Tarihler
-                        </h3>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2">PUANINIZ</label>
-                            <div class="star-rating flex gap-2 text-3xl text-slate-300 dark:text-slate-600 justify-center md:justify-start bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-100 dark:border-slate-700" id="rating-stars">
-                                <i class="far fa-star" data-value="1"></i>
-                                <i class="far fa-star" data-value="2"></i>
-                                <i class="far fa-star" data-value="3"></i>
-                                <i class="far fa-star" data-value="4"></i>
-                                <i class="far fa-star" data-value="5"></i>
-                            </div>
-                            <input type="hidden" id="book-rating" value="0">
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase">Başlama Tarihi</label>
-                                <input type="date" id="book-start-date" class="w-full px-3 py-2.5 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm dark:bg-slate-800 dark:text-white text-slate-500">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase">Bitiş Tarihi</label>
-                                <input type="date" id="book-end-date" class="w-full px-3 py-2.5 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm dark:bg-slate-800 dark:text-white text-slate-500">
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr class="border-slate-200 dark:border-slate-700">
-
-                    <!-- Notes & Quotes (Form Accordion) -->
-                    <div class="space-y-3">
-                        <h3 class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2 mb-2">
-                            <i class="fas fa-pen-nib text-indigo-500"></i> İçerik & Notlar
-                        </h3>
-                        
-                        <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-800">
-                            <button type="button" class="form-acc-btn w-full px-4 py-3 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                                <span class="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">📝 ÖZET</span>
-                                <i class="fas fa-chevron-down text-slate-400 text-xs transition-transform"></i>
-                            </button>
-                            <div class="form-acc-content hidden px-4 pb-4 pt-2 border-t border-slate-100 dark:border-slate-700">
-                                <input type="hidden" id="note-summary">
-                                <div id="note-summary-display" class="rte-trigger cursor-text w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl outline-none text-sm dark:bg-slate-800 dark:text-white min-h-[80px] bg-slate-50 dark:bg-slate-900/50 overflow-hidden rte-content" data-target="note-summary" data-title="Özet">
-                                    <span class="text-slate-400 italic">Kitabın genel konusu... (Düzenlemek için tıklayın)</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- ALINTILAR Form Kısmı -->
-                        <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-800">
-                            <button type="button" class="form-acc-btn w-full px-4 py-3 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                                <span class="text-xs font-bold text-amber-700 dark:text-amber-500 flex items-center gap-2">💬 ALINTILAR</span>
-                                <i class="fas fa-chevron-down text-slate-400 text-xs transition-transform"></i>
-                            </button>
-                            <div class="form-acc-content hidden px-4 pb-4 pt-2 border-t border-slate-100 dark:border-slate-700 bg-amber-50/20 dark:bg-amber-900/5">
-                                <div class="flex justify-end mb-3 mt-1">
-                                    <button type="button" onclick="window.openRTE('quote', 'Yeni Alıntı Ekle', false, -1)" class="text-[10px] bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 hover:bg-amber-200 px-3 py-1.5 rounded-lg font-bold transition-colors active:scale-95"><i class="fas fa-plus"></i> Zengin Metin Alıntı Ekle</button>
-                                </div>
-                                <div id="quotes-container" class="space-y-3"></div>
-                                <p id="no-quotes-msg" class="text-xs text-amber-600/60 dark:text-amber-500/50 italic text-center py-2">Henüz alıntı eklenmedi.</p>
-                            </div>
-                        </div>
-
-                        <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-800">
-                            <button type="button" class="form-acc-btn w-full px-4 py-3 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                                <span class="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">📌 GENEL NOTLAR</span>
-                                <i class="fas fa-chevron-down text-slate-400 text-xs transition-transform"></i>
-                            </button>
-                            <div class="form-acc-content hidden px-4 pb-4 pt-2 border-t border-slate-100 dark:border-slate-700">
-                                <input type="hidden" id="note-notes">
-                                <div id="note-notes-display" class="rte-trigger cursor-text w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl outline-none text-sm dark:bg-slate-800 dark:text-white min-h-[80px] bg-slate-50 dark:bg-slate-900/50 overflow-hidden rte-content" data-target="note-notes" data-title="Genel Notlar">
-                                    <span class="text-slate-400 italic">Kendinize notlar, sayfa numaraları...</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-800">
-                            <button type="button" class="form-acc-btn w-full px-4 py-3 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                                <span class="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">💡 YORUMLAR</span>
-                                <i class="fas fa-chevron-down text-slate-400 text-xs transition-transform"></i>
-                            </button>
-                            <div class="form-acc-content hidden px-4 pb-4 pt-2 border-t border-slate-100 dark:border-slate-700">
-                                <input type="hidden" id="note-comments">
-                                <div id="note-comments-display" class="rte-trigger cursor-text w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl outline-none text-sm dark:bg-slate-800 dark:text-white min-h-[80px] bg-slate-50 dark:bg-slate-900/50 overflow-hidden rte-content" data-target="note-comments" data-title="Yorumlar">
-                                    <span class="text-slate-400 italic">Kitap ne hissettirdi? Düşünceleriniz...</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-800">
-                            <button type="button" class="form-acc-btn w-full px-4 py-3 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                                <span class="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">⚖️ ELEŞTİRİLER</span>
-                                <i class="fas fa-chevron-down text-slate-400 text-xs transition-transform"></i>
-                            </button>
-                            <div class="form-acc-content hidden px-4 pb-4 pt-2 border-t border-slate-100 dark:border-slate-700">
-                                <input type="hidden" id="note-critiques">
-                                <div id="note-critiques-display" class="rte-trigger cursor-text w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl outline-none text-sm dark:bg-slate-800 dark:text-white min-h-[80px] bg-slate-50 dark:bg-slate-900/50 overflow-hidden rte-content" data-target="note-critiques" data-title="Eleştiriler">
-                                    <span class="text-slate-400 italic">Katılmadığınız veya beğenmediğiniz kısımlar...</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="button" id="save-book-action-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-4 rounded-xl shadow-lg shadow-indigo-200 dark:shadow-none transition-all flex items-center justify-center gap-2 text-lg active:scale-[0.98] mt-4">
-                        <i class="fas fa-save"></i> <span id="submit-text">Kitabı Kaydet</span>
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="toast fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-800 dark:bg-white text-white dark:text-slate-800 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 z-50">
-        <i id="toast-icon" class="fas fa-check-circle text-emerald-400 text-lg"></i>
-        <span id="toast-message" class="text-sm font-medium">İşlem başarılı.</span>
-    </div>
-
-    <!-- SCRIPT -->
+    <!-- SCRIPT EKRANI -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -696,7 +470,42 @@
             appLogs.push(logEntry);
             console.log(logEntry);
         };
-        window.sysLog('INFO', 'v2.2 Başlatıldı.');
+        window.sysLog('INFO', 'v2.3 Başlatıldı.');
+
+        // --- YARDIMCI FONKSİYONLAR (GERİ EKLENDİ VE GÜVENCE ALTINA ALINDI) ---
+        window.showNotification = function(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            if(!toast) return;
+            document.getElementById('toast-message').textContent = msg;
+            document.getElementById('toast-icon').className = type === 'error' ? 'fas fa-exclamation-circle text-red-400' : (type === 'info' ? 'fas fa-info-circle text-blue-400' : 'fas fa-check-circle text-emerald-400');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        window.formatDate = function(timestamp) {
+            if (!timestamp) return null;
+            let dateObj;
+            if (typeof timestamp.toDate === 'function') dateObj = timestamp.toDate();
+            else if (timestamp.seconds) dateObj = new Date(timestamp.seconds * 1000);
+            else if (typeof timestamp === 'number') dateObj = new Date(timestamp);
+            else return null;
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const year = dateObj.getFullYear();
+            return `${day}.${month}.${year}`;
+        }
+        
+        window.formatTimer = function(totalSeconds) {
+            const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+            const s = (totalSeconds % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        window.escapeHTML = function(str) {
+            if (!str && str !== 0) return '';
+            if (typeof str !== 'string') str = String(str);
+            return str.replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t]));
+        }
 
         const firebaseConfig = {
             apiKey: "AIzaSyAPPebXDGREOuJFoom6WxtHnOWmsIyopiA",
@@ -712,10 +521,6 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
         const db = getFirestore(app);
-        
-        // Veritabanı yollarını dinamik oluşturarak sistemin ezmesini engelliyoruz:
-        const U_PATH = 'us' + 'ers';
-        const B_PATH = 'bo' + 'oks';
 
         let currentUser = null; 
         let allBooks = []; 
@@ -822,10 +627,10 @@
         window.deleteBook = async function(bookId, bookTitle) {
              if(confirm(`"${bookTitle}" kitabını silmek istiyor musunuz?`)) {
                 try {
-                    await deleteDoc(doc(db, U_PATH, currentUser.uid, B_PATH, bookId));
-                    showNotification("Kitap silindi.", "info");
+                    await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'books', bookId));
+                    window.showNotification("Kitap silindi.", "info");
                 } catch(err) {
-                    showNotification("Silme başarısız: Yetki kurallarınızı kontrol edin.", "error");
+                    window.showNotification("Silme başarısız: Yetki kurallarınızı kontrol edin.", "error");
                 }
             }
         };
@@ -843,12 +648,12 @@
             e.stopPropagation();
             if(isReadOnlyMode || !currentUser) return;
             try {
-                await updateDoc(doc(db, U_PATH, currentUser.uid, B_PATH, bookId), {
+                await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'books', bookId), {
                     isFavorite: !currentState
                 });
-                showNotification(!currentState ? "Favorilere eklendi!" : "Favorilerden çıkarıldı.", "success");
+                window.showNotification(!currentState ? "Favorilere eklendi!" : "Favorilerden çıkarıldı.", "success");
             } catch(err) {
-                showNotification("Hata oluştu.", "error");
+                window.showNotification("Hata oluştu.", "error");
             }
         };
 
@@ -862,7 +667,7 @@
 
         window.exportPDF = function() {
             if(!currentViewBook) return;
-            showNotification("PDF hazırlanıyor, lütfen bekleyin...", "info");
+            window.showNotification("PDF hazırlanıyor, lütfen bekleyin...", "info");
             
             const printElement = document.createElement('div');
             printElement.style.padding = '40px';
@@ -871,13 +676,13 @@
             printElement.style.backgroundColor = '#ffffff';
             
             let htmlContent = `
-                <h1 style="font-size: 32px; font-weight: bold; font-family: 'Inter', sans-serif; color: #0f172a; margin-bottom: 5px; line-height: 1.2;">${escapeHTML(String(currentViewBook.title || 'İsimsiz'))}</h1>
-                <h2 style="font-size: 18px; color: #475569; margin-bottom: 25px;">Yazar: ${escapeHTML(String(currentViewBook.author || 'Bilinmeyen Yazar'))}</h2>
+                <h1 style="font-size: 32px; font-weight: bold; font-family: 'Inter', sans-serif; color: #0f172a; margin-bottom: 5px; line-height: 1.2;">${window.escapeHTML(String(currentViewBook.title || 'İsimsiz'))}</h1>
+                <h2 style="font-size: 18px; color: #475569; margin-bottom: 25px;">Yazar: ${window.escapeHTML(String(currentViewBook.author || 'Bilinmeyen Yazar'))}</h2>
                 
                 <div style="font-size: 12px; margin-bottom: 30px; display: flex; gap: 15px; color: #64748b; font-family: 'Inter', sans-serif;">
                     <span><b>Durum:</b> ${statusMap[currentViewBook.status]?.text || ''}</span>
                     <span><b>Puan:</b> ${currentViewBook.rating ? currentViewBook.rating + '/5' : '-'}</span>
-                    ${currentViewBook.pageCount ? `<span><b>Sayfa:</b> ${escapeHTML(String(currentViewBook.pageCount))}</span>` : ''}
+                    ${currentViewBook.pageCount ? `<span><b>Sayfa:</b> ${window.escapeHTML(String(currentViewBook.pageCount))}</span>` : ''}
                 </div>
                 <hr style="border: none; border-top: 1px solid #e2e8f0; margin-bottom: 30px;">
             `;
@@ -898,8 +703,8 @@
                 currentViewBook.quotes.forEach(q => {
                     htmlContent += `
                         <blockquote style="border-left: 4px solid #fcd34d; padding-left: 15px; margin-left: 0; margin-bottom: 20px; font-style: italic; font-size: 15px; color: #334155;">
-                            "${escapeHTML(stripHTML(q.text)).replace(/\n/g, '<br>')}"
-                            ${q.page ? `<br><span style="font-size: 11px; font-weight: bold; color: #94a3b8; font-style: normal; font-family: 'Inter', sans-serif;">- Syf. ${escapeHTML(String(q.page))}</span>` : ''}
+                            "${window.escapeHTML(stripHTML(q.text)).replace(/\n/g, '<br>')}"
+                            ${q.page ? `<br><span style="font-size: 11px; font-weight: bold; color: #94a3b8; font-style: normal; font-family: 'Inter', sans-serif;">- Syf. ${window.escapeHTML(String(q.page))}</span>` : ''}
                         </blockquote>
                     `;
                 });
@@ -925,7 +730,7 @@
 
             html2pdf().set(opt).from(printElement).save().then(() => {
                 document.body.removeChild(printElement); 
-                showNotification("Notlar PDF olarak indirildi!", "success");
+                window.showNotification("Notlar PDF olarak indirildi!", "success");
             });
         };
 
@@ -959,7 +764,7 @@
             const q = window.activeShareQuote;
             if(!q) return;
 
-            showNotification("Görsel hazırlanıyor...", "info");
+            window.showNotification("Görsel hazırlanıyor...", "info");
 
             const fonts = ["'Lora', serif", "'Caveat', cursive", "'Cinzel', serif", "'Merriweather', serif", "'Playfair Display', serif", "'Dancing Script', cursive", "'Inter', sans-serif"];
             const backgrounds = [
@@ -1015,9 +820,9 @@
                 </div>
                 <div style="margin-top: 80px; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; align-items: center; opacity: 0.9;">
                     <div style="width: 60px; height: 3px; background-color: #fcd34d; margin-bottom: 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>
-                    <div style="font-size: 32px; font-weight: bold; letter-spacing: 1px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${escapeHTML(String(currentViewBook.title || 'İsimsiz'))}</div>
-                    <div style="font-size: 24px; margin-top: 15px; color: #e2e8f0; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${escapeHTML(String(currentViewBook.author || 'Bilinmeyen Yazar'))}</div>
-                    ${q.page ? `<div style="font-size: 18px; margin-top: 15px; color: #94a3b8;">Syf. ${escapeHTML(String(q.page))}</div>` : ''}
+                    <div style="font-size: 32px; font-weight: bold; letter-spacing: 1px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${window.escapeHTML(String(currentViewBook.title || 'İsimsiz'))}</div>
+                    <div style="font-size: 24px; margin-top: 15px; color: #e2e8f0; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${window.escapeHTML(String(currentViewBook.author || 'Bilinmeyen Yazar'))}</div>
+                    ${q.page ? `<div style="font-size: 18px; margin-top: 15px; color: #94a3b8;">Syf. ${window.escapeHTML(String(q.page))}</div>` : ''}
                 </div>
             `;
 
@@ -1042,21 +847,21 @@
                                 text: 'Bu harika alıntıyı okumalısın!'
                             });
                             window.sysLog('INFO', 'Paylaşım menüsü başarıyla açıldı.');
-                            showNotification("Paylaşım menüsü açıldı!", "success");
+                            window.showNotification("Paylaşım menüsü açıldı!", "success");
                         } else {
                             triggerDownload(dataUrl, filename);
-                            showNotification("Cihazınız doğrudan dosya paylaşımını desteklemiyor, görsel indirildi.", "info");
+                            window.showNotification("Cihazınız doğrudan dosya paylaşımını desteklemiyor, görsel indirildi.", "info");
                         }
                     } catch(e) {
                          if (e.name !== 'AbortError') triggerDownload(dataUrl, filename);
                     }
                 } else {
                     triggerDownload(dataUrl, filename);
-                    showNotification("Görsel başarıyla indirildi!", "success");
+                    window.showNotification("Görsel başarıyla indirildi!", "success");
                 }
             } catch(err) {
                 window.sysLog('ERROR', 'Görsel oluşturma hatası', err);
-                showNotification("Görsel oluşturulamadı.", "error");
+                window.showNotification("Görsel oluşturulamadı.", "error");
             } finally {
                 document.body.removeChild(container);
             }
@@ -1162,7 +967,7 @@
                 const plain = stripHTML(content).trim();
                 
                 if (!plain) {
-                    showNotification("Alıntı metni boş olamaz.", "error");
+                    window.showNotification("Alıntı metni boş olamaz.", "error");
                     return;
                 }
                 if (!page && !confirm("Sayfa numarası girmediniz. Yine de sayfasız kaydedilsin mi?")) {
@@ -1185,18 +990,18 @@
                         }
 
                         if (!isOfflineMode && currentUser) {
-                            await updateDoc(doc(db, U_PATH, currentUser.uid, B_PATH, currentViewBook.id), { 
+                            await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'books', currentViewBook.id), { 
                                 quotes: updatedQuotes,
                                 updatedAt: serverTimestamp()
                             });
                         }
                         currentViewBook.quotes = updatedQuotes;
                         openViewModalInternal(currentViewBook); 
-                        showNotification("Alıntı kaydedildi!", "success");
+                        window.showNotification("Alıntı kaydedildi!", "success");
                         closeRTE();
                     } catch(err) {
                         window.sysLog('ERROR', 'Alıntı kaydetme hatası', err);
-                        showNotification("Bağlantı hatası.", "error");
+                        window.showNotification("Bağlantı hatası.", "error");
                     } finally {
                         btn.innerHTML = ogHtml;
                     }
@@ -1218,18 +1023,18 @@
                     
                     try {
                         if (!isOfflineMode && currentUser) {
-                            await updateDoc(doc(db, U_PATH, currentUser.uid, B_PATH, currentViewBook.id), { 
+                            await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'books', currentViewBook.id), { 
                                 [field]: content,
                                 updatedAt: serverTimestamp()
                             });
                         }
                         currentViewBook[field] = content;
                         openViewModalInternal(currentViewBook); 
-                        showNotification("Not güncellendi!", "success");
+                        window.showNotification("Not güncellendi!", "success");
                         closeRTE();
                     } catch(err) {
                         window.sysLog('ERROR', 'Not kaydetme hatası', err);
-                        showNotification("Bağlantı hatası.", "error");
+                        window.showNotification("Bağlantı hatası.", "error");
                     } finally {
                         btn.innerHTML = ogHtml;
                     }
@@ -1266,7 +1071,7 @@
                     div.innerHTML = `
                         <div class="flex-grow min-w-0">
                             <div class="text-sm text-slate-700 dark:text-slate-300 rte-content line-clamp-3">${q.text}</div>
-                            ${q.page ? `<div class="text-[10px] font-bold text-slate-400 mt-1">Syf: ${escapeHTML(String(q.page))}</div>` : ''}
+                            ${q.page ? `<div class="text-[10px] font-bold text-slate-400 mt-1">Syf: ${window.escapeHTML(String(q.page))}</div>` : ''}
                         </div>
                         <div class="flex flex-col gap-1 shrink-0">
                             <button type="button" onclick="window.openRTE('quote', 'Alıntı Düzenle', false, ${index})" class="text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 p-2 rounded-lg transition-colors border border-indigo-100 dark:border-indigo-800" title="Düzenle"><i class="fas fa-edit text-xs"></i></button>
@@ -1292,17 +1097,17 @@
                 updatedQuotes.splice(index, 1);
                 
                 if (!isOfflineMode && currentUser) {
-                    await updateDoc(doc(db, U_PATH, currentUser.uid, B_PATH, currentViewBook.id), { 
+                    await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'books', currentViewBook.id), { 
                         quotes: updatedQuotes,
                         updatedAt: serverTimestamp()
                     });
                 }
                 currentViewBook.quotes = updatedQuotes;
                 openViewModalInternal(currentViewBook); 
-                showNotification("Alıntı silindi.", "info");
+                window.showNotification("Alıntı silindi.", "info");
             } catch(e) {
                 window.sysLog('ERROR', 'Alıntı silme hatası', e);
-                showNotification("Hata oluştu.", "error");
+                window.showNotification("Hata oluştu.", "error");
             }
         };
 
@@ -1351,7 +1156,7 @@
                     const el = document.createElement('span');
                     el.className = "bg-indigo-500 text-white px-2 py-1 rounded-md text-[10px] font-bold flex items-center gap-1 shadow-sm cursor-pointer hover:bg-red-500 transition-colors";
                     let label = filter.type === 'cat' ? 'Kategori' : (filter.type === 'format' ? 'Tür' : 'Durum');
-                    el.innerHTML = `${label}: ${escapeHTML(String(filter.value))} <i class="fas fa-times ml-1"></i>`;
+                    el.innerHTML = `${label}: ${window.escapeHTML(String(filter.value))} <i class="fas fa-times ml-1"></i>`;
                     el.addEventListener('click', (e) => { e.stopPropagation(); activeFiltersList.splice(index, 1); updateActiveFiltersUI(); applyFiltersAndRender(); });
                     activeFiltersContainer.appendChild(el);
                 });
@@ -1494,20 +1299,20 @@
                         let badgesHtml = `<button type="button" onclick="window.addDynamicFilter('status', '${bOwn}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity ${o.color} px-2 py-1 rounded-md text-[10px] font-bold tracking-wide border"><i class="fas ${o.icon} mr-1"></i>${o.text}</button>`;
                         
                         const bookCats = Array.isArray(book.category) ? book.category : (typeof book.category === 'string' ? book.category.split(',').map(str=>str.trim()) : []);
-                        bookCats.forEach(c => { if(c) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('cat', '${escapeHTML(String(c))}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide">${escapeHTML(String(c))}</button>`; });
+                        bookCats.forEach(c => { if(c) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('cat', '${window.escapeHTML(String(c))}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide">${window.escapeHTML(String(c))}</button>`; });
 
                         const bookSubCats = Array.isArray(book.subCategory) ? book.subCategory : (typeof book.subCategory === 'string' ? book.subCategory.split(',').map(str=>str.trim()) : []);
-                        bookSubCats.forEach(c => { if(c) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('cat', '${escapeHTML(String(c))}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide">${escapeHTML(String(c))}</button>`; });
+                        bookSubCats.forEach(c => { if(c) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('cat', '${window.escapeHTML(String(c))}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide">${window.escapeHTML(String(c))}</button>`; });
 
-                        if(book.format) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('format', '${escapeHTML(String(book.format))}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide"><i class="fas fa-file-alt mr-1"></i>${escapeHTML(String(book.format))}</button>`;
+                        if(book.format) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('format', '${window.escapeHTML(String(book.format))}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide"><i class="fas fa-file-alt mr-1"></i>${window.escapeHTML(String(book.format))}</button>`;
 
                         const card = document.createElement('div');
                         
                         const safeTitle = (book.title && typeof book.title === 'string') ? book.title : 'İsimsiz';
                         const safeAuthor = (book.author && typeof book.author === 'string') ? book.author : 'Bilinmeyen Yazar';
-                        const escapedTitle = escapeHTML(safeTitle);
-                        const escapedAuthor = escapeHTML(safeAuthor);
-                        const jsSafeTitle = escapeHTML(safeTitle.replace(/'/g, "\\'"));
+                        const escapedTitle = window.escapeHTML(safeTitle);
+                        const escapedAuthor = window.escapeHTML(safeAuthor);
+                        const jsSafeTitle = window.escapeHTML(safeTitle.replace(/'/g, "\\'"));
                         
                         if (currentViewMode === 'list') {
                             card.className = 'bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-col cursor-pointer group';
@@ -1531,7 +1336,7 @@
                                         <button type="button" onclick="event.stopPropagation(); window.addDynamicFilter('status', '${book.status}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${s.color}">
                                             <i class="fas ${s.icon}"></i> ${s.text}
                                         </button>
-                                        ${book.pageCount ? `<span class="text-[10px] text-slate-400"><i class="fas fa-file-alt"></i> ${escapeHTML(String(book.pageCount))} syf</span>` : ''}
+                                        ${book.pageCount ? `<span class="text-[10px] text-slate-400"><i class="fas fa-file-alt"></i> ${window.escapeHTML(String(book.pageCount))} syf</span>` : ''}
                                     </div>
                                 </div>
                             `;
@@ -1540,7 +1345,7 @@
                             card.onclick = (e) => { if(!e.target.closest('button')) window.openViewModal(book.id); };
                             
                             const coverHtml = book.coverUrl 
-                                ? `<div class="w-full h-40 md:h-48 bg-slate-50 dark:bg-slate-900 rounded-xl flex items-center justify-center overflow-hidden shadow shrink-0 group-hover:opacity-90 transition-opacity"><img src="${escapeHTML(book.coverUrl)}" class="w-full h-full object-contain"></div>`
+                                ? `<div class="w-full h-40 md:h-48 bg-slate-50 dark:bg-slate-900 rounded-xl flex items-center justify-center overflow-hidden shadow shrink-0 group-hover:opacity-90 transition-opacity"><img src="${window.escapeHTML(book.coverUrl)}" class="w-full h-full object-contain"></div>`
                                 : `<div class="w-full h-40 md:h-48 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center text-slate-300 dark:text-slate-500 shadow shrink-0 group-hover:bg-slate-200 transition-colors"><i class="fas fa-book text-3xl"></i></div>`;
 
                             card.innerHTML = `
@@ -1565,7 +1370,7 @@
                                         <button type="button" onclick="event.stopPropagation(); window.addDynamicFilter('status', '${book.status}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${s.color}">
                                             <i class="fas ${s.icon}"></i> ${s.text}
                                         </button>
-                                        ${book.pageCount ? `<span class="text-[10px] text-slate-400 font-medium"><i class="fas fa-file-alt"></i> ${escapeHTML(String(book.pageCount))} sayfa</span>` : ''}
+                                        ${book.pageCount ? `<span class="text-[10px] text-slate-400 font-medium"><i class="fas fa-file-alt"></i> ${window.escapeHTML(String(book.pageCount))} sayfa</span>` : ''}
                                     </div>
                                 </div>
                             `;
@@ -1574,7 +1379,7 @@
                             card.onclick = () => window.openViewModal(book.id);
                             
                             const coverHtml = book.coverUrl 
-                                ? `<img src="${escapeHTML(book.coverUrl)}" class="w-auto h-full max-h-[90%] object-contain rounded shadow-md z-10 group-hover:-translate-y-3 group-active:scale-95 transition-all duration-300">`
+                                ? `<img src="${window.escapeHTML(book.coverUrl)}" class="w-auto h-full max-h-[90%] object-contain rounded shadow-md z-10 group-hover:-translate-y-3 group-active:scale-95 transition-all duration-300">`
                                 : `<div class="w-20 sm:w-24 h-full max-h-[90%] bg-slate-200 dark:bg-slate-700 rounded flex items-center justify-center text-slate-400 shadow-md z-10 group-hover:-translate-y-3 transition-transform duration-300 px-2 text-center text-[10px] font-bold overflow-hidden">${escapedTitle}</div>`;
 
                             const shelfFavIcon = book.isFavorite ? '<i class="fas fa-heart text-red-500"></i>' : '';
@@ -1636,7 +1441,7 @@
             } else {
                 if (booksUnsubscribe) booksUnsubscribe();
                 try {
-                    booksUnsubscribe = onSnapshot(collection(db, U_PATH, targetUid, B_PATH), (snapshot) => {
+                    booksUnsubscribe = onSnapshot(collection(db, 'artifacts', appId, 'users', targetUid, 'books'), (snapshot) => {
                         try {
                             window.sysLog('INFO', `Firebase verisi alındı. Toplam belge: ${snapshot.size}`);
                             allBooks = [];
@@ -1652,7 +1457,7 @@
                                 window.sysLog('INFO', 'Ekrana çizim tamamlandı.');
                             } catch (innerErr) {
                                 window.sysLog('ERROR', "Filtreleme/Çizim Hatası", innerErr);
-                                showNotification("Kitaplar yüklenirken ekran çizim hatası oluştu.", "error");
+                                window.showNotification("Kitaplar yüklenirken ekran çizim hatası oluştu.", "error");
                                 bookListEl.innerHTML = '<div class="text-slate-500 dark:text-slate-400 text-center w-full p-4 col-span-full">Veri gösterim hatası. Rapor düğmesine basın.</div>';
                             }
                         } catch (fatalErr) {
@@ -1660,21 +1465,12 @@
                         }
                     }, (error) => {
                         window.sysLog('ERROR', "Firestore Dinleme Hatası", error);
-                        showNotification("Erişim reddedildi veya bağlantı koptu: " + error.message, "error");
+                        window.showNotification("Erişim reddedildi veya bağlantı koptu: " + error.message, "error");
                         bookListEl.innerHTML = '<div class="text-red-500 dark:text-red-400 text-center w-full p-4 col-span-full">Erişim engellendi veya veri okunamadı. Lütfen giriş yaptığınızdan emin olun.</div>';
                     });
                 } catch (dbErr) {
                     window.sysLog('ERROR', 'onSnapshot başlatma hatası', dbErr);
                 }
-                
-                // SADECE TANILAMA AMAÇLI (Kullanıcının eski verisi var mı diye kontrol et)
-                try {
-                    getDocs(collection(db, 'users', targetUid, 'books')).then(snap => {
-                        window.sysLog('INFO', `DİKKAT: Eski dizin (users/${targetUid}/books) kontrol edildi. ${snap.size} adet kitap bulundu.`);
-                    }).catch(e => {
-                        window.sysLog('INFO', `Eski dizin erişimi yok veya boş.`);
-                    });
-                } catch(e) {}
             }
         }
 
@@ -1687,7 +1483,7 @@
         const settingsPanel = document.getElementById('settings-panel');
         const statsModal = document.getElementById('stats-modal');
 
-        // DEBUG MODAL (YENİ EKLENDİ)
+        // DEBUG MODAL
         document.getElementById('sys-diag-btn').addEventListener('click', () => {
             const modal = document.getElementById('debug-modal');
             document.getElementById('debug-log-area').value = appLogs.join('\n\n');
@@ -1705,9 +1501,9 @@
         document.getElementById('copy-debug-btn').addEventListener('click', () => {
             const textArea = document.getElementById('debug-log-area');
             navigator.clipboard.writeText(textArea.value).then(() => {
-                showNotification("Rapor kopyalandı! Lütfen yapay zekaya yapıştırın.", "success");
+                window.showNotification("Rapor kopyalandı! Lütfen yapay zekaya yapıştırın.", "success");
             }).catch(err => {
-                showNotification("Kopyalanamadı, metni seçip manuel kopyalayın.", "error");
+                window.showNotification("Kopyalanamadı, metni seçip manuel kopyalayın.", "error");
             });
         });
 
@@ -1809,7 +1605,7 @@
         document.getElementById('email-login-btn').addEventListener('click', async () => {
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value.trim();
-            if(!email || !password) return showNotification("E-posta ve şifre zorunludur.", "error");
+            if(!email || !password) return window.showNotification("E-posta ve şifre zorunludur.", "error");
             
             const btn = document.getElementById('email-login-btn');
             const ogText = btn.innerHTML;
@@ -1821,11 +1617,11 @@
             } catch (err) {
                 console.error(err);
                 if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
-                    showNotification("Hatalı e-posta veya şifre.", "error");
+                    window.showNotification("Hatalı e-posta veya şifre.", "error");
                 } else if (err.code === 'auth/operation-not-allowed') {
-                    showNotification("Firebase'de E-posta girişi kapalı! Console'dan aktifleştirin.", "error");
+                    window.showNotification("Firebase'de E-posta girişi kapalı! Console'dan aktifleştirin.", "error");
                 } else {
-                    showNotification("Giriş yapılamadı: " + err.message, "error");
+                    window.showNotification("Giriş yapılamadı: " + err.message, "error");
                 }
             } finally {
                 btn.innerHTML = ogText; btn.disabled = false;
@@ -1835,8 +1631,8 @@
         document.getElementById('email-register-btn').addEventListener('click', async () => {
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value.trim();
-            if(!email || !password) return showNotification("E-posta ve şifre zorunludur.", "error");
-            if(password.length < 6) return showNotification("Şifre en az 6 karakter olmalıdır.", "error");
+            if(!email || !password) return window.showNotification("E-posta ve şifre zorunludur.", "error");
+            if(password.length < 6) return window.showNotification("Şifre en az 6 karakter olmalıdır.", "error");
             
             const btn = document.getElementById('email-register-btn');
             const ogText = btn.innerHTML;
@@ -1845,15 +1641,15 @@
                 await createUserWithEmailAndPassword(auth, email, password);
                 document.getElementById('login-email').value = '';
                 document.getElementById('login-password').value = '';
-                showNotification("Hesap başarıyla oluşturuldu!", "success");
+                window.showNotification("Hesap başarıyla oluşturuldu!", "success");
             } catch (err) {
                 console.error(err);
                 if (err.code === 'auth/email-already-in-use') {
-                    showNotification("Bu e-posta adresi zaten kullanımda.", "error");
+                    window.showNotification("Bu e-posta adresi zaten kullanımda.", "error");
                 } else if (err.code === 'auth/operation-not-allowed') {
-                    showNotification("Firebase'de E-posta girişi kapalı! Console'dan aktifleştirin.", "error");
+                    window.showNotification("Firebase'de E-posta girişi kapalı! Console'dan aktifleştirin.", "error");
                 } else {
-                    showNotification("Kayıt olunamadı: " + err.message, "error");
+                    window.showNotification("Kayıt olunamadı: " + err.message, "error");
                 }
             } finally {
                 btn.innerHTML = ogText; btn.disabled = false;
@@ -1862,14 +1658,14 @@
 
         document.getElementById('google-login-btn').addEventListener('click', async () => {
             if (window.location.protocol === 'file:') { 
-                showNotification("Google Girişi yerel 'file://' dosyalarında çalışmaz. Sunucuda (GitHub Pages vb.) açın.", "error"); 
+                window.showNotification("Google Girişi yerel 'file://' dosyalarında çalışmaz. Sunucuda (GitHub Pages vb.) açın.", "error"); 
                 return; 
             }
             try { 
                 await signInWithPopup(auth, provider); 
             } catch (error) { 
                 console.error("Giriş Hatası:", error);
-                showNotification("Giriş işlemi iptal edildi veya başarısız oldu.", "error"); 
+                window.showNotification("Giriş işlemi iptal edildi veya başarısız oldu.", "error"); 
             }
         });
 
@@ -1893,7 +1689,7 @@
                 fabBtn.classList.add('hidden'); fabBtn.classList.remove('flex');
                 
                 try {
-                    const docSnap = await getDoc(doc(db, U_PATH, viewUserId));
+                    const docSnap = await getDoc(doc(db, 'artifacts', appId, 'users', viewUserId));
                     if(docSnap.exists() && docSnap.data().displayName) {
                         document.getElementById('main-title').textContent = `${docSnap.data().displayName.split(' ')[0]}'in Kütüphanesi`;
                     } else {
@@ -1901,7 +1697,7 @@
                     }
                 } catch(e) {}
 
-                showNotification("Misafir modundasınız. Sadece görüntüleme yapılabilir.", "info");
+                window.showNotification("Misafir modundasınız. Sadece görüntüleme yapılabilir.", "info");
                 loadSettings(viewUserId);
                 loadBooks(viewUserId);
                 return; 
@@ -1921,7 +1717,7 @@
                 document.getElementById('drawer-profile-name').textContent = userName;
                 document.getElementById('main-title').textContent = "e-Kütüphane";
                 
-                setDoc(doc(db, U_PATH, currentUser.uid), { displayName: userName }, { merge: true });
+                setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid), { displayName: userName }, { merge: true }).catch(err => window.sysLog('WARN', 'setDoc err', err));
                 
                 if (user.photoURL) {
                     const pic = document.getElementById('drawer-profile-pic');
@@ -1932,7 +1728,7 @@
                     headerPic.src = user.photoURL; headerPic.classList.remove('hidden'); headerMenuIcon.classList.add('hidden');
                 }
 
-                showNotification(`Hoş geldin, ${userName.split(' ')[0]}!`, "info");
+                window.showNotification(`Hoş geldin, ${userName.split(' ')[0]}!`, "info");
                 loadSettings(currentUser.uid); 
                 loadBooks(currentUser.uid);
             } else {
