@@ -1572,22 +1572,28 @@
             
             if (isOfflineMode) {
                 initialLoadDone = true;
-                updateCategoryDatalists(); updateSearchSuggestions(); updateDashboardStats(); applyFiltersAndRender();
+                try { updateCategoryDatalists(); } catch (e) { console.error(e); }
+                try { updateSearchSuggestions(); } catch (e) { console.error(e); }
+                try { updateDashboardStats(); } catch (e) { console.error(e); }
+                try { applyFiltersAndRender(); } catch (e) { console.error(e); }
             } else {
                 if (booksUnsubscribe) booksUnsubscribe();
                 booksUnsubscribe = onSnapshot(collection(db, 'artifacts', appId, 'users', targetUid, 'books'), (snapshot) => {
+                    allBooks = [];
+                    snapshot.forEach(doc => { allBooks.push({ id: doc.id, ...doc.data() }); });
+                    initialLoadDone = true;
+                    
+                    // BAĞIMSIZ HATA YÖNETİMİ
+                    try { updateCategoryDatalists(); } catch(e) { console.error("Kategori Hatası:", e); }
+                    try { updateSearchSuggestions(); } catch(e) { console.error("Arama Öneri Hatası:", e); }
+                    try { updateDashboardStats(); } catch(e) { console.error("İstatistik Hatası:", e); }
+                    
                     try {
-                        allBooks = [];
-                        snapshot.forEach(doc => { allBooks.push({ id: doc.id, ...doc.data() }); });
-                        initialLoadDone = true;
-                        updateCategoryDatalists(); 
-                        updateSearchSuggestions(); 
-                        updateDashboardStats(); 
                         applyFiltersAndRender();
                     } catch (innerErr) {
-                        console.error("Veri İşleme Hatası:", innerErr);
-                        showNotification("Kitaplar yüklenirken veri hatası oluştu.", "error");
-                        bookListEl.innerHTML = '<div class="text-slate-500 dark:text-slate-400 text-center w-full p-4 col-span-full">Veri gösterim hatası. Bazı kitaplarınız hatalı formatta olabilir.</div>';
+                        console.error("Filtreleme Çizim Hatası:", innerErr);
+                        showNotification("Kitaplar yüklenirken ekran çizim hatası oluştu.", "error");
+                        bookListEl.innerHTML = '<div class="text-slate-500 dark:text-slate-400 text-center w-full p-4 col-span-full">Veri gösterim hatası. Lütfen sayfayı yenileyin.</div>';
                     }
                 }, (error) => {
                     console.error("Firestore Dinleme Hatası:", error);
@@ -1598,8 +1604,6 @@
         }
 
         // --- DİĞER KODLAR ---
-        // (Event listener'lar ve Auth gibi diğer fonksiyonlar aynen duruyor)
-        
         const addModal = document.getElementById('add-modal');
         const addBackdrop = document.getElementById('add-backdrop');
         const addPanel = document.getElementById('add-panel');
