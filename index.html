@@ -1689,6 +1689,26 @@
             if(loading) loading.style.display = 'none';
         });
 
+        // --- GİRİŞ VE ÇIKIŞ İŞLEMLERİ (EKLENEN KISIM) ---
+        document.getElementById('google-login-btn').addEventListener('click', async () => {
+            if (window.location.protocol === 'file:') { 
+                showNotification("Google Girişi yerel 'file://' dosyalarında çalışmaz. Sunucuda (GitHub Pages vb.) açın.", "error"); 
+                return; 
+            }
+            try { 
+                await signInWithPopup(auth, provider); 
+            } catch (error) { 
+                console.error("Giriş Hatası:", error);
+                showNotification("Giriş işlemi iptal edildi veya başarısız oldu.", "error"); 
+            }
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            signOut(auth);
+            closeSettingsDrawer();
+        });
+        // ------------------------------------------------
+
         // KULLANICI GİRİŞ KONTROLÜ (AUTH)
         onAuthStateChanged(auth, async (user) => {
             loadingScreen.style.display = 'none';
