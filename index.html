@@ -37,7 +37,7 @@
         .dark ::-webkit-scrollbar-thumb { background: #475569; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        .toast { transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; transform: translateY(100%); opacity: 0; }
+        .toast { transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; transform: translateY(150%); opacity: 0; pointer-events: none;}
         .toast.show { transform: translateY(0); opacity: 1; }
 
         textarea { resize: vertical; min-height: 60px; }
@@ -506,6 +506,12 @@
         </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div id="toast" class="toast fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-800 dark:bg-white text-white dark:text-slate-800 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 z-50">
+        <i id="toast-icon" class="fas fa-check-circle text-emerald-400 text-lg"></i>
+        <span id="toast-message" class="text-sm font-medium">İşlem başarılı.</span>
+    </div>
+
     <!-- SCRIPT (İzole Edildi ve Hatalar Temizlendi) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -659,6 +665,12 @@
             const minutes = String(dateObj.getMinutes()).padStart(2, '0');
             return `${day}.${month}.${year} - ${hours}:${minutes}`;
         }
+        
+        function formatTimer(totalSeconds) {
+            const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+            const s = (totalSeconds % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
 
         function escapeHTML(str) {
             if (!str && str !== 0) return '';
@@ -801,6 +813,182 @@
                 } catch (err) {}
             }
         }
+
+        // EKSİK OLAN UI FONKSİYONLARI VE ETKİLEŞİMLERİ BURAYA EKLENMİŞTİR:
+
+        // -- MODAL & DRAWER MANTIKLARI --
+        const addModal = document.getElementById('add-modal');
+        const addBackdrop = document.getElementById('add-backdrop');
+        const addPanel = document.getElementById('add-panel');
+        const settingsDrawer = document.getElementById('settings-drawer');
+        const settingsBackdrop = document.getElementById('settings-backdrop');
+        const settingsPanel = document.getElementById('settings-panel');
+        const statsModal = document.getElementById('stats-modal');
+
+        function openAddModal() {
+            addModal.classList.remove('hidden');
+            addModal.classList.add('flex');
+            setTimeout(() => {
+                addBackdrop.classList.remove('opacity-0');
+                addPanel.classList.remove('translate-y-full', 'md:translate-y-10', 'md:scale-95');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAddModal() {
+            addBackdrop.classList.add('opacity-0');
+            addPanel.classList.add('translate-y-full', 'md:translate-y-10', 'md:scale-95');
+            setTimeout(() => {
+                addModal.classList.add('hidden');
+                addModal.classList.remove('flex');
+                document.body.style.overflow = '';
+                if (!editModeId) resetForm();
+            }, 300);
+        }
+
+        function openSettingsDrawer() {
+            settingsDrawer.classList.remove('hidden');
+            settingsDrawer.classList.add('flex');
+            setTimeout(() => {
+                settingsBackdrop.classList.remove('opacity-0');
+                settingsPanel.classList.remove('translate-x-full');
+            }, 10);
+        }
+
+        function closeSettingsDrawer() {
+            settingsBackdrop.classList.add('opacity-0');
+            settingsPanel.classList.add('translate-x-full');
+            setTimeout(() => {
+                settingsDrawer.classList.add('hidden');
+                settingsDrawer.classList.remove('flex');
+            }, 300);
+        }
+
+        // UI Event Listeners
+        document.getElementById('fab-add-btn').addEventListener('click', () => {
+            editModeId = null;
+            resetForm();
+            document.getElementById('form-title').innerHTML = '<i class="fas fa-plus-circle text-indigo-500"></i> Yeni Kitap Ekle';
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
+            openAddModal();
+        });
+
+        document.getElementById('close-add-btn').addEventListener('click', closeAddModal);
+        document.getElementById('add-backdrop').addEventListener('click', closeAddModal);
+
+        document.getElementById('menu-btn').addEventListener('click', openSettingsDrawer);
+        document.getElementById('close-settings-btn').addEventListener('click', closeSettingsDrawer);
+        document.getElementById('settings-backdrop').addEventListener('click', closeSettingsDrawer);
+
+        document.getElementById('open-stats-btn').addEventListener('click', () => {
+            updateStatsChart();
+            statsModal.classList.remove('hidden');
+            statsModal.classList.add('flex');
+        });
+        document.getElementById('close-stats-btn').addEventListener('click', () => {
+            statsModal.classList.add('hidden');
+            statsModal.classList.remove('flex');
+        });
+        document.getElementById('stats-backdrop').addEventListener('click', () => {
+            statsModal.classList.add('hidden');
+            statsModal.classList.remove('flex');
+        });
+
+        // Tema Mantığı
+        if (htmlEl.classList.contains('dark')) {
+            document.getElementById('theme-text').textContent = 'Açık';
+        }
+
+        document.getElementById('theme-toggle-menu').addEventListener('click', () => {
+            if (htmlEl.classList.contains('dark')) {
+                htmlEl.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                document.getElementById('theme-text').textContent = 'Kapalı';
+            } else {
+                htmlEl.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                document.getElementById('theme-text').textContent = 'Açık';
+            }
+            updateStatsChart(); // Renkleri güncelle
+        });
+
+        // -- ETİKET/KATEGORİ EKLEME MANTIKLARI --
+        function updateTagsUI(type) {
+            const container = document.getElementById(`${type}-tags-container`);
+            container.innerHTML = '';
+            const arr = type === 'cat' ? currentCategories : currentSubCategories;
+            arr.forEach((tag, index) => {
+                const span = document.createElement('span');
+                span.className = 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 px-2 py-1 rounded-md text-[10px] font-bold flex items-center gap-1 mt-1';
+                span.innerHTML = `${escapeHTML(tag)} <i class="fas fa-times cursor-pointer hover:text-red-500"></i>`;
+                span.querySelector('i').addEventListener('click', () => {
+                    arr.splice(index, 1);
+                    updateTagsUI(type);
+                });
+                container.appendChild(span);
+            });
+        }
+
+        function addTag(type) {
+            const input = type === 'cat' ? inputs.cat : inputs.subCat;
+            const arr = type === 'cat' ? currentCategories : currentSubCategories;
+            const val = input.value.trim().replace(/,/g, '');
+            if(val && !arr.includes(val)) {
+                arr.push(val);
+                input.value = '';
+                updateTagsUI(type);
+            }
+        }
+
+        inputs.cat.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') { e.preventDefault(); addTag('cat'); }
+        });
+        inputs.subCat.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') { e.preventDefault(); addTag('subcat'); }
+        });
+
+        // -- ALINTI (QUOTE) MANTIKLARI --
+        document.getElementById('add-quote-btn').addEventListener('click', () => addQuoteInput());
+
+        function addQuoteInput(text = '', page = '') {
+            document.getElementById('no-quotes-msg').style.display = 'none';
+            const div = document.createElement('div');
+            div.className = 'flex gap-2 items-start relative bg-white dark:bg-slate-900 p-2 rounded-lg border border-amber-200 dark:border-amber-900/50';
+            div.innerHTML = `
+                <textarea class="quote-text flex-grow px-2 py-1.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-amber-500 outline-none text-xs dark:bg-slate-800 dark:text-white min-h-[40px]" placeholder="Alıntı metni...">${escapeHTML(text)}</textarea>
+                <div class="flex flex-col gap-2 w-16 shrink-0">
+                    <input type="text" class="quote-page w-full px-2 py-1.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-1 focus:ring-amber-500 outline-none text-[10px] dark:bg-slate-800 dark:text-white" placeholder="Sayfa" value="${escapeHTML(page)}">
+                    <button type="button" class="remove-quote-btn bg-red-50 text-red-500 hover:bg-red-100 p-1.5 rounded transition-colors" title="Sil"><i class="fas fa-trash-alt text-[10px]"></i></button>
+                </div>
+            `;
+            div.querySelector('.remove-quote-btn').addEventListener('click', () => {
+                div.remove();
+                if(quotesContainer.children.length === 0) document.getElementById('no-quotes-msg').style.display = 'block';
+            });
+            quotesContainer.appendChild(div);
+        }
+
+        function getQuotesFromForm() {
+            const quotes = [];
+            document.querySelectorAll('#quotes-container > div').forEach(div => {
+                const text = div.querySelector('.quote-text').value.trim();
+                const page = div.querySelector('.quote-page').value.trim();
+                if(text) quotes.push({ text, page });
+            });
+            return quotes;
+        }
+
+        // Paylaşım Linki
+        document.getElementById('share-library-btn').addEventListener('click', () => {
+            if(!currentUser) return;
+            const url = window.location.origin + window.location.pathname + '?user=' + currentUser.uid;
+            navigator.clipboard.writeText(url).then(() => {
+                showNotification("Paylaşım linki kopyalandı!", "success");
+            }).catch(() => {
+                prompt("Kütüphane linkiniz:", url);
+            });
+        });
+
 
         // FİLTRELEME & GÖRÜNÜM
         function updateCategoryDatalists() {
@@ -1307,18 +1495,6 @@
                 document.getElementById('start-timer-btn').classList.remove('hidden');
             }
         });
-
-        document.getElementById('clear-filters-btn').addEventListener('click', () => {
-            activeFiltersList = []; updateActiveFiltersUI(); applyFiltersAndRender();
-        });
-
-        searchInput.addEventListener('input', applyFiltersAndRender);
-        filterStatus.addEventListener('change', applyFiltersAndRender);
-        filterOwnership.addEventListener('change', applyFiltersAndRender);
-        sortSelect.addEventListener('change', applyFiltersAndRender);
-        
-        viewListBtn.addEventListener('click', () => { currentViewMode = 'list'; updateViewUI(); applyFiltersAndRender(); });
-        viewGridBtn.addEventListener('click', () => { currentViewMode = 'grid'; updateViewUI(); applyFiltersAndRender(); });
 
 
         // --- FORM İÇİ AKORDİYONLAR ---
