@@ -22,12 +22,11 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
     
-    <!-- Kütüphaneler (Chart.js, html5-qrcode, PapaParse, html2canvas, html2pdf) -->
+    <!-- Kütüphaneler (Chart.js, html5-qrcode, PapaParse, html2canvas) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         body { font-family: 'Inter', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; }
@@ -182,20 +181,12 @@
                     <input type="text" id="search-input" list="search-suggestions" placeholder="Kitap veya yazar ara..." class="w-full pl-9 pr-3 py-2 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm dark:bg-slate-900 dark:text-white transition-colors">
                     <datalist id="search-suggestions"></datalist>
                 </div>
-                <!-- Favoriler & Rastgele Butonları -->
-                <div class="shrink-0 flex gap-1">
-                    <button type="button" id="filter-fav-btn" class="shrink-0 bg-rose-50 dark:bg-rose-900/30 text-rose-400 hover:bg-rose-100 hover:text-rose-500 p-2.5 rounded-xl border border-rose-100 dark:border-rose-900/50 transition-colors active:scale-95" title="Sadece Favoriler">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                    <button type="button" id="random-book-btn" class="shrink-0 bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 p-2.5 rounded-xl border border-amber-200 dark:border-amber-800 hover:bg-amber-200 transition-colors active:scale-95" title="Ne Okusam? (Rastgele Seç)">
-                        <i class="fas fa-dice"></i>
-                    </button>
-                </div>
+                <button type="button" id="random-book-btn" class="shrink-0 bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 p-2.5 rounded-xl border border-amber-200 dark:border-amber-800 hover:bg-amber-200 transition-colors active:scale-95" title="Ne Okusam? (Rastgele Seç)">
+                    <i class="fas fa-dice"></i>
+                </button>
                 <div class="shrink-0 flex bg-slate-100 dark:bg-slate-900 rounded-xl p-1 border border-slate-200 dark:border-slate-700">
                     <button type="button" id="view-list-btn" class="p-1.5 px-3 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all" title="Liste Görünümü"><i class="fas fa-list"></i></button>
                     <button type="button" id="view-grid-btn" class="p-1.5 px-3 rounded-lg text-slate-800 dark:text-white bg-white dark:bg-slate-700 shadow-sm transition-all" title="Izgara Görünümü"><i class="fas fa-th-large"></i></button>
-                    <!-- Yeni Raf Görünümü Butonu -->
-                    <button type="button" id="view-shelf-btn" class="p-1.5 px-3 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all" title="Raf Görünümü"><i class="fas fa-layer-group"></i></button>
                 </div>
             </div>
             
@@ -205,7 +196,6 @@
                     <option value="read">Okunanlar</option>
                     <option value="reading">Okunuyor</option>
                     <option value="toread">Okunacaklar</option>
-                    <option value="dnf">Yarım Bırakılanlar</option>
                 </select>
                 <select id="filter-ownership" class="flex-1 min-w-[130px] px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-xl outline-none text-xs md:text-sm bg-slate-50 dark:bg-slate-900 dark:text-white cursor-pointer">
                     <option value="all">Sahiplik Türü: Hepsi</option>
@@ -277,7 +267,7 @@
         <!-- Yazı Alanı (Esneyen Kısım) -->
         <div id="rte-editor" contenteditable="true" data-placeholder="Buraya yazmaya başlayın..." class="flex-grow p-4 md:p-6 outline-none overflow-y-auto text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 rte-content text-base md:text-lg"></div>
 
-        <!-- Araç Çubuğu (Google Keep Tarzı) -->
+        <!-- Araç Çubuğu (Google Keep Tarzı - ALT KISIM - DÜZENLENDİ) -->
         <div class="flex flex-wrap justify-center gap-1 sm:gap-2 p-2 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shrink-0 z-10 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_10px_rgba(0,0,0,0.2)]">
             <button type="button" onclick="formatDoc('bold')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Kalın"><i class="fas fa-bold"></i></button>
             <button type="button" onclick="formatDoc('italic')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="İtalik"><i class="fas fa-italic"></i></button>
@@ -372,7 +362,8 @@
             <div class="p-4 md:p-5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center shrink-0 bg-slate-50 dark:bg-slate-800/50 rounded-t-3xl md:rounded-t-2xl relative">
                 
                 <div class="flex gap-2">
-                    <button type="button" onclick="window.exportPDF()" class="text-xs bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 p-2 rounded-xl transition-colors hover:bg-slate-300 active:scale-95" title="Tüm Notları İndir (PDF)"><i class="fas fa-file-pdf"></i></button>
+                    <button type="button" onclick="window.exportNotes()" class="text-xs bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 p-2 rounded-xl transition-colors hover:bg-slate-300 active:scale-95" title="Tüm Notları İndir (TXT)"><i class="fas fa-file-alt"></i></button>
+                    <button type="button" onclick="window.exportImage()" class="text-xs bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 p-2 rounded-xl transition-colors hover:bg-slate-300 active:scale-95" title="Kart Olarak İndir / Paylaş"><i class="fas fa-image"></i></button>
                     <button type="button" id="view-edit-all-btn" class="hide-auth-elements text-xs bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 font-bold py-2 px-3 rounded-xl transition-colors hover:bg-indigo-200 active:scale-95 flex items-center gap-2 border border-indigo-200 dark:border-indigo-800">
                         <i class="fas fa-edit"></i> Düzenle
                     </button>
@@ -493,7 +484,6 @@
                                 <option value="read">Okundu</option>
                                 <option value="reading">Okunuyor</option>
                                 <option value="toread">Okunacak</option>
-                                <option value="dnf">Yarım Bıraktım</option>
                             </select>
                         </div>
                     </div>
@@ -549,7 +539,6 @@
                             </div>
                         </div>
 
-                        <!-- Alıntılar Kısmı Özetin Altına Taşındı -->
                         <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-800">
                             <button type="button" class="form-acc-btn w-full px-4 py-3 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                                 <span class="text-xs font-bold text-amber-700 dark:text-amber-500 flex items-center gap-2">💬 ALINTILAR</span>
@@ -650,7 +639,6 @@
         let currentSubCategories = [];
         let activeFiltersList = [];
         let currentViewBook = null;
-        let filterOnlyFavorites = false; // Favori filtresi durumu
         let savedGoal = parseInt(localStorage.getItem('readingGoal')) || 30;
         savedGoal = Math.max(1, savedGoal);
         
@@ -679,8 +667,6 @@
         const sortSelect = document.getElementById('sort-select');
         const viewListBtn = document.getElementById('view-list-btn');
         const viewGridBtn = document.getElementById('view-grid-btn');
-        const viewShelfBtn = document.getElementById('view-shelf-btn');
-        const filterFavBtn = document.getElementById('filter-fav-btn');
         const bookListEl = document.getElementById('book-list');
         const emptyStateEl = document.getElementById('empty-state');
         const activeFiltersBar = document.getElementById('active-filters-bar');
@@ -709,8 +695,7 @@
         const statusMap = {
             'read': { text: 'Okundu', icon: 'fa-check', color: 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-400 dark:border-emerald-800' },
             'reading': { text: 'Okunuyor', icon: 'fa-book-open', color: 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/40 dark:text-amber-400 dark:border-amber-800' },
-            'toread': { text: 'Okunacak', icon: 'fa-bookmark', color: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/40 dark:text-blue-400 dark:border-blue-800' },
-            'dnf': { text: 'Yarım Bıraktım', icon: 'fa-ban', color: 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/40 dark:text-red-400 dark:border-red-800' }
+            'toread': { text: 'Okunacak', icon: 'fa-bookmark', color: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/40 dark:text-blue-400 dark:border-blue-800' }
         };
         const ownMap = {
             'none': { text: 'YOK', icon: 'fa-times-circle', color: 'bg-slate-100 text-slate-600 border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-600' },
@@ -750,7 +735,7 @@
             }
         };
         
-        // YENİ EKLENEN ÖZELLİKLER
+        // YENİ EKLENEN ÖZELLİK: WEB'DE ARA
         window.searchBookOnWeb = function() {
             if(currentViewBook) {
                 const query = encodeURIComponent(`${currentViewBook.title} ${currentViewBook.author}`);
@@ -758,144 +743,90 @@
             }
         };
 
-        window.toggleFavorite = async function(e, bookId, currentState) {
-            e.stopPropagation();
-            if(isReadOnlyMode || !currentUser) return;
-            try {
-                await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'books', bookId), {
-                    isFavorite: !currentState
-                });
-                showNotification(!currentState ? "Favorilere eklendi!" : "Favorilerden çıkarıldı.", "success");
-            } catch(err) {
-                showNotification("Hata oluştu.", "error");
-            }
-        };
+        // DIŞA AKTARMA VE PAYLAŞIM
+        function stripHTML(html) {
+            let tmp = document.createElement("DIV");
+            tmp.innerHTML = html;
+            return tmp.textContent || tmp.innerText || "";
+        }
 
-        // DIŞA AKTARMA VE PAYLAŞIM (PDF & GÖRSEL)
-        window.exportPDF = function() {
+        window.exportNotes = function() {
             if(!currentViewBook) return;
-            showNotification("PDF hazırlanıyor, lütfen bekleyin...", "info");
+            let text = `======================================\n`;
+            text += `KİTAP BİLGİLERİ\n`;
+            text += `======================================\n`;
+            text += `Kitap Adı: ${currentViewBook.title || 'Bilinmiyor'}\n`;
+            text += `Yazar: ${currentViewBook.author || 'Bilinmiyor'}\n`;
+            text += `Puan: ${currentViewBook.rating ? currentViewBook.rating + '/5' : 'Puanlanmamış'}\n`;
+            text += `Durum: ${statusMap[currentViewBook.status]?.text || ''}\n\n`;
             
-            // PDF için geçici, temiz, beyaz arka planlı ve Serif fontlu bir DIV oluşturuyoruz.
-            const printElement = document.createElement('div');
-            printElement.style.padding = '40px';
-            printElement.style.fontFamily = "'Lora', serif";
-            printElement.style.color = '#1e293b'; // Koyu gri metin
-            printElement.style.backgroundColor = '#ffffff';
+            text += `======================================\n`;
+            text += `İÇERİK VE NOTLAR\n`;
+            text += `======================================\n\n`;
+            text += `[ÖZET]\n${stripHTML(currentViewBook.summary) || 'Girilen bir özet bulunmuyor.'}\n\n`;
+            text += `[GENEL NOTLAR]\n${stripHTML(currentViewBook.notes) || 'Girilen bir not bulunmuyor.'}\n\n`;
+            text += `[YORUMLAR]\n${stripHTML(currentViewBook.comments) || 'Girilen bir yorum bulunmuyor.'}\n\n`;
+            text += `[ELEŞTİRİLER]\n${stripHTML(currentViewBook.critiques) || 'Girilen bir eleştiri bulunmuyor.'}\n\n`;
             
-            let htmlContent = `
-                <h1 style="font-size: 32px; font-weight: bold; font-family: 'Inter', sans-serif; color: #0f172a; margin-bottom: 5px; line-height: 1.2;">${escapeHTML(currentViewBook.title)}</h1>
-                <h2 style="font-size: 18px; color: #475569; margin-bottom: 25px;">Yazar: ${escapeHTML(currentViewBook.author)}</h2>
-                
-                <div style="font-size: 12px; margin-bottom: 30px; display: flex; gap: 15px; color: #64748b; font-family: 'Inter', sans-serif;">
-                    <span><b>Durum:</b> ${statusMap[currentViewBook.status]?.text || ''}</span>
-                    <span><b>Puan:</b> ${currentViewBook.rating ? currentViewBook.rating + '/5' : '-'}</span>
-                    ${currentViewBook.pageCount ? `<span><b>Sayfa:</b> ${escapeHTML(currentViewBook.pageCount)}</span>` : ''}
-                </div>
-                <hr style="border: none; border-top: 1px solid #e2e8f0; margin-bottom: 30px;">
-            `;
-
-            // Zengin metinleri ekleme fonksiyonu (boşsa eklemez)
-            const addSection = (title, content) => {
-                if(content && content.trim() !== '') {
-                    htmlContent += `
-                        <h3 style="font-size: 14px; font-family: 'Inter', sans-serif; color: #4f46e5; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">${title}</h3>
-                        <div style="font-size: 14px; line-height: 1.6; margin-bottom: 30px;">${content}</div>
-                    `;
-                }
-            };
-
-            addSection("Kitap Özeti", currentViewBook.summary);
-
-            // Alıntıları özel stille ekleme
-            if (Array.isArray(currentViewBook.quotes) && currentViewBook.quotes.length > 0) {
-                htmlContent += `<h3 style="font-size: 14px; font-family: 'Inter', sans-serif; color: #d97706; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Alıntılar</h3>`;
-                currentViewBook.quotes.forEach(q => {
-                    htmlContent += `
-                        <blockquote style="border-left: 4px solid #fcd34d; padding-left: 15px; margin-left: 0; margin-bottom: 20px; font-style: italic; font-size: 15px; color: #334155;">
-                            "${escapeHTML(q.text).replace(/\n/g, '<br>')}"
-                            ${q.page ? `<br><span style="font-size: 11px; font-weight: bold; color: #94a3b8; font-style: normal; font-family: 'Inter', sans-serif;">- Syf. ${escapeHTML(q.page)}</span>` : ''}
-                        </blockquote>
-                    `;
+            text += `======================================\n`;
+            text += `ALINTILAR\n`;
+            text += `======================================\n\n`;
+            if(Array.isArray(currentViewBook.quotes) && currentViewBook.quotes.length > 0) {
+                currentViewBook.quotes.forEach((q, i) => {
+                    text += `"${q.text}"\n`;
+                    if(q.page) text += `- Sayfa: ${q.page}\n`;
+                    text += `--------------------------------------\n`;
                 });
-                htmlContent += `<div style="margin-bottom: 30px;"></div>`;
+            } else {
+                text += `Girilen bir alıntı bulunmuyor.\n`;
             }
 
-            addSection("Genel Notlar", currentViewBook.notes);
-            addSection("Yorumlar", currentViewBook.comments);
-            addSection("Eleştiriler", currentViewBook.critiques);
-
-            printElement.innerHTML = htmlContent;
-            document.body.appendChild(printElement); // Render için DOM'da olmalı
-
-            const opt = {
-                margin:       15,
-                filename:     `${(currentViewBook.title || 'Kitap').replace(/\s+/g, '_')}_Notlari.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, windowWidth: 800 }, // Sabit genişlik ile düzgün render
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            html2pdf().set(opt).from(printElement).save().then(() => {
-                document.body.removeChild(printElement); // Temizlik
-                showNotification("Notlar PDF olarak indirildi!", "success");
-            });
+            const blob = new Blob([text], {type: "text/plain;charset=utf-8"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${(currentViewBook.title || 'Kitap').replace(/\s+/g, '_')}_Notlari.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showNotification("Notlar TXT olarak indirildi!", "success");
         };
 
-        // Sosyal Medya Alıntı Görseli Çıktısı Al
-        window.exportQuoteImage = function(quoteIndex) {
-            const q = currentViewBook.quotes[quoteIndex];
-            if(!q) return;
-            showNotification("Görsel hazırlanıyor...", "info");
+        window.exportImage = function() {
+            if(!currentViewBook) return;
+            showNotification("Resim hazırlanıyor, lütfen bekleyin...", "info");
             
-            // Kare (Square) formatında, degrade arkaplanlı estetik bir kutu
-            const container = document.createElement('div');
-            container.style.width = '800px';
-            container.style.height = '800px';
-            container.style.background = 'linear-gradient(135deg, #1e1b4b, #312e81, #4338ca)'; // Gece mavisi degrade
-            container.style.color = '#ffffff';
-            container.style.display = 'flex';
-            container.style.flexDirection = 'column';
-            container.style.justifyContent = 'center';
-            container.style.alignItems = 'center';
-            container.style.padding = '80px';
-            container.style.fontFamily = "'Lora', serif";
-            container.style.textAlign = 'center';
-            container.style.position = 'fixed';
-            container.style.top = '-9999px'; // Ekranda görünmesin
-            container.style.boxSizing = 'border-box';
+            const content = document.getElementById('view-modal-content');
+            const originalMaxHeight = content.style.maxHeight;
+            const originalOverflow = content.style.overflow;
             
-            // Metin çok uzunsa font boyutunu dinamik küçült
-            const textLen = q.text.length;
-            const quoteFontSize = textLen > 250 ? '28px' : (textLen > 150 ? '34px' : '42px');
+            // Tüm içeriği yakalayabilmek için scrollu kaldırıp uzatıyoruz
+            content.style.maxHeight = 'none';
+            content.style.overflow = 'visible';
 
-            container.innerHTML = `
-                <div style="font-size: 80px; font-family: 'Inter', sans-serif; opacity: 0.3; line-height: 0.5; margin-bottom: 20px;">“</div>
-                <div style="font-size: ${quoteFontSize}; line-height: 1.5; font-style: italic; margin-bottom: 50px; text-shadow: 0 4px 10px rgba(0,0,0,0.3); word-wrap: break-word; max-width: 100%;">
-                    ${escapeHTML(q.text).replace(/\n/g, '<br>')}
-                </div>
-                <div style="margin-top: auto; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; align-items: center; opacity: 0.9;">
-                    <div style="width: 40px; height: 2px; background-color: #fcd34d; margin-bottom: 15px;"></div>
-                    <div style="font-size: 26px; font-weight: bold; letter-spacing: 0.5px;">${escapeHTML(currentViewBook.title)}</div>
-                    <div style="font-size: 18px; margin-top: 8px; color: #cbd5e1;">${escapeHTML(currentViewBook.author)}</div>
-                    ${q.page ? `<div style="font-size: 14px; margin-top: 8px; color: #94a3b8;">Syf. ${escapeHTML(q.page)}</div>` : ''}
-                </div>
-            `;
-            
-            document.body.appendChild(container);
-            
-            html2canvas(container, { scale: 1.5 }).then(canvas => {
+            // Koyu/Açık temaya göre arkaplanı belirle
+            const isDark = document.documentElement.classList.contains('dark');
+            const bgColor = isDark ? '#1e293b' : '#ffffff';
+
+            html2canvas(content, { backgroundColor: bgColor, scale: 2, useCORS: true }).then(canvas => {
+                content.style.maxHeight = originalMaxHeight;
+                content.style.overflow = originalOverflow;
+
                 const a = document.createElement('a');
                 a.href = canvas.toDataURL('image/jpeg', 0.9);
-                a.download = `Alinti_${currentViewBook.title.replace(/\s+/g, '')}.jpg`;
+                a.download = `${(currentViewBook.title || 'Kitap').replace(/\s+/g, '_')}_Karti.jpg`;
+                document.body.appendChild(a);
                 a.click();
-                document.body.removeChild(container);
-                showNotification("Görsel indirildi! Hikayenizde paylaşabilirsiniz.", "success");
+                document.body.removeChild(a);
+                showNotification("Kitap kartı resim olarak indirildi!", "success");
             }).catch(err => {
-                document.body.removeChild(container);
-                showNotification("Görsel oluşturulamadı.", "error");
+                content.style.maxHeight = originalMaxHeight;
+                content.style.overflow = originalOverflow;
+                console.error("Resim oluşturma hatası:", err);
+                showNotification("Resim oluşturulamadı.", "error");
             });
-        }
+        };
 
         // --- ZENGİN METİN EDİTÖRÜ (RTE) MANTIĞI ---
         let activeRteTarget = null;
@@ -1070,21 +1001,6 @@
             openViewModalInternal(randomBook);
             showNotification("Sizin için rastgele seçildi! 🎲", "success");
         });
-        
-        // SADECE FAVORİLER FİLTRESİ
-        document.getElementById('filter-fav-btn').addEventListener('click', () => {
-            filterOnlyFavorites = !filterOnlyFavorites;
-            const btn = document.getElementById('filter-fav-btn');
-            if(filterOnlyFavorites) {
-                btn.classList.remove('text-rose-400', 'bg-rose-50', 'dark:bg-rose-900/30');
-                btn.classList.add('text-white', 'bg-rose-500', 'border-rose-500');
-                showNotification("Sadece Favoriler gösteriliyor.", "info");
-            } else {
-                btn.classList.add('text-rose-400', 'bg-rose-50', 'dark:bg-rose-900/30');
-                btn.classList.remove('text-white', 'bg-rose-500', 'border-rose-500');
-            }
-            applyFiltersAndRender();
-        });
 
         // ARAMA ÖNERİLERİ
         function updateSearchSuggestions() {
@@ -1153,7 +1069,7 @@
                     labels: labels,
                     datasets: [{
                         data: data,
-                        backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#3b82f6', '#ec4899', '#8b5cf6', '#64748b', '#ef4444'], // Kırmızı da eklendi
+                        backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#3b82f6', '#ec4899', '#8b5cf6', '#64748b'],
                         borderWidth: 2,
                         borderColor: document.documentElement.classList.contains('dark') ? '#1e293b' : '#ffffff'
                     }]
@@ -1225,7 +1141,6 @@
         }
         
         function renderSkeletons() {
-            bookListEl.className = "grid grid-cols-1 md:grid-cols-2 gap-4"; // Varsayılan Grid
             bookListEl.innerHTML = '';
             for(let i=0; i<4; i++) {
                 const skeleton = document.createElement('div');
@@ -1461,27 +1376,18 @@
         filterOwnership.addEventListener('change', applyFiltersAndRender);
         sortSelect.addEventListener('change', applyFiltersAndRender);
         
-        // Görünüm Butonları Seçicileri
         viewListBtn.addEventListener('click', () => { currentViewMode = 'list'; updateViewUI(); applyFiltersAndRender(); });
         viewGridBtn.addEventListener('click', () => { currentViewMode = 'grid'; updateViewUI(); applyFiltersAndRender(); });
-        viewShelfBtn.addEventListener('click', () => { currentViewMode = 'shelf'; updateViewUI(); applyFiltersAndRender(); });
 
         function updateViewUI() {
-            // Butonların aktiflik durumlarını ayarla
-            const btns = [viewListBtn, viewGridBtn, viewShelfBtn];
-            btns.forEach(btn => {
-                btn.className = "p-1.5 px-3 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all";
-            });
-
-            if (currentViewMode === 'list') {
+            if(currentViewMode === 'list') {
                 viewListBtn.className = "p-1.5 px-3 rounded-lg text-slate-800 dark:text-white bg-white dark:bg-slate-700 shadow-sm transition-all";
+                viewGridBtn.className = "p-1.5 px-3 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all";
                 bookListEl.className = "space-y-4";
-            } else if (currentViewMode === 'grid') {
+            } else {
                 viewGridBtn.className = "p-1.5 px-3 rounded-lg text-slate-800 dark:text-white bg-white dark:bg-slate-700 shadow-sm transition-all";
+                viewListBtn.className = "p-1.5 px-3 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all";
                 bookListEl.className = "grid grid-cols-1 md:grid-cols-2 gap-4"; 
-            } else if (currentViewMode === 'shelf') {
-                viewShelfBtn.className = "p-1.5 px-3 rounded-lg text-slate-800 dark:text-white bg-white dark:bg-slate-700 shadow-sm transition-all";
-                bookListEl.className = "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-x-3 gap-y-8 pt-4"; 
             }
         }
 
@@ -1493,9 +1399,6 @@
                 const sort = sortSelect.value;
 
                 let filtered = allBooks.filter(book => {
-                    // Favori Filtresi
-                    if(filterOnlyFavorites && !book.isFavorite) return false;
-
                     const matchStatus = status === 'all' || book.status === status;
                     let bookOwn = book.ownership || 'none';
                     if (bookOwn === 'owned') bookOwn = 'physical';
@@ -1562,10 +1465,6 @@
                         ratingHtml += '</div>';
                     }
 
-                    // Kalp (Favori) İkonu HTML
-                    const favIconClass = book.isFavorite ? 'fas fa-heart text-red-500' : 'far fa-heart text-slate-400 hover:text-red-400';
-                    const favBtnHtml = `<button type="button" onclick="window.toggleFavorite(event, '${book.id}', ${!!book.isFavorite})" class="absolute top-3 right-3 z-20 text-lg transition-transform active:scale-75" title="Favorilere Ekle/Çıkar"><i class="${favIconClass}"></i></button>`;
-
                     let badgesHtml = `<button type="button" onclick="window.addDynamicFilter('status', '${bOwn}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity ${o.color} px-2 py-1 rounded-md text-[10px] font-bold tracking-wide border"><i class="fas ${o.icon} mr-1"></i>${o.text}</button>`;
                     const bookCats = Array.isArray(book.category) ? book.category : (book.category ? book.category.split(',').map(str=>str.trim()) : []);
                     bookCats.forEach(c => { if(c) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('cat', '${escapeHTML(c)}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide">${escapeHTML(c)}</button>`; });
@@ -1578,83 +1477,60 @@
                     const card = document.createElement('div');
                     
                     if (currentViewMode === 'list') {
-                        card.className = 'bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-col cursor-pointer group';
-                        card.onclick = (e) => { if(!e.target.closest('button')) window.openViewModal(book.id); };
+                        card.className = 'bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-col';
                         card.innerHTML = `
-                            ${favBtnHtml}
-                            <div class="flex-grow min-w-0 flex flex-col z-10 pr-6">
+                            <div class="flex-grow min-w-0 flex flex-col z-10">
                                 <div class="flex justify-between items-start gap-2 mb-1">
                                     <div class="w-full">
                                         ${ratingHtml}
-                                        <h3 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white book-title leading-tight group-hover:text-indigo-600 transition-colors">${escapeHTML(book.title)}</h3>
+                                        <h3 onclick="window.openViewModal('${book.id}')" class="view-trigger text-lg sm:text-xl font-bold text-slate-900 dark:text-white book-title leading-tight cursor-pointer hover:text-indigo-600 transition-colors">${escapeHTML(book.title)}</h3>
                                         <p class="text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm mt-1">${escapeHTML(book.author)}</p>
                                     </div>
                                     <div class="hide-auth-elements flex shrink-0 gap-1 bg-slate-50 dark:bg-slate-900/50 p-1 rounded-xl border border-slate-100 dark:border-slate-700">
-                                        <button type="button" onclick="event.stopPropagation(); window.startEditMode('${book.id}')" class="edit-btn p-1.5 md:p-2 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg transition-colors active:scale-90" title="Düzenle"><i class="fas fa-edit"></i></button>
-                                        <button type="button" onclick="event.stopPropagation(); window.deleteBook('${book.id}', '${escapeHTML(book.title.replace(/'/g, "\\'"))}')" class="delete-btn p-1.5 md:p-2 text-slate-500 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-colors active:scale-90" title="Sil"><i class="fas fa-trash-alt"></i></button>
+                                        <button type="button" onclick="window.startEditMode('${book.id}')" class="edit-btn p-1.5 md:p-2 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg transition-colors active:scale-90" title="Düzenle"><i class="fas fa-edit"></i></button>
+                                        <button type="button" onclick="window.deleteBook('${book.id}', '${escapeHTML(book.title.replace(/'/g, "\\'"))}')" class="delete-btn p-1.5 md:p-2 text-slate-500 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-colors active:scale-90" title="Sil"><i class="fas fa-trash-alt"></i></button>
                                     </div>
                                 </div>
-                                <div class="flex flex-wrap gap-1.5 mb-2 mt-2" onclick="event.stopPropagation()">${badgesHtml}</div>
+                                <div class="flex flex-wrap gap-1.5 mb-2 mt-2">${badgesHtml}</div>
                                 <div class="mb-2 flex items-center gap-2">
-                                    <button type="button" onclick="event.stopPropagation(); window.addDynamicFilter('status', '${book.status}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${s.color}">
+                                    <button type="button" onclick="window.addDynamicFilter('status', '${book.status}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${s.color}">
                                         <i class="fas ${s.icon}"></i> ${s.text}
                                     </button>
                                     ${book.pageCount ? `<span class="text-[10px] text-slate-400"><i class="fas fa-file-alt"></i> ${escapeHTML(book.pageCount)} syf</span>` : ''}
                                 </div>
                             </div>
                         `;
-                    } else if (currentViewMode === 'grid') {
-                        card.className = 'bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-row gap-4 cursor-pointer group';
-                        card.onclick = (e) => { if(!e.target.closest('button')) window.openViewModal(book.id); };
+                    } else {
+                        card.className = 'bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-row gap-4';
                         
                         const coverHtml = book.coverUrl 
-                            ? `<div class="w-full h-40 md:h-48 bg-slate-50 dark:bg-slate-900 rounded-xl flex items-center justify-center overflow-hidden shadow shrink-0 group-hover:opacity-90 transition-opacity"><img src="${book.coverUrl}" class="w-full h-full object-contain"></div>`
-                            : `<div class="w-full h-40 md:h-48 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center text-slate-300 dark:text-slate-500 shadow shrink-0 group-hover:bg-slate-200 transition-colors"><i class="fas fa-book text-3xl"></i></div>`;
+                            ? `<div onclick="window.openViewModal('${book.id}')" class="view-trigger cursor-pointer hover:opacity-80 transition-opacity w-full h-40 md:h-48 bg-slate-50 dark:bg-slate-900 rounded-xl flex items-center justify-center overflow-hidden shadow shrink-0"><img src="${book.coverUrl}" class="w-full h-full object-contain"></div>`
+                            : `<div onclick="window.openViewModal('${book.id}')" class="view-trigger cursor-pointer hover:bg-slate-200 transition-colors w-full h-40 md:h-48 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center text-slate-300 dark:text-slate-500 shadow shrink-0"><i class="fas fa-book text-3xl"></i></div>`;
 
                         card.innerHTML = `
-                            ${favBtnHtml}
                             <div class="flex flex-col w-28 md:w-32 shrink-0 gap-2">
                                 ${coverHtml}
                                 <div class="hide-auth-elements flex w-full gap-1">
-                                    <button type="button" onclick="event.stopPropagation(); window.startEditMode('${book.id}')" class="edit-btn flex-1 bg-slate-50 dark:bg-slate-900/50 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 p-2 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors flex items-center justify-center active:scale-90" title="Düzenle"><i class="fas fa-edit"></i></button>
-                                    <button type="button" onclick="event.stopPropagation(); window.deleteBook('${book.id}', '${escapeHTML(book.title.replace(/'/g, "\\'"))}')" class="delete-btn flex-1 bg-slate-50 dark:bg-slate-900/50 text-slate-500 hover:text-red-600 dark:hover:text-red-400 p-2 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors flex items-center justify-center active:scale-90" title="Sil"><i class="fas fa-trash-alt"></i></button>
+                                    <button type="button" onclick="window.startEditMode('${book.id}')" class="edit-btn flex-1 bg-slate-50 dark:bg-slate-900/50 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 p-2 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors flex items-center justify-center active:scale-90" title="Düzenle"><i class="fas fa-edit"></i></button>
+                                    <button type="button" onclick="window.deleteBook('${book.id}', '${escapeHTML(book.title.replace(/'/g, "\\'"))}')" class="delete-btn flex-1 bg-slate-50 dark:bg-slate-900/50 text-slate-500 hover:text-red-600 dark:hover:text-red-400 p-2 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors flex items-center justify-center active:scale-90" title="Sil"><i class="fas fa-trash-alt"></i></button>
                                 </div>
                             </div>
-                            <div class="flex-grow min-w-0 flex flex-col z-10 pr-5">
+                            <div class="flex-grow min-w-0 flex flex-col z-10">
                                 <div class="flex justify-between items-start gap-2 mb-1">
                                     <div class="w-full">
                                         ${ratingHtml}
-                                        <h3 class="text-lg font-bold text-slate-900 dark:text-white book-title leading-tight line-clamp-2 group-hover:text-indigo-600 transition-colors">${escapeHTML(book.title)}</h3>
+                                        <h3 onclick="window.openViewModal('${book.id}')" class="view-trigger text-lg font-bold text-slate-900 dark:text-white book-title leading-tight line-clamp-2 cursor-pointer hover:text-indigo-600 transition-colors">${escapeHTML(book.title)}</h3>
                                         <p class="text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm mt-1">${escapeHTML(book.author)}</p>
                                     </div>
                                 </div>
-                                <div class="flex flex-wrap gap-1.5 mb-2 mt-2" onclick="event.stopPropagation()">${badgesHtml}</div>
+                                <div class="flex flex-wrap gap-1.5 mb-2 mt-2">${badgesHtml}</div>
                                 <div class="mb-2 flex flex-col items-start gap-1">
-                                    <button type="button" onclick="event.stopPropagation(); window.addDynamicFilter('status', '${book.status}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${s.color}">
+                                    <button type="button" onclick="window.addDynamicFilter('status', '${book.status}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${s.color}">
                                         <i class="fas ${s.icon}"></i> ${s.text}
                                     </button>
                                     ${book.pageCount ? `<span class="text-[10px] text-slate-400 font-medium"><i class="fas fa-file-alt"></i> ${escapeHTML(book.pageCount)} sayfa</span>` : ''}
                                 </div>
                             </div>
-                        `;
-                    } else if (currentViewMode === 'shelf') {
-                        // RAF GÖRÜNÜMÜ TASARIMI
-                        card.className = 'relative flex flex-col items-center justify-end h-40 md:h-48 group cursor-pointer px-1 sm:px-2';
-                        card.onclick = () => window.openViewModal(book.id);
-                        
-                        const coverHtml = book.coverUrl 
-                            ? `<img src="${book.coverUrl}" class="w-auto h-full max-h-[90%] object-contain rounded shadow-md z-10 group-hover:-translate-y-3 group-active:scale-95 transition-all duration-300">`
-                            : `<div class="w-20 sm:w-24 h-full max-h-[90%] bg-slate-200 dark:bg-slate-700 rounded flex items-center justify-center text-slate-400 shadow-md z-10 group-hover:-translate-y-3 transition-transform duration-300 px-2 text-center text-[10px] font-bold overflow-hidden">${escapeHTML(book.title)}</div>`;
-
-                        const shelfFavIcon = book.isFavorite ? '<i class="fas fa-heart text-red-500"></i>' : '';
-
-                        card.innerHTML = `
-                            ${book.isFavorite ? `<div class="absolute top-0 right-2 z-20 text-lg drop-shadow-md pointer-events-none">${shelfFavIcon}</div>` : ''}
-                            ${coverHtml}
-                            <!-- Raf Çizgisi -->
-                            <div class="absolute bottom-0 left-0 w-full h-3 sm:h-4 bg-gradient-to-b from-amber-800 to-amber-950 dark:from-slate-700 dark:to-slate-800 rounded-sm shadow-[0_4px_6px_rgba(0,0,0,0.3)] z-0 border-t border-amber-700/50 dark:border-slate-600"></div>
-                            <!-- İsim Tooltip (Mobilde de görünmesi için biraz alta) -->
-                            <div class="absolute -bottom-6 bg-slate-900 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-30 pointer-events-none max-w-[150%] truncate shadow-lg border border-slate-700">${escapeHTML(book.title)}</div>
                         `;
                     }
 
@@ -1673,66 +1549,15 @@
             currentViewBook = book;
             const contentDiv = document.getElementById('view-modal-content');
             
-            // Sıralama Değiştirildi: Özet -> Alıntılar -> Notlar -> Yorumlar -> Eleştiriler
-            let accordionsHTML = '<div class="mt-6 space-y-3">';
-            
-            // 1. ÖZET
-            accordionsHTML += `
-                <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-800">
-                    <button type="button" class="view-acc-header w-full px-4 py-3 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                        <div class="flex items-center gap-3 pointer-events-none">
-                            <span class="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">📝 Özet</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span class="hide-auth-elements hidden text-[10px] bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-2 py-1 rounded font-bold hover:bg-amber-200 inline-edit-trigger" data-field="summary" data-title="Özet">Düzenle <i class="fas fa-pen ml-1"></i></span>
-                            <i class="fas fa-chevron-down text-slate-400 text-xs transition-transform transform pointer-events-none"></i>
-                        </div>
-                    </button>
-                    <div class="view-acc-content hidden px-4 pb-4 pt-2 border-t border-slate-100 dark:border-slate-700">
-                        <div class="inline-view-state text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap rte-content">${book.summary ? book.summary : '<em class="text-slate-400">Girilmemiş...</em>'}</div>
-                    </div>
-                </div>
-            `;
-
-            // 2. ALINTILAR (Artık kendi tasarım bloğunda ve Paylaş butonları var)
-            let quotesHtml = '';
-            if (Array.isArray(book.quotes) && book.quotes.length > 0) {
-                quotesHtml = book.quotes.map((q, index) => `
-                    <div class="relative group">
-                        <blockquote class="pl-3 border-l-4 border-amber-300 dark:border-amber-500 mb-2 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-r-lg text-sm text-slate-700 dark:text-slate-300 pr-10">
-                            "${escapeHTML(q.text).replace(/\n/g, '<br>')}"
-                            ${q.page ? `<cite class="text-[10px] font-bold text-amber-600 dark:text-amber-500 block text-right mt-1">- Syf ${escapeHTML(q.page)}</cite>` : ''}
-                        </blockquote>
-                        <button type="button" onclick="window.exportQuoteImage(${index})" class="absolute top-2 right-2 text-slate-400 hover:text-indigo-500 bg-white dark:bg-slate-800 rounded-full w-7 h-7 flex items-center justify-center shadow-sm border border-slate-200 dark:border-slate-700 transition-colors" title="Sosyal Medyada Paylaş">
-                            <i class="fab fa-instagram text-xs"></i>
-                        </button>
-                    </div>
-                `).join('');
-            } else {
-                quotesHtml = '<em class="text-slate-400 text-sm">Girilmemiş...</em>';
-            }
-
-            accordionsHTML += `
-                <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-800">
-                    <button type="button" class="view-acc-header w-full px-4 py-3 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                        <span class="text-sm font-bold text-amber-700 dark:text-amber-500 flex items-center gap-2 pointer-events-none">💬 Alıntılar</span>
-                        <i class="fas fa-chevron-down text-slate-400 text-xs transition-transform transform pointer-events-none"></i>
-                    </button>
-                    <div class="view-acc-content hidden px-4 pb-4 pt-2 border-t border-slate-100 dark:border-slate-700">
-                        <div class="hide-auth-elements text-[10px] text-slate-400 italic mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">Alıntıları düzenlemek için sol üstteki "Notları Düzenle" butonunu kullanın. İkonlara tıklayarak alıntıyı görsel olarak indirebilirsiniz.</div>
-                        ${quotesHtml}
-                    </div>
-                </div>
-            `;
-
-            // Diğer Alanlar (Notlar, Yorumlar, Eleştiriler)
-            const remainingSections = [
+            const sections = [
+                { id: 'summary', title: 'Özet', icon: '📝', dbField: 'summary', val: book.summary || '' },
                 { id: 'notes', title: 'Genel Notlar', icon: '📌', dbField: 'notes', val: book.notes || '' },
                 { id: 'comments', title: 'Yorumlar', icon: '💡', dbField: 'comments', val: book.comments || '' },
                 { id: 'critiques', title: 'Eleştiriler', icon: '⚖️', dbField: 'critiques', val: book.critiques || '' }
             ];
 
-            remainingSections.forEach(sec => {
+            let accordionsHTML = '<div class="mt-6 space-y-3">';
+            sections.forEach(sec => {
                 accordionsHTML += `
                     <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-800">
                         <button type="button" class="view-acc-header w-full px-4 py-3 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
@@ -1752,7 +1577,31 @@
                     </div>
                 `;
             });
-            accordionsHTML += '</div>';
+
+            let quotesHtml = '';
+            if (Array.isArray(book.quotes) && book.quotes.length > 0) {
+                quotesHtml = book.quotes.map(q => `
+                    <blockquote class="pl-3 border-l-4 border-amber-300 dark:border-amber-500 mb-2 bg-slate-50 dark:bg-slate-900/50 p-2.5 rounded-r-lg text-sm text-slate-700 dark:text-slate-300">
+                        "${escapeHTML(q.text).replace(/\n/g, '<br>')}"
+                        ${q.page ? `<cite class="text-[10px] font-bold text-amber-600 dark:text-amber-500 block text-right mt-1">- Syf ${escapeHTML(q.page)}</cite>` : ''}
+                    </blockquote>
+                `).join('');
+            } else {
+                quotesHtml = '<em class="text-slate-400 text-sm">Girilmemiş...</em>';
+            }
+
+            accordionsHTML += `
+                <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-800">
+                    <button type="button" class="view-acc-header w-full px-4 py-3 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                        <span class="text-sm font-bold text-amber-700 dark:text-amber-500 flex items-center gap-2 pointer-events-none">💬 Alıntılar</span>
+                        <i class="fas fa-chevron-down text-slate-400 text-xs transition-transform transform pointer-events-none"></i>
+                    </button>
+                    <div class="view-acc-content hidden px-4 pb-4 pt-2 border-t border-slate-100 dark:border-slate-700">
+                        <div class="hide-auth-elements text-xs text-slate-400 italic mb-3">Alıntıları düzenlemek için sol üstteki "Notları Düzenle" butonunu kullanın.</div>
+                        ${quotesHtml}
+                    </div>
+                </div>
+            </div>`;
 
             let ratingHtml = '';
             const rating = Number(book.rating) || 0;
@@ -1780,31 +1629,17 @@
                 metadataHtml += '</div>';
             }
 
-            // Görüntüleme alanındaki Fav ikonu
-            const favIconClass = book.isFavorite ? 'fas fa-heart text-red-500' : 'far fa-heart text-slate-400 hover:text-red-400';
-            const favBtnHtml = `<button type="button" onclick="window.toggleFavorite(event, '${book.id}', ${!!book.isFavorite}); setTimeout(()=>window.openViewModal('${book.id}'),100);" class="absolute top-2 right-2 z-20 text-xl transition-transform active:scale-75 bg-white/80 dark:bg-slate-800/80 w-8 h-8 rounded-full flex items-center justify-center shadow backdrop-blur-sm" title="Favorilere Ekle/Çıkar"><i class="${favIconClass}"></i></button>`;
-
             contentDiv.innerHTML = `
-                <div class="flex gap-4 items-start border-b border-slate-100 dark:border-slate-800 pb-4 relative">
-                   ${book.coverUrl ? `
-                        <div class="relative shrink-0">
-                            <img src="${book.coverUrl}" class="w-24 md:w-32 rounded-xl shadow-md object-contain bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700" crossorigin="anonymous">
-                            ${favBtnHtml}
-                        </div>
-                   ` : `
-                        <div class="relative shrink-0">
-                            <div class="w-24 md:w-32 h-36 md:h-48 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-3xl text-slate-300 border border-slate-200 dark:border-slate-700"><i class="fas fa-book"></i></div>
-                            ${favBtnHtml}
-                        </div>
-                   `}
-                   <div class="flex-grow min-w-0">
+                <div class="flex gap-4 items-start border-b border-slate-100 dark:border-slate-800 pb-4">
+                   ${book.coverUrl ? `<img src="${book.coverUrl}" class="w-24 md:w-32 rounded-xl shadow-md object-contain bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700" crossorigin="anonymous">` : `<div class="w-24 md:w-32 h-36 md:h-48 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-3xl text-slate-300 border border-slate-200 dark:border-slate-700"><i class="fas fa-book"></i></div>`}
+                   <div class="flex-grow">
                        ${ratingHtml}
                        <h2 class="text-xl md:text-2xl font-bold text-slate-900 dark:text-white book-title leading-tight">${escapeHTML(book.title)}</h2>
                        <p class="text-slate-600 dark:text-slate-400 font-medium mb-2">${escapeHTML(book.author)}</p>
                        <div class="flex flex-wrap gap-1.5 mb-2">
-                           <span class="${o.color} px-2 py-1 rounded-md text-[10px] font-bold tracking-wide border border-transparent whitespace-nowrap"><i class="fas ${o.icon} mr-1"></i>${o.text}</span>
-                           <span class="${s.color} px-2 py-1 rounded-md text-[10px] font-bold tracking-wide border border-transparent whitespace-nowrap"><i class="fas ${s.icon} mr-1"></i>${s.text}</span>
-                           ${book.pageCount ? `<span class="bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide whitespace-nowrap"><i class="fas fa-file-alt mr-1"></i>${escapeHTML(book.pageCount)} Syf</span>` : ''}
+                           <span class="${o.color} px-2 py-1 rounded-md text-[10px] font-bold tracking-wide border border-transparent"><i class="fas ${o.icon} mr-1"></i>${o.text}</span>
+                           <span class="${s.color} px-2 py-1 rounded-md text-[10px] font-bold tracking-wide border border-transparent"><i class="fas ${s.icon} mr-1"></i>${s.text}</span>
+                           ${book.pageCount ? `<span class="bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide"><i class="fas fa-file-alt mr-1"></i>${escapeHTML(book.pageCount)} Syf</span>` : ''}
                        </div>
                        ${metadataHtml}
                    </div>
@@ -1813,7 +1648,7 @@
             `;
 
             if(isReadOnlyMode) {
-                contentDiv.querySelectorAll('.hide-auth-elements').forEach(el => el.style.display = 'none');
+                contentDiv.querySelectorAll('.hide-auth-elements').forEach(el => el.classList.add('hidden'));
                 document.querySelectorAll('.show-only-readonly').forEach(el => el.classList.remove('hidden'));
             } else {
                 document.querySelectorAll('.show-only-readonly').forEach(el => el.classList.add('hidden'));
@@ -2084,17 +1919,11 @@
                     critiques: inputs.critiques.value.trim()
                 };
 
-                // isFavorite alanını koru
                 if (editModeId) {
-                    const existingBook = allBooks.find(b => b.id === editModeId);
-                    if(existingBook && existingBook.isFavorite !== undefined) {
-                        bookData.isFavorite = existingBook.isFavorite;
-                    }
                     bookData.updatedAt = serverTimestamp();
                     await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'books', editModeId), bookData);
                     showNotification("Kitap başarıyla güncellendi!");
                 } else {
-                    bookData.isFavorite = false;
                     bookData.createdAt = serverTimestamp();
                     bookData.updatedAt = serverTimestamp();
                     await addDoc(collection(db, 'artifacts', appId, 'users', currentUser.uid, 'books'), bookData);
@@ -2270,8 +2099,7 @@
                             rating: isNaN(myRating) ? 0 : myRating, startDate: "", endDate: "",
                             summary: "", quotes: [], notes: "CSV'den içe aktarıldı.",
                             comments: row['My Review'] || row['Yorumum'] || "", critiques: "",
-                            createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
-                            isFavorite: false
+                            createdAt: serverTimestamp(), updatedAt: serverTimestamp()
                         };
 
                         try {
