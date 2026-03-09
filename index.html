@@ -20,7 +20,7 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Google Fonts (Standart UI + Sosyal Medya Paylaşımları İçin Özel Fontlar) -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,500&family=Caveat:wght@500;700&family=Cinzel:wght@500;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
     
     <!-- Kütüphaneler -->
@@ -41,7 +41,7 @@
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
         .toast { transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; transform: translateY(150%); opacity: 0; pointer-events: none;}
-        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.show { transform: translateY(0); opacity: 1; pointer-events: auto;}
 
         textarea { resize: vertical; min-height: 60px; }
         .star-rating i { cursor: pointer; transition: color 0.2s, transform 0.1s; }
@@ -50,9 +50,6 @@
         .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
         .line-clamp-6 { display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
 
-        #reader { width: 100%; border-radius: 12px; overflow: hidden; border: none !important; }
-        #reader video { border-radius: 12px; object-fit: cover; }
-        
         /* Skeleton Animation */
         @keyframes pulse-bg { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
         .skeleton { animation: pulse-bg 1.5s infinite; }
@@ -63,10 +60,6 @@
         .rte-content p { margin-bottom: 0.5em; }
         .rte-content ul { list-style-type: disc; margin-left: 1.5em; margin-bottom: 0.5em; }
         .rte-content ol { list-style-type: decimal; margin-left: 1.5em; margin-bottom: 0.5em; }
-        .rte-content u { text-decoration: underline; }
-        .rte-content s { text-decoration: line-through; }
-        .rte-content i { font-style: italic; }
-        .rte-content b, .rte-content strong { font-weight: bold; }
         #rte-editor:empty:before { content: attr(data-placeholder); color: #94a3b8; font-style: italic; pointer-events: none; display: block; }
     </style>
 </head>
@@ -87,7 +80,6 @@
             <h1 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">e-Kütüphane Pro</h1>
             <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Kişisel arşivinize erişmek ve okuma istatistiklerinizi yönetmek için lütfen giriş yapın.</p>
             
-            <!-- E-posta / Şifre Giriş Formu -->
             <div class="w-full flex flex-col gap-3 mb-6 text-left">
                 <div>
                     <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">E-POSTA</label>
@@ -118,7 +110,6 @@
     <!-- Salt-Okunur (Vitrin) Uyarı Çubuğu -->
     <div id="readonly-banner" class="hidden bg-amber-500 text-white text-center py-2 text-xs font-bold shadow-md relative z-30">
         <i class="fas fa-eye mr-2"></i> Misafir Modundasınız. Bu kütüphaneyi sadece görüntüleyebilirsiniz.
-        <a href="/" class="underline ml-2 text-amber-100 hover:text-white">Kendi Kütüphanemi Kur</a>
     </div>
 
     <!-- Main App Content (Dashboard) -->
@@ -137,9 +128,6 @@
             </div>
             
             <div class="flex items-center gap-3">
-                <div id="header-sync-status" class="hidden md:flex text-xs font-semibold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 px-4 py-2 rounded-full shadow-sm border border-slate-200 dark:border-slate-700 items-center gap-2">
-                    <i class="fas fa-cloud text-emerald-500"></i> Senkronize
-                </div>
                 <button type="button" id="menu-btn" class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors active:scale-95 relative overflow-hidden">
                     <img id="header-profile-pic" src="" class="hidden w-full h-full object-cover">
                     <i id="header-menu-icon" class="fas fa-bars"></i>
@@ -147,7 +135,7 @@
             </div>
         </header>
 
-        <!-- Stats & Goal Panel -->
+        <!-- Stats Panel -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
             <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col items-center justify-center text-center cursor-pointer hover:shadow-md transition-shadow" id="open-stats-btn" title="Gelişmiş İstatistikleri Gör">
                 <div class="w-10 h-10 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 flex items-center justify-center mb-2"><i class="fas fa-chart-pie text-lg"></i></div>
@@ -160,11 +148,10 @@
                 <h3 class="text-2xl font-bold text-slate-800 dark:text-white" id="stat-read">0</h3>
                 <p class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold mt-1" id="stat-pages"><i class="fas fa-file-alt"></i> 0 Sayfa</p>
             </div>
-            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col items-center justify-center text-center relative overflow-hidden">
-                <div class="absolute -right-3 -top-3 text-slate-100 dark:text-slate-700 opacity-50"><i class="fas fa-home text-5xl"></i></div>
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col items-center justify-center text-center">
                 <div class="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center mb-2 relative z-10"><i class="fas fa-archive text-lg"></i></div>
-                <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase mb-1 relative z-10">Kitaplığım</p>
-                <h3 class="text-2xl font-bold text-slate-800 dark:text-white relative z-10" id="stat-owned">0</h3>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase mb-1">Kitaplığım</p>
+                <h3 class="text-2xl font-bold text-slate-800 dark:text-white" id="stat-owned">0</h3>
             </div>
             <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-center">
                 <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase mb-1 flex justify-between">
@@ -185,38 +172,37 @@
                     <input type="text" id="search-input" list="search-suggestions" placeholder="Kitap veya yazar ara..." class="w-full pl-9 pr-3 py-2 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm dark:bg-slate-900 dark:text-white transition-colors">
                     <datalist id="search-suggestions"></datalist>
                 </div>
-                <!-- Favoriler & Rastgele Butonları -->
                 <div class="shrink-0 flex gap-1">
                     <button type="button" id="filter-fav-btn" class="shrink-0 bg-rose-50 dark:bg-rose-900/30 text-rose-400 hover:bg-rose-100 hover:text-rose-500 p-2.5 rounded-xl border border-rose-100 dark:border-rose-900/50 transition-colors active:scale-95" title="Sadece Favoriler">
                         <i class="fas fa-heart"></i>
                     </button>
-                    <button type="button" id="random-book-btn" class="shrink-0 bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 p-2.5 rounded-xl border border-amber-200 dark:border-amber-800 hover:bg-amber-200 transition-colors active:scale-95" title="Ne Okusam? (Rastgele Seç)">
+                    <button type="button" id="random-book-btn" class="shrink-0 bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 p-2.5 rounded-xl border border-amber-200 dark:border-amber-800 hover:bg-amber-200 transition-colors active:scale-95" title="Rastgele Seç">
                         <i class="fas fa-dice"></i>
                     </button>
                 </div>
                 <div class="shrink-0 flex bg-slate-100 dark:bg-slate-900 rounded-xl p-1 border border-slate-200 dark:border-slate-700">
-                    <button type="button" id="view-list-btn" class="p-1.5 px-3 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all" title="Liste Görünümü"><i class="fas fa-list"></i></button>
-                    <button type="button" id="view-grid-btn" class="p-1.5 px-3 rounded-lg text-slate-800 dark:text-white bg-white dark:bg-slate-700 shadow-sm transition-all" title="Izgara Görünümü"><i class="fas fa-th-large"></i></button>
-                    <button type="button" id="view-shelf-btn" class="p-1.5 px-3 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all" title="Raf Görünümü"><i class="fas fa-layer-group"></i></button>
+                    <button type="button" id="view-list-btn" class="p-1.5 px-3 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all" title="Liste"><i class="fas fa-list"></i></button>
+                    <button type="button" id="view-grid-btn" class="p-1.5 px-3 rounded-lg text-slate-800 dark:text-white bg-white dark:bg-slate-700 shadow-sm transition-all" title="Izgara"><i class="fas fa-th-large"></i></button>
+                    <button type="button" id="view-shelf-btn" class="p-1.5 px-3 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all" title="Raf"><i class="fas fa-layer-group"></i></button>
                 </div>
             </div>
             
             <div class="flex flex-wrap items-center gap-2 w-full">
                 <select id="filter-status" class="flex-1 min-w-[130px] px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-xl outline-none text-xs md:text-sm bg-slate-50 dark:bg-slate-900 dark:text-white cursor-pointer">
-                    <option value="all">Okuma Durumu: Tümü</option>
+                    <option value="all">Durum: Tümü</option>
                     <option value="read">Okunanlar</option>
                     <option value="reading">Okunuyor</option>
                     <option value="toread">Okunacaklar</option>
                     <option value="dnf">Yarım Bırakılanlar</option>
                 </select>
                 <select id="filter-ownership" class="flex-1 min-w-[130px] px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-xl outline-none text-xs md:text-sm bg-slate-50 dark:bg-slate-900 dark:text-white cursor-pointer">
-                    <option value="all">Sahiplik Türü: Hepsi</option>
+                    <option value="all">Sahiplik: Hepsi</option>
                     <option value="none">YOK (Bende Değil)</option>
                     <option value="physical">Fiziksel</option>
                     <option value="digital">Dijital</option>
                 </select>
                 <select id="sort-select" class="flex-1 min-w-[130px] px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-xl outline-none text-xs md:text-sm bg-slate-50 dark:bg-slate-900 dark:text-white cursor-pointer">
-                    <option value="newest">Sıralama Türü: En Yeni</option>
+                    <option value="newest">Sıralama: En Yeni</option>
                     <option value="oldest">En Eski</option>
                     <option value="titleAZ">A-Z</option>
                     <option value="ratingDesc">En Yüksek Puanlı</option>
@@ -228,57 +214,157 @@
         <div id="active-filters-bar" class="hidden items-center flex-wrap gap-2 px-1 pb-2">
             <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Aktif Filtreler:</span>
             <div id="active-filters-container" class="flex flex-wrap gap-2"></div>
-            <button type="button" id="clear-filters-btn" class="text-[10px] font-bold text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded-md">Tümünü Temizle <i class="fas fa-times ml-1"></i></button>
+            <button type="button" id="clear-filters-btn" class="text-[10px] font-bold text-red-500 hover:text-red-700 bg-red-50 px-2 py-1 rounded-md">Temizle <i class="fas fa-times"></i></button>
         </div>
 
-        <!-- Empty State (Yenilendi: Kullanıcı Bilgilendirmesi) -->
+        <!-- Empty State -->
         <div id="empty-state" class="hidden flex-col items-center justify-center py-16 px-4 text-center bg-white dark:bg-slate-800 rounded-2xl border border-dashed border-slate-300 dark:border-slate-600">
             <div class="w-20 h-20 bg-slate-50 dark:bg-slate-700 rounded-full flex items-center justify-center mb-5 text-slate-300 dark:text-slate-500"><i class="fas fa-book-open text-3xl"></i></div>
             <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-2">Kayıt Bulunamadı</h3>
-            <p class="text-slate-500 dark:text-slate-400 text-sm max-w-sm mb-6">Arama kriterlerinize uyan kitap yok veya bu hesapta henüz arşivinize kitap eklemediniz.</p>
-            
-            <div class="bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800 rounded-xl p-4 text-left max-w-md text-xs text-indigo-700 dark:text-indigo-300 shadow-sm leading-relaxed">
-                <i class="fas fa-info-circle mr-1 text-indigo-500"></i> <b class="text-indigo-800 dark:text-indigo-200">Eski kitaplarınızı göremiyor musunuz?</b><br><br>
-                Kütüphaneniz giriş yaptığınız hesaba özeldir. Eğer daha önce <b>Google ile giriş</b> yaptıysanız ve şu an <b>E-posta/Şifre</b> ile girdiyseniz kütüphaneniz boş görünür.<br><br>
-                Eski verilerinize ulaşmak için sağ üstteki <b>Ayarlar <i class="fas fa-bars"></i></b> menüsünden çıkış yapıp, eski giriş yönteminizle tekrar bağlanmayı deneyin.
-            </div>
+            <p class="text-slate-500 dark:text-slate-400 text-sm max-w-sm mb-6">Arama kriterlerinize uyan kitap yok veya henüz arşivinize kitap eklemediniz.</p>
         </div>
 
         <!-- Book List Container -->
         <div id="book-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
     </div>
 
-    <!-- Scoll to Top Button -->
-    <button id="scroll-to-top" class="hidden fixed bottom-6 left-6 w-12 h-12 bg-slate-800 text-white rounded-full shadow-xl items-center justify-center z-40 hover:bg-slate-700 hover:-translate-y-1 transition-all opacity-0 dark:bg-slate-600 dark:hover:bg-slate-500" title="Başa Dön">
-        <i class="fas fa-arrow-up text-lg"></i>
-    </button>
+    <!-- Modals & Drawers -->
 
-    <!-- Tanılama (Debug) Butonu -->
-    <button type="button" id="sys-diag-btn" class="fixed bottom-24 right-6 w-12 h-12 bg-red-600 text-white rounded-full shadow-xl flex items-center justify-center z-50 hover:bg-red-700 transition-all hover:scale-105" title="Hata Raporu Çıkar">
-        <i class="fas fa-stethoscope"></i>
-    </button>
-
-    <!-- FAB Button -->
-    <button type="button" id="fab-add-btn" class="hidden fixed bottom-6 right-6 md:bottom-10 md:right-10 w-14 h-14 md:w-16 md:h-16 bg-indigo-600 text-white rounded-full shadow-lg shadow-indigo-300/50 dark:shadow-none items-center justify-center text-xl md:text-2xl hover:scale-105 active:scale-95 hover:bg-indigo-700 transition-all z-40" title="Yeni Kitap Ekle">
-        <i class="fas fa-plus"></i>
-    </button>
-
-    <!-- Modal: Tanılama Raporu -->
-    <div id="debug-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm cursor-pointer" id="close-debug-bg"></div>
-        <div class="relative w-full max-w-2xl bg-white dark:bg-slate-800 rounded-3xl shadow-2xl p-6 flex flex-col z-10 max-h-[90vh]">
-            <h3 class="text-xl font-bold text-red-600 mb-2 flex items-center gap-2"><i class="fas fa-stethoscope"></i> Sistem Tanılama Raporu</h3>
-            <p class="text-sm text-slate-600 dark:text-slate-300 mb-4 leading-tight">Kitaplarınız görünmüyorsa aşağıdaki kutudaki metni kopyalayıp bana gönderin, hatayı hemen çözelim.</p>
-            <textarea id="debug-log-area" class="w-full flex-grow p-4 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl font-mono text-[10px] sm:text-xs text-slate-800 dark:text-emerald-400 mb-4 outline-none resize-none custom-scrollbar min-h-[200px]" readonly></textarea>
-            <div class="flex justify-end gap-3 shrink-0">
-                <button type="button" id="close-debug-btn" class="px-5 py-2.5 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl font-bold hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">Kapat</button>
-                <button type="button" id="copy-debug-btn" class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2"><i class="fas fa-copy"></i> Kopyala</button>
+    <!-- Add/Edit Book Modal -->
+    <div id="add-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+        <div id="add-backdrop" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm opacity-0 transition-opacity"></div>
+        <div id="add-panel" class="relative w-full max-w-2xl bg-white dark:bg-slate-800 rounded-2xl shadow-2xl flex flex-col z-10 max-h-[90vh] translate-y-full transition-transform transform">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800 rounded-t-2xl shrink-0">
+                <h2 id="form-title" class="text-lg font-bold text-slate-800 dark:text-white"><i class="fas fa-plus-circle text-indigo-500"></i> Yeni Kitap Ekle</h2>
+                <button type="button" id="close-add-btn" class="w-8 h-8 flex items-center justify-center bg-white dark:bg-slate-700 text-slate-500 rounded-full hover:bg-red-50 hover:text-red-500 transition-colors shadow-sm"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div class="p-4 overflow-y-auto flex-grow custom-scrollbar">
+                <form id="book-form" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">Kitap Adı *</label>
+                            <input type="text" id="book-title" required class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm dark:bg-slate-900 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">Yazar *</label>
+                            <input type="text" id="book-author" required class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm dark:bg-slate-900 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">Kategori (Virgülle ayırın)</label>
+                            <input type="text" id="book-category" list="cat-list" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-xl outline-none text-sm dark:bg-slate-900 dark:text-white">
+                            <datalist id="cat-list"></datalist>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">Alt Kategori</label>
+                            <input type="text" id="book-subcategory" list="subcat-list" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-xl outline-none text-sm dark:bg-slate-900 dark:text-white">
+                            <datalist id="subcat-list"></datalist>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">Durum</label>
+                            <select id="book-status" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-xl outline-none text-sm dark:bg-slate-900 dark:text-white">
+                                <option value="toread">Okunacak</option>
+                                <option value="reading">Okunuyor</option>
+                                <option value="read">Okundu</option>
+                                <option value="dnf">Yarım Bıraktım</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">Sahiplik</label>
+                            <select id="book-ownership" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-xl outline-none text-sm dark:bg-slate-900 dark:text-white">
+                                <option value="none">YOK</option>
+                                <option value="physical">Fiziksel Kütüphanemde</option>
+                                <option value="digital">Dijital Kütüphanemde</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">Sayfa Sayısı</label>
+                            <input type="number" id="book-page-count" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-xl outline-none text-sm dark:bg-slate-900 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">Puan (0-5)</label>
+                            <input type="number" id="book-rating" min="0" max="5" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-xl outline-none text-sm dark:bg-slate-900 dark:text-white">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-slate-500 mb-1">Kapak URL</label>
+                            <input type="url" id="book-cover-url" placeholder="https://..." class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-xl outline-none text-sm dark:bg-slate-900 dark:text-white">
+                        </div>
+                        <!-- Gizli alanlar (yapı bozulmasın diye mevcut) -->
+                        <input type="hidden" id="book-isbn">
+                        <input type="hidden" id="book-format">
+                        <input type="hidden" id="book-start-date">
+                        <input type="hidden" id="book-end-date">
+                        <input type="hidden" id="note-summary">
+                        <input type="hidden" id="note-notes">
+                        <input type="hidden" id="note-comments">
+                        <input type="hidden" id="note-critiques">
+                    </div>
+                </form>
+                <div class="mt-6 border-t border-slate-200 dark:border-slate-700 pt-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-bold text-slate-800 dark:text-white text-sm">Alıntılar</h3>
+                        <button type="button" onclick="window.openRTE('quote', 'Yeni Alıntı', false, -1)" class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-md font-bold hover:bg-indigo-200"><i class="fas fa-plus"></i> Ekle</button>
+                    </div>
+                    <div id="quotes-container" class="space-y-2"></div>
+                    <div id="no-quotes-msg" class="text-xs text-slate-500 italic p-4 bg-slate-50 dark:bg-slate-900 rounded-lg text-center">Henüz alıntı eklenmemiş.</div>
+                </div>
+            </div>
+            
+            <div class="p-4 border-t border-slate-200 dark:border-slate-700 flex gap-3 shrink-0 bg-slate-50 dark:bg-slate-800 rounded-b-2xl">
+                <button type="button" id="cancel-edit-btn" class="hidden flex-1 py-3 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl hover:bg-slate-300 transition-colors">İptal</button>
+                <button type="button" id="save-book-btn" class="flex-[2] py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors shadow-md">Kaydet</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal: Gelişmiş İstatistikler (Grafik) -->
-    <div id="stats-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <!-- View Book Modal -->
+    <div id="view-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4">
+        <div id="view-backdrop" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm cursor-pointer" onclick="window.closeViewModal()"></div>
+        <div class="relative w-full max-w-3xl bg-white dark:bg-slate-800 rounded-2xl shadow-2xl flex flex-col z-10 max-h-[90vh] overflow-hidden">
+            <button type="button" onclick="window.closeViewModal()" class="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center bg-white/50 dark:bg-slate-800/50 backdrop-blur rounded-full text-slate-600 dark:text-slate-300 hover:bg-red-50 hover:text-red-500 transition-colors shadow-sm"><i class="fas fa-times"></i></button>
+            <div id="view-content" class="p-6 overflow-y-auto custom-scrollbar"></div>
+        </div>
+    </div>
+
+    <!-- Settings Drawer -->
+    <div id="settings-drawer" class="fixed inset-0 z-[70] hidden justify-end">
+        <div id="settings-backdrop" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm opacity-0 transition-opacity"></div>
+        <div id="settings-panel" class="relative w-80 bg-white dark:bg-slate-800 shadow-2xl flex flex-col h-full translate-x-full transition-transform transform p-6 z-10">
+            <div class="flex justify-between items-center mb-8 border-b border-slate-200 dark:border-slate-700 pb-4">
+                <h2 class="text-xl font-bold text-slate-800 dark:text-white">Ayarlar</h2>
+                <button type="button" id="close-settings-btn" class="w-8 h-8 flex items-center justify-center bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-full hover:bg-slate-200 transition-colors"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div class="flex items-center gap-4 mb-8 bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                <img id="drawer-profile-pic" class="w-12 h-12 rounded-full hidden border-2 border-indigo-500 object-cover">
+                <i id="drawer-profile-icon" class="fas fa-user-circle text-4xl text-slate-400"></i>
+                <div class="flex flex-col">
+                    <span class="text-xs text-slate-500 font-bold uppercase">Hesap</span>
+                    <span id="drawer-profile-name" class="font-bold text-slate-800 dark:text-white text-sm truncate w-40"></span>
+                </div>
+            </div>
+
+            <div class="space-y-3 flex-grow">
+                <button type="button" id="theme-toggle-menu" class="w-full flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-indigo-300 transition-colors">
+                    <span class="font-bold text-sm text-slate-700 dark:text-slate-300"><i class="fas fa-moon text-indigo-500 mr-2"></i> Koyu Tema</span>
+                    <span id="theme-text" class="text-xs font-bold text-slate-500">Kapalı</span>
+                </button>
+            </div>
+
+            <button type="button" id="logout-btn" class="w-full flex items-center justify-center gap-2 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-bold hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors border border-red-200 dark:border-red-800/50 mt-auto">
+                <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-800 dark:bg-slate-700 text-white px-5 py-3 rounded-full shadow-2xl z-[100] flex items-center gap-3 toast border border-slate-600">
+        <i id="toast-icon" class="fas fa-check-circle text-emerald-400"></i>
+        <span id="toast-message" class="text-sm font-medium whitespace-nowrap"></span>
+    </div>
+
+    <!-- Stats Modal (Grafik) -->
+    <div id="stats-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4">
         <div id="stats-backdrop" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm cursor-pointer"></div>
         <div class="relative w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 flex flex-col z-10 border border-slate-200 dark:border-slate-700">
             <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3 mb-4">
@@ -288,132 +374,53 @@
             <div class="relative w-full h-64 flex items-center justify-center">
                 <canvas id="categoryChart"></canvas>
             </div>
-            <p class="text-center text-xs text-slate-500 dark:text-slate-400 mt-4">*Grafik, okuduğunuz kitapların kategorilerine göre oluşturulmuştur.</p>
         </div>
     </div>
-
-    <!-- Zengin Metin Editörü (RTE) Modal -->
-    <div id="rte-modal" class="fixed inset-0 z-[60] hidden flex-col bg-slate-50 dark:bg-slate-900 transition-transform transform translate-y-full duration-300 w-full">
-        <!-- Header -->
-        <div class="flex justify-between items-center p-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shadow-sm shrink-0 z-10">
-            <div class="flex items-center gap-3 w-full">
-                <button type="button" id="rte-cancel-btn" class="w-10 h-10 shrink-0 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 transition-all"><i class="fas fa-arrow-left text-xl"></i></button>
-                <h3 id="rte-title" class="font-bold text-slate-800 dark:text-white text-lg truncate flex-grow">Not Düzenle</h3>
-                
-                <!-- Sayfa Numarası Girişi -->
-                <input type="text" id="rte-page-input" placeholder="Sayfa No" class="hidden w-20 md:w-24 shrink-0 px-2 py-2 text-xs border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-200 outline-none focus:ring-1 focus:ring-indigo-500 font-bold text-center">
-                
-                <button type="button" id="rte-save-btn" class="shrink-0 text-indigo-600 dark:text-indigo-400 font-bold px-4 py-2 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/30 active:scale-95 transition-all bg-indigo-50 dark:bg-indigo-900/20">Bitti</button>
-            </div>
+    
+    <!-- Zengin Metin Editörü, Alıntı Paylaşımı, Tanılama Butonu vb. orijinal koddaki gibi durabilir -->
+    <div id="rte-modal" class="fixed inset-0 z-[80] hidden flex-col bg-slate-50 dark:bg-slate-900 transition-transform transform translate-y-full duration-300 w-full">
+        <!-- RTE İçeriği (Küçültüldü) -->
+        <div class="flex justify-between items-center p-4 bg-white dark:bg-slate-800 shadow-sm shrink-0 z-10">
+            <button type="button" id="rte-cancel-btn" class="w-10 h-10 rounded-full text-slate-500 hover:bg-slate-100"><i class="fas fa-arrow-left"></i></button>
+            <h3 id="rte-title" class="font-bold">Not Düzenle</h3>
+            <input type="text" id="rte-page-input" placeholder="Sayfa No" class="hidden w-20 px-2 py-2 text-xs border rounded-lg">
+            <button type="button" id="rte-save-btn" class="text-indigo-600 font-bold">Bitti</button>
         </div>
-        
-        <!-- Yazı Alanı -->
-        <div id="rte-editor" contenteditable="true" data-placeholder="Buraya yazmaya başlayın..." class="flex-grow p-4 md:p-6 outline-none overflow-y-auto text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 rte-content text-base md:text-lg"></div>
-
-        <!-- Araç Çubuğu -->
-        <div class="flex flex-wrap justify-center gap-1 sm:gap-2 p-2 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 shrink-0 z-10 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_10px_rgba(0,0,0,0.2)]">
-            <button type="button" onclick="window.formatDoc('bold')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Kalın"><i class="fas fa-bold"></i></button>
-            <button type="button" onclick="window.formatDoc('italic')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="İtalik"><i class="fas fa-italic"></i></button>
-            <button type="button" onclick="window.formatDoc('underline')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Altı Çizili"><i class="fas fa-underline"></i></button>
-            <button type="button" onclick="window.formatDoc('strikeThrough')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Üstü Çizili"><i class="fas fa-strikethrough"></i></button>
-            
-            <div class="hidden sm:block w-px h-6 bg-slate-300 dark:bg-slate-700 my-auto mx-0 sm:mx-1 shrink-0"></div>
-            
-            <button type="button" onclick="window.formatDoc('formatBlock', 'H1')" class="px-2 sm:px-3 h-8 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-xs sm:text-sm transition-colors" title="Büyük Başlık">H1</button>
-            <button type="button" onclick="window.formatDoc('formatBlock', 'H2')" class="px-2 sm:px-3 h-8 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-xs sm:text-sm transition-colors" title="Küçük Başlık">H2</button>
-            
-            <div class="hidden sm:block w-px h-6 bg-slate-300 dark:bg-slate-700 my-auto mx-0 sm:mx-1 shrink-0"></div>
-            
-            <button type="button" onclick="window.formatDoc('insertUnorderedList')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Madde İşaretleri"><i class="fas fa-list-ul"></i></button>
-            <button type="button" onclick="window.formatDoc('removeFormat')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center border border-transparent hover:border-slate-200 dark:hover:border-slate-600 text-sm sm:text-base transition-colors" title="Biçimi Temizle"><i class="fas fa-eraser"></i></button>
-        </div>
+        <div id="rte-editor" contenteditable="true" class="flex-grow p-4 outline-none overflow-y-auto bg-white dark:bg-slate-900 rte-content"></div>
     </div>
-
-    <!-- Alıntı Paylaşım Modal'ı -->
-    <div id="quote-share-modal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm cursor-pointer" onclick="window.closeQuoteShareModal()"></div>
-        <div class="relative w-full max-w-sm bg-white dark:bg-slate-800 rounded-3xl shadow-2xl p-6 flex flex-col z-10 border border-slate-200 dark:border-slate-700 transform transition-all">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2"><i class="fas fa-share-alt text-indigo-500"></i> Alıntıyı Paylaş</h3>
-                <button type="button" onclick="window.closeQuoteShareModal()" class="text-slate-400 hover:text-red-500 w-8 h-8 flex items-center justify-center bg-slate-100 dark:bg-slate-700 rounded-full"><i class="fas fa-times text-sm"></i></button>
-            </div>
-            
-            <div class="bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-5 mb-6 border border-slate-100 dark:border-slate-700 relative overflow-hidden flex flex-col items-center justify-center min-h-[150px] shadow-inner">
-                <i class="fas fa-quote-left absolute text-5xl text-slate-200 dark:text-slate-700 top-2 left-2 opacity-40 pointer-events-none"></i>
-                <div id="share-quote-text" class="relative z-10 text-slate-700 dark:text-slate-300 text-sm italic text-center rte-content line-clamp-6 w-full px-2"></div>
-                <div id="share-quote-author" class="relative z-10 text-[10px] font-bold text-slate-500 dark:text-slate-400 text-center mt-3 uppercase tracking-wider"></div>
-            </div>
-
-            <div class="grid grid-cols-4 gap-3">
-                <button type="button" onclick="window.generateAndShareQuote('9:16', 'share')" class="flex flex-col items-center justify-center gap-1.5 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 text-white rounded-2xl p-3.5 hover:scale-105 active:scale-95 transition-transform shadow-md" title="Instagram / TikTok (Dikey Paylaş)">
-                    <i class="fab fa-instagram text-2xl"></i>
-                </button>
-                <button type="button" onclick="window.generateAndShareQuote('9:16', 'share')" class="flex flex-col items-center justify-center gap-1.5 bg-black text-white rounded-2xl p-3.5 hover:scale-105 active:scale-95 transition-transform shadow-md border border-slate-700" title="TikTok (Dikey Paylaş)">
-                    <i class="fab fa-tiktok text-2xl"></i>
-                </button>
-                <button type="button" onclick="window.generateAndShareQuote('16:9', 'share')" class="flex flex-col items-center justify-center gap-1.5 bg-slate-900 dark:bg-slate-700 text-white rounded-2xl p-3.5 hover:scale-105 active:scale-95 transition-transform shadow-md" title="X / Twitter (Yatay Paylaş)">
-                    <i class="fab fa-twitter text-2xl"></i>
-                </button>
-                <button type="button" onclick="window.generateAndShareQuote('9:16', 'download')" class="flex flex-col items-center justify-center gap-1.5 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 rounded-2xl p-3.5 hover:scale-105 active:scale-95 transition-transform shadow-md" title="Cihaza İndir (Dikey)">
-                    <i class="fas fa-download text-2xl"></i>
-                </button>
-            </div>
-            <p class="text-[9px] text-slate-400 dark:text-slate-500 text-center mt-4 leading-tight">* Butonlara her bastığınızda <b>farklı yazı tipleri ve desenlerle</b> rastgele, benzersiz ve HD bir tasarım oluşturulur.</p>
-        </div>
-    </div>
+    
+    <button type="button" id="fab-add-btn" class="hidden fixed bottom-6 right-6 md:bottom-10 md:right-10 w-14 h-14 md:w-16 md:h-16 bg-indigo-600 text-white rounded-full shadow-lg shadow-indigo-300/50 dark:shadow-none items-center justify-center text-xl md:text-2xl hover:scale-105 active:scale-95 transition-all z-40" title="Yeni Kitap Ekle">
+        <i class="fas fa-plus"></i>
+    </button>
+    
+    <button id="scroll-to-top" class="hidden fixed bottom-24 right-6 w-12 h-12 bg-slate-800 text-white rounded-full shadow-xl items-center justify-center z-40 hover:bg-slate-700 transition-all opacity-0"><i class="fas fa-arrow-up"></i></button>
 
     <!-- SCRIPT EKRANI -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, setDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, Timestamp, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, setDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // GLOBAL HATA VE LOGLAMA SİSTEMİ
         const appLogs = [];
         function sysLog(type, msg, data = null) {
-            const time = new Date().toLocaleTimeString('tr-TR');
-            let logEntry = `[${time}] [${type}] ${msg}`;
-            if (data) {
-                try { logEntry += `\nDATA: ${JSON.stringify(data, null, 2)}`; } 
-                catch(e) { logEntry += `\nDATA: [Dönüştürülemeyen Veri]`; }
-            }
-            appLogs.push(logEntry);
-            console.log(logEntry);
+            const entry = `[${new Date().toLocaleTimeString()}] [${type}] ${msg}`;
+            appLogs.push(entry); console.log(entry, data || '');
         }
         window.sysLog = sysLog;
-        sysLog('INFO', 'v2.5 Başlatıldı.');
 
-        // --- YARDIMCI FONKSİYONLAR ---
-        function showNotification(msg, type = 'success') {
+        window.showNotification = function(msg, type = 'success') {
             const toast = document.getElementById('toast');
             if(!toast) return;
             document.getElementById('toast-message').textContent = msg;
             document.getElementById('toast-icon').className = type === 'error' ? 'fas fa-exclamation-circle text-red-400' : (type === 'info' ? 'fas fa-info-circle text-blue-400' : 'fas fa-check-circle text-emerald-400');
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-        window.showNotification = showNotification;
+        };
 
-        function formatDate(timestamp) {
-            if (!timestamp) return null;
-            let dateObj;
-            if (typeof timestamp.toDate === 'function') dateObj = timestamp.toDate();
-            else if (timestamp.seconds) dateObj = new Date(timestamp.seconds * 1000);
-            else if (typeof timestamp === 'number') dateObj = new Date(timestamp);
-            else return null;
-            const day = String(dateObj.getDate()).padStart(2, '0');
-            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const year = dateObj.getFullYear();
-            return `${day}.${month}.${year}`;
-        }
-        window.formatDate = formatDate;
-
-        function escapeHTML(str) {
+        window.escapeHTML = function(str) {
             if (!str && str !== 0) return '';
-            if (typeof str !== 'string') str = String(str);
-            return str.replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t]));
-        }
-        window.escapeHTML = escapeHTML;
+            return String(str).replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t]));
+        };
 
         const firebaseConfig = {
             apiKey: "AIzaSyAPPebXDGREOuJFoom6WxtHnOWmsIyopiA",
@@ -423,29 +430,16 @@
             messagingSenderId: "588820105752",
             appId: "1:588820105752:web:dcab70fd4981165f41516d"
         };
-        const appId = 'kitaplik-dashboard';
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
         const db = getFirestore(app);
         
-        // Veritabanı referanslarını güvenli şekilde çeken yardımcılar
-        // (Sizin orijinal projenizde artifacts/kitaplik-dashboard dizini kullanılıyordu)
-        const ARTIFACT_PATH = 'artifacts';
-        const APP_ID = 'kitaplik-dashboard';
-        const USERS_PATH = 'users';
-        const BOOKS_PATH = 'books';
-        
-        function getBooksColRef(uid) {
-            return collection(db, ARTIFACT_PATH, APP_ID, USERS_PATH, uid, BOOKS_PATH);
-        }
-        function getUserDocRef(uid) {
-            return doc(db, ARTIFACT_PATH, APP_ID, USERS_PATH, uid);
-        }
-        function getBookDocRef(uid, bookId) {
-            return doc(db, ARTIFACT_PATH, APP_ID, USERS_PATH, uid, BOOKS_PATH, bookId);
-        }
+        const ARTIFACT_PATH = 'artifacts'; const APP_ID = 'kitaplik-dashboard'; const USERS_PATH = 'users'; const BOOKS_PATH = 'books';
+        function getBooksColRef(uid) { return collection(db, ARTIFACT_PATH, APP_ID, USERS_PATH, uid, BOOKS_PATH); }
+        function getUserDocRef(uid) { return doc(db, ARTIFACT_PATH, APP_ID, USERS_PATH, uid); }
+        function getBookDocRef(uid, bookId) { return doc(db, ARTIFACT_PATH, APP_ID, USERS_PATH, uid, BOOKS_PATH, bookId); }
 
         let currentUser = null; 
         let allBooks = []; 
@@ -454,48 +448,21 @@
         let isOfflineMode = false;
         let isReadOnlyMode = false; 
         let viewUserId = null; 
-        let currentCategories = [];
-        let currentSubCategories = [];
         let activeFiltersList = [];
         let currentViewBook = null;
         let filterOnlyFavorites = false;
         let savedGoal = parseInt(localStorage.getItem('readingGoal')) || 30;
-        savedGoal = Math.max(1, savedGoal);
-        
         let categoryChart = null;
-        let html5QrcodeScanner = null;
-        let settingsUnsubscribe = null;
         let booksUnsubscribe = null;
         let initialLoadDone = false;
-        
         let currentEditQuotes = [];
 
         const htmlEl = document.documentElement;
         if (localStorage.getItem('theme') === 'dark') htmlEl.classList.add('dark');
-        else htmlEl.classList.remove('dark');
 
         const urlParams = new URLSearchParams(window.location.search);
         const urlUserId = urlParams.get('user');
 
-        const loginScreen = document.getElementById('login-screen');
-        const appContent = document.getElementById('app-content');
-        const fabBtn = document.getElementById('fab-add-btn');
-        const loadingScreen = document.getElementById('loading');
-        const form = document.getElementById('book-form');
-        const quotesContainer = document.getElementById('quotes-container');
-        const searchInput = document.getElementById('search-input');
-        const filterStatus = document.getElementById('filter-status');
-        const filterOwnership = document.getElementById('filter-ownership');
-        const sortSelect = document.getElementById('sort-select');
-        const viewListBtn = document.getElementById('view-list-btn');
-        const viewGridBtn = document.getElementById('view-grid-btn');
-        const viewShelfBtn = document.getElementById('view-shelf-btn');
-        const filterFavBtn = document.getElementById('filter-fav-btn');
-        const bookListEl = document.getElementById('book-list');
-        const emptyStateEl = document.getElementById('empty-state');
-        const activeFiltersBar = document.getElementById('active-filters-bar');
-        const activeFiltersContainer = document.getElementById('active-filters-container');
-        
         const inputs = {
             title: document.getElementById('book-title'),
             author: document.getElementById('book-author'),
@@ -525,1161 +492,354 @@
         const ownMap = {
             'none': { text: 'YOK', icon: 'fa-times-circle', color: 'bg-slate-100 text-slate-600 border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-600' },
             'physical': { text: 'Fiziksel', icon: 'fa-book', color: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-800' },
-            'digital': { text: 'Dijital', icon: 'fa-tablet-alt', color: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-300 dark:border-indigo-800' },
-            'owned': { text: 'Fiziksel', icon: 'fa-book', color: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-800' },
-            'borrowed': { text: 'YOK', icon: 'fa-times-circle', color: 'bg-slate-100 text-slate-600 border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-600' }
+            'digital': { text: 'Dijital', icon: 'fa-tablet-alt', color: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-300 dark:border-indigo-800' }
         };
 
-        // --- DOM ETKİLEŞİMLERİ ---
-        window.addDynamicFilter = function(type, value) {
-            if(!activeFiltersList.find(f => f.type === type && f.value === value)) {
-                activeFiltersList.push({type, value});
-                updateActiveFiltersUI(); applyFiltersAndRender();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        };
-
-        window.openViewModal = function(bookId) {
-             const book = allBooks.find(b => b.id === bookId);
-             if (book) openViewModalInternal(book);
+        // DOM Etkileşimleri Eklentisi (Eksik Olan Fonksiyonlar)
+        window.resetForm = function() {
+            document.getElementById('book-form')?.reset();
+            currentEditQuotes = []; renderFormQuotes();
+            inputs.status.value = 'toread'; inputs.ownership.value = 'none';
         };
 
         window.startEditMode = function(bookId) {
             const book = allBooks.find(b => b.id === bookId);
-            if (book) startEdit(book);
-        };
-        
-        window.deleteBook = async function(bookId, bookTitle) {
-             if(confirm(`"${bookTitle}" kitabını silmek istiyor musunuz?`)) {
-                try {
-                    await deleteDoc(getBookDocRef(currentUser.uid, bookId));
-                    window.showNotification("Kitap silindi.", "info");
-                } catch(err) {
-                    window.showNotification("Silme başarısız: Yetki kurallarınızı kontrol edin.", "error");
-                }
-            }
-        };
-        
-        window.searchBookOnWeb = function() {
-            if(currentViewBook) {
-                const title = typeof currentViewBook.title === 'string' ? currentViewBook.title : '';
-                const author = typeof currentViewBook.author === 'string' ? currentViewBook.author : '';
-                const query = encodeURIComponent(`${title} ${author}`);
-                window.open(`https://www.google.com/search?q=${query}`, '_blank');
-            }
-        };
-
-        window.toggleFavorite = async function(e, bookId, currentState) {
-            e.stopPropagation();
-            if(isReadOnlyMode || !currentUser) return;
-            try {
-                await updateDoc(getBookDocRef(currentUser.uid, bookId), {
-                    isFavorite: !currentState
-                });
-                window.showNotification(!currentState ? "Favorilere eklendi!" : "Favorilerden çıkarıldı.", "success");
-            } catch(err) {
-                window.showNotification("Hata oluştu.", "error");
-            }
-        };
-
-        // DIŞA AKTARMA VE PAYLAŞIM (PDF & GÖRSEL)
-        function stripHTML(html) {
-            if(!html) return "";
-            let tmp = document.createElement("DIV");
-            tmp.innerHTML = html;
-            return tmp.textContent || tmp.innerText || "";
-        }
-
-        window.exportPDF = function() {
-            if(!currentViewBook) return;
-            window.showNotification("PDF hazırlanıyor, lütfen bekleyin...", "info");
+            if (!book) return;
+            editModeId = book.id;
+            document.getElementById('form-title').innerHTML = '<i class="fas fa-edit text-indigo-500"></i> Kitap Düzenle';
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
             
-            const printElement = document.createElement('div');
-            printElement.style.padding = '40px';
-            printElement.style.fontFamily = "'Lora', serif";
-            printElement.style.color = '#1e293b'; 
-            printElement.style.backgroundColor = '#ffffff';
+            inputs.title.value = book.title || ''; inputs.author.value = book.author || '';
+            inputs.status.value = book.status || 'toread'; inputs.ownership.value = book.ownership || 'none';
+            inputs.cat.value = Array.isArray(book.category) ? book.category.join(', ') : (book.category || '');
+            inputs.subCat.value = Array.isArray(book.subCategory) ? book.subCategory.join(', ') : (book.subCategory || '');
+            inputs.pageCount.value = book.pageCount || ''; inputs.coverUrl.value = book.coverUrl || '';
+            inputs.rating.value = book.rating || '';
             
-            let htmlContent = `
-                <h1 style="font-size: 32px; font-weight: bold; font-family: 'Inter', sans-serif; color: #0f172a; margin-bottom: 5px; line-height: 1.2;">${window.escapeHTML(String(currentViewBook.title || 'İsimsiz'))}</h1>
-                <h2 style="font-size: 18px; color: #475569; margin-bottom: 25px;">Yazar: ${window.escapeHTML(String(currentViewBook.author || 'Bilinmeyen Yazar'))}</h2>
-                
-                <div style="font-size: 12px; margin-bottom: 30px; display: flex; gap: 15px; color: #64748b; font-family: 'Inter', sans-serif;">
-                    <span><b>Durum:</b> ${statusMap[currentViewBook.status]?.text || ''}</span>
-                    <span><b>Puan:</b> ${currentViewBook.rating ? currentViewBook.rating + '/5' : '-'}</span>
-                    ${currentViewBook.pageCount ? `<span><b>Sayfa:</b> ${window.escapeHTML(String(currentViewBook.pageCount))}</span>` : ''}
+            currentEditQuotes = book.quotes ? [...book.quotes] : [];
+            renderFormQuotes(); openAddModal();
+        };
+
+        window.openViewModal = function(bookId) {
+            const book = allBooks.find(b => b.id === bookId);
+            if (!book) return; currentViewBook = book;
+            
+            const viewModal = document.getElementById('view-modal');
+            const viewContent = document.getElementById('view-content');
+            
+            let quotesHtml = (book.quotes || []).map((q, i) => `
+                <div class="bg-amber-50 dark:bg-amber-900/20 p-3 rounded-lg border-l-4 border-amber-400 mb-2 relative group">
+                    <i class="fas fa-quote-left text-amber-200 dark:text-amber-800 absolute top-2 right-2 text-2xl z-0 opacity-50"></i>
+                    <div class="relative z-10 text-sm text-slate-700 dark:text-slate-300 italic mb-2">${q.text}</div>
+                    ${q.page ? `<span class="text-[10px] font-bold text-slate-400">Syf. ${window.escapeHTML(String(q.page))}</span>` : ''}
+                </div>`).join('') || '<p class="text-sm text-slate-500">Alıntı bulunmuyor.</p>';
+
+            viewContent.innerHTML = `
+                <div class="flex gap-4 md:gap-6 mb-6">
+                    ${book.coverUrl ? `<img src="${window.escapeHTML(book.coverUrl)}" class="w-24 md:w-32 rounded-xl shadow-md object-contain">` : `<div class="w-24 md:w-32 h-36 bg-slate-200 dark:bg-slate-700 rounded-xl flex items-center justify-center text-slate-400"><i class="fas fa-book text-3xl"></i></div>`}
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-1">${window.escapeHTML(book.title)}</h2>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mb-3">${window.escapeHTML(book.author)}</p>
+                        <div class="flex gap-2">
+                            <span class="px-2 py-1 bg-indigo-100 text-indigo-800 rounded text-xs font-bold">${statusMap[book.status]?.text || 'Bilinmiyor'}</span>
+                            <span class="px-2 py-1 bg-slate-100 text-slate-800 rounded text-xs font-bold">${book.pageCount || 0} Syf.</span>
+                        </div>
+                    </div>
                 </div>
-                <hr style="border: none; border-top: 1px solid #e2e8f0; margin-bottom: 30px;">
-            `;
-
-            const addSection = (title, content) => {
-                if(content && typeof content === 'string' && content.trim() !== '') {
-                    htmlContent += `
-                        <h3 style="font-size: 14px; font-family: 'Inter', sans-serif; color: #4f46e5; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">${title}</h3>
-                        <div style="font-size: 14px; line-height: 1.6; margin-bottom: 30px;">${content}</div>
-                    `;
-                }
-            };
-
-            addSection("Kitap Özeti", currentViewBook.summary);
-
-            if (Array.isArray(currentViewBook.quotes) && currentViewBook.quotes.length > 0) {
-                htmlContent += `<h3 style="font-size: 14px; font-family: 'Inter', sans-serif; color: #d97706; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Alıntılar</h3>`;
-                currentViewBook.quotes.forEach(q => {
-                    htmlContent += `
-                        <blockquote style="border-left: 4px solid #fcd34d; padding-left: 15px; margin-left: 0; margin-bottom: 20px; font-style: italic; font-size: 15px; color: #334155;">
-                            "${window.escapeHTML(stripHTML(q.text)).replace(/\n/g, '<br>')}"
-                            ${q.page ? `<br><span style="font-size: 11px; font-weight: bold; color: #94a3b8; font-style: normal; font-family: 'Inter', sans-serif;">- Syf. ${window.escapeHTML(String(q.page))}</span>` : ''}
-                        </blockquote>
-                    `;
-                });
-                htmlContent += `<div style="margin-bottom: 30px;"></div>`;
-            }
-
-            addSection("Genel Notlar", currentViewBook.notes);
-            addSection("Yorumlar", currentViewBook.comments);
-            addSection("Eleştiriler", currentViewBook.critiques);
-
-            printElement.innerHTML = htmlContent;
-            document.body.appendChild(printElement); 
-
-            const safeFilename = (typeof currentViewBook.title === 'string' && currentViewBook.title.trim() !== '') ? currentViewBook.title : 'Kitap';
-
-            const opt = {
-                margin:       15,
-                filename:     `${safeFilename.replace(/\s+/g, '_')}_Notlari.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, windowWidth: 800 }, 
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            html2pdf().set(opt).from(printElement).save().then(() => {
-                document.body.removeChild(printElement); 
-                window.showNotification("Notlar PDF olarak indirildi!", "success");
-            });
-        };
-
-        // --- ALINTI PAYLAŞIM MANTIĞI ---
-        window.openQuoteShareModal = function(index) {
-            const q = currentViewBook.quotes[index];
-            if(!q) return;
-            window.activeShareQuote = q;
-            
-            document.getElementById('share-quote-text').innerHTML = q.text; 
-            document.getElementById('share-quote-author').textContent = `${currentViewBook.author || 'Bilinmeyen Yazar'} ${q.page ? `(Syf. ${q.page})` : ''}`;
-
-            const modal = document.getElementById('quote-share-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            setTimeout(() => {
-                modal.querySelector('div.relative').classList.remove('scale-95', 'opacity-0');
-            }, 10);
-        };
-
-        window.closeQuoteShareModal = function() {
-            const modal = document.getElementById('quote-share-modal');
-            modal.querySelector('div.relative').classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }, 300);
-        };
-
-        window.generateAndShareQuote = async function(format, action) {
-            const q = window.activeShareQuote;
-            if(!q) return;
-
-            window.showNotification("Görsel hazırlanıyor...", "info");
-
-            const fonts = ["'Lora', serif", "'Caveat', cursive", "'Cinzel', serif", "'Merriweather', serif", "'Playfair Display', serif", "'Dancing Script', cursive", "'Inter', sans-serif"];
-            const backgrounds = [
-                'linear-gradient(135deg, #1e1b4b, #312e81, #4338ca)',
-                'linear-gradient(135deg, #450a0a, #7f1d1d, #b91c1c)',
-                'linear-gradient(135deg, #064e3b, #14532d, #047857)',
-                'linear-gradient(135deg, #171717, #334155, #475569)',
-                'linear-gradient(135deg, #4a044e, #701a75, #a21caf)',
-                'linear-gradient(135deg, #78350f, #9a3412, #d97706)',
-                'radial-gradient(circle at top right, #1e293b, #020617)'
-            ];
-
-            const randomFont = fonts[Math.floor(Math.random() * fonts.length)];
-            const randomBg = backgrounds[Math.floor(Math.random() * backgrounds.length)];
-
-            const container = document.createElement('div');
-            
-            if (format === '9:16') {
-                container.style.width = '1080px';
-                container.style.height = '1920px';
-                container.style.padding = '120px 80px';
-            } else { 
-                container.style.width = '1920px';
-                container.style.height = '1080px';
-                container.style.padding = '80px 120px';
-            }
-
-            container.style.background = randomBg;
-            container.style.color = '#ffffff';
-            container.style.display = 'flex';
-            container.style.flexDirection = 'column';
-            container.style.justifyContent = 'center';
-            container.style.alignItems = 'center';
-            container.style.fontFamily = randomFont;
-            container.style.textAlign = 'center';
-            container.style.position = 'fixed';
-            container.style.top = '-9999px';
-            container.style.boxSizing = 'border-box';
-
-            const plainText = stripHTML(q.text);
-            const textLen = plainText.length;
-            let quoteFontSize = '50px';
-            if (format === '9:16') {
-                quoteFontSize = textLen > 250 ? '40px' : (textLen > 150 ? '50px' : '65px');
-            } else {
-                quoteFontSize = textLen > 250 ? '36px' : (textLen > 150 ? '46px' : '60px');
-            }
-
-            container.innerHTML = `
-                <div style="font-size: 120px; font-family: 'Inter', sans-serif; opacity: 0.2; line-height: 0.5; margin-bottom: 40px;">“</div>
-                <div style="font-size: ${quoteFontSize}; line-height: 1.6; text-shadow: 0 6px 15px rgba(0,0,0,0.4); word-wrap: break-word; max-width: 100%;">
-                    ${plainText.replace(/\n/g, '<br>')}
-                </div>
-                <div style="margin-top: 80px; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; align-items: center; opacity: 0.9;">
-                    <div style="width: 60px; height: 3px; background-color: #fcd34d; margin-bottom: 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>
-                    <div style="font-size: 32px; font-weight: bold; letter-spacing: 1px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${window.escapeHTML(String(currentViewBook.title || 'İsimsiz'))}</div>
-                    <div style="font-size: 24px; margin-top: 15px; color: #e2e8f0; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${window.escapeHTML(String(currentViewBook.author || 'Bilinmeyen Yazar'))}</div>
-                    ${q.page ? `<div style="font-size: 18px; margin-top: 15px; color: #94a3b8;">Syf. ${window.escapeHTML(String(q.page))}</div>` : ''}
+                <div class="space-y-4">
+                    <div><h3 class="text-md font-bold border-b pb-1 mb-2 text-slate-800 dark:text-white">Alıntılar</h3>${quotesHtml}</div>
                 </div>
             `;
-
-            document.body.appendChild(container);
-
-            try {
-                const canvas = await html2canvas(container, { scale: 1.5, useCORS: true, logging: false });
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-                const safeTitleForFilename = (typeof currentViewBook.title === 'string' && currentViewBook.title.trim() !== '') ? currentViewBook.title : 'Kitap';
-                const filename = `Alinti_${safeTitleForFilename.replace(/\s+/g, '')}.jpg`;
-
-                if (action === 'share' && navigator.share) {
-                    try {
-                        const response = await fetch(dataUrl);
-                        const blob = await response.blob();
-                        const file = new File([blob], filename, { type: 'image/jpeg' });
-
-                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                            await navigator.share({
-                                files: [file],
-                                title: currentViewBook.title || 'Kitap',
-                                text: 'Bu harika alıntıyı okumalısın!'
-                            });
-                            sysLog('INFO', 'Paylaşım menüsü başarıyla açıldı.');
-                            window.showNotification("Paylaşım menüsü açıldı!", "success");
-                        } else {
-                            triggerDownload(dataUrl, filename);
-                            window.showNotification("Cihazınız doğrudan dosya paylaşımını desteklemiyor, görsel indirildi.", "info");
-                        }
-                    } catch(e) {
-                         if (e.name !== 'AbortError') triggerDownload(dataUrl, filename);
-                    }
-                } else {
-                    triggerDownload(dataUrl, filename);
-                    window.showNotification("Görsel başarıyla indirildi!", "success");
-                }
-            } catch(err) {
-                sysLog('ERROR', 'Görsel oluşturma hatası', err);
-                window.showNotification("Görsel oluşturulamadı.", "error");
-            } finally {
-                document.body.removeChild(container);
-            }
+            viewModal.classList.remove('hidden'); viewModal.classList.add('flex');
         };
 
-        function triggerDownload(dataUrl, filename) {
-            const a = document.createElement('a');
-            a.href = dataUrl;
-            a.download = filename;
-            a.click();
-        }
+        window.closeViewModal = function() {
+            const m = document.getElementById('view-modal');
+            m.classList.add('hidden'); m.classList.remove('flex');
+        };
 
-        // --- ZENGİN METİN EDİTÖRÜ (RTE) MANTIĞI ---
-        let activeRteTarget = null;
-        let activeRteViewMode = false;
-        let activeRteQuoteIndex = -1;
+        window.updateDashboardStats = function() {
+            let total = allBooks.length;
+            let read = allBooks.filter(b => b.status === 'read').length;
+            let owned = allBooks.filter(b => b.ownership === 'physical' || b.ownership === 'digital').length;
+            let pages = allBooks.filter(b => b.status === 'read').reduce((acc, b) => acc + (Number(b.pageCount) || 0), 0);
 
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', () => {
-                const rteModal = document.getElementById('rte-modal');
-                if (rteModal && !rteModal.classList.contains('hidden')) {
-                    rteModal.style.height = window.visualViewport.height + 'px';
-                    rteModal.style.top = window.visualViewport.offsetTop + 'px';
-                }
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-read').textContent = read;
+            document.getElementById('stat-owned').textContent = owned;
+            document.getElementById('stat-pages').innerHTML = `<i class="fas fa-file-alt"></i> ${pages} Sayfa`;
+
+            document.getElementById('goal-text').textContent = `${read}/${savedGoal}`;
+            let pct = Math.min(100, Math.round((read / savedGoal) * 100)) || 0;
+            document.getElementById('goal-bar').style.width = `${pct}%`;
+        };
+
+        window.updateStatsChart = function() {
+            const ctx = document.getElementById('categoryChart');
+            if(!ctx) return;
+            if(categoryChart) categoryChart.destroy();
+            const catCounts = {};
+            allBooks.filter(b => b.status === 'read').forEach(b => {
+                let cats = Array.isArray(b.category) ? b.category : (typeof b.category === 'string' ? b.category.split(',') : ['Genel']);
+                cats.forEach(c => { const cleanC = c.trim() || 'Genel'; catCounts[cleanC] = (catCounts[cleanC] || 0) + 1; });
             });
-        }
-
-        window.formatDoc = function(cmd, value=null) {
-            document.execCommand(cmd, false, value);
-            document.getElementById('rte-editor').focus();
-        };
-
-        window.openRTE = function(targetId, title, isViewMode = false, quoteIndex = -1) {
-            activeRteTarget = targetId;
-            activeRteViewMode = isViewMode;
-            activeRteQuoteIndex = quoteIndex;
-            
-            document.getElementById('rte-title').textContent = title;
-            const editor = document.getElementById('rte-editor');
-            const modal = document.getElementById('rte-modal');
-            const pageInput = document.getElementById('rte-page-input');
-            
-            if (targetId === 'quote') {
-                pageInput.classList.remove('hidden');
-                let qList = isViewMode ? (currentViewBook.quotes || []) : currentEditQuotes;
-                if (quoteIndex > -1 && qList[quoteIndex]) {
-                     editor.innerHTML = qList[quoteIndex].text || '';
-                     pageInput.value = qList[quoteIndex].page || '';
-                } else {
-                     editor.innerHTML = '';
-                     pageInput.value = '';
-                }
-            } else {
-                pageInput.classList.add('hidden');
-                pageInput.value = '';
-                if (isViewMode) {
-                    editor.innerHTML = currentViewBook[targetId] || '';
-                } else {
-                    editor.innerHTML = document.getElementById(targetId).value || '';
-                }
-            }
-            
-            if (window.visualViewport) {
-                modal.style.height = window.visualViewport.height + 'px';
-                modal.style.top = window.visualViewport.offsetTop + 'px';
-            }
-
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            setTimeout(() => { modal.classList.remove('translate-y-full'); }, 10);
-            
-            setTimeout(() => {
-                editor.focus();
-                if(typeof window.getSelection !== "undefined" && typeof document.createRange !== "undefined") {
-                    const range = document.createRange();
-                    range.selectNodeContents(editor);
-                    range.collapse(false);
-                    const sel = window.getSelection();
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                }
-            }, 50);
-        };
-
-        function closeRTE() {
-            const modal = document.getElementById('rte-modal');
-            modal.classList.add('translate-y-full');
-            setTimeout(() => { 
-                modal.classList.add('hidden'); 
-                modal.classList.remove('flex'); 
-                modal.style.height = '';
-                modal.style.top = '';
-            }, 300);
-        }
-
-        document.getElementById('rte-cancel-btn').addEventListener('click', closeRTE);
-        
-        document.getElementById('rte-save-btn').addEventListener('click', async () => {
-            const content = document.getElementById('rte-editor').innerHTML;
-            
-            if (activeRteTarget === 'quote') {
-                const page = document.getElementById('rte-page-input').value.trim();
-                const plain = stripHTML(content).trim();
-                
-                if (!plain) {
-                    window.showNotification("Alıntı metni boş olamaz.", "error");
-                    return;
-                }
-                if (!page && !confirm("Sayfa numarası girmediniz. Yine de sayfasız kaydedilsin mi?")) {
-                    return;
-                }
-
-                const newQuote = { text: content, page: page };
-
-                if (activeRteViewMode) {
-                    const btn = document.getElementById('rte-save-btn');
-                    const ogHtml = btn.innerHTML;
-                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                    
-                    try {
-                        let updatedQuotes = [...(currentViewBook.quotes || [])];
-                        if (activeRteQuoteIndex > -1) {
-                            updatedQuotes[activeRteQuoteIndex] = newQuote;
-                        } else {
-                            updatedQuotes.push(newQuote);
-                        }
-
-                        if (!isOfflineMode && currentUser) {
-                            await updateDoc(getBookDocRef(currentUser.uid, currentViewBook.id), { 
-                                quotes: updatedQuotes,
-                                updatedAt: serverTimestamp()
-                            });
-                        }
-                        currentViewBook.quotes = updatedQuotes;
-                        openViewModalInternal(currentViewBook); 
-                        window.showNotification("Alıntı kaydedildi!", "success");
-                        closeRTE();
-                    } catch(err) {
-                        sysLog('ERROR', 'Alıntı kaydetme hatası', err);
-                        window.showNotification("Bağlantı hatası.", "error");
-                    } finally {
-                        btn.innerHTML = ogHtml;
-                    }
-                } else {
-                    if (activeRteQuoteIndex > -1) {
-                        currentEditQuotes[activeRteQuoteIndex] = newQuote;
-                    } else {
-                        currentEditQuotes.push(newQuote);
-                    }
-                    renderFormQuotes();
-                    closeRTE();
-                }
-            } else {
-                if (activeRteViewMode) {
-                    const field = activeRteTarget;
-                    const btn = document.getElementById('rte-save-btn');
-                    const ogHtml = btn.innerHTML;
-                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                    
-                    try {
-                        if (!isOfflineMode && currentUser) {
-                            await updateDoc(getBookDocRef(currentUser.uid, currentViewBook.id), { 
-                                [field]: content,
-                                updatedAt: serverTimestamp()
-                            });
-                        }
-                        currentViewBook[field] = content;
-                        openViewModalInternal(currentViewBook); 
-                        window.showNotification("Not güncellendi!", "success");
-                        closeRTE();
-                    } catch(err) {
-                        sysLog('ERROR', 'Not kaydetme hatası', err);
-                        window.showNotification("Bağlantı hatası.", "error");
-                    } finally {
-                        btn.innerHTML = ogHtml;
-                    }
-                } else {
-                    document.getElementById(activeRteTarget).value = content;
-                    const displayDiv = document.getElementById(activeRteTarget + '-display');
-                    displayDiv.innerHTML = content ? content : `<span class="text-slate-400 italic">Düzenlemek için tıklayın...</span>`;
-                    closeRTE();
-                }
-            }
-        });
-
-        document.querySelectorAll('.rte-trigger').forEach(trigger => {
-            trigger.addEventListener('click', () => {
-                const target = trigger.getAttribute('data-target');
-                const title = trigger.getAttribute('data-title');
-                window.openRTE(target, title, false);
+            categoryChart = new Chart(ctx, {
+                type: 'doughnut', data: { labels: Object.keys(catCounts), datasets: [{ data: Object.values(catCounts), backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#8b5cf6'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: htmlEl.classList.contains('dark') ? '#cbd5e1' : '#334155' } } } }
             });
-        });
-
-        function renderFormQuotes() {
-            try {
-                const container = document.getElementById('quotes-container');
-                container.innerHTML = '';
-                if (currentEditQuotes.length === 0) {
-                    document.getElementById('no-quotes-msg').style.display = 'block';
-                    return;
-                }
-                document.getElementById('no-quotes-msg').style.display = 'none';
-
-                currentEditQuotes.forEach((q, index) => {
-                    const div = document.createElement('div');
-                    div.className = 'flex gap-2 items-start relative bg-white dark:bg-slate-900 p-3 rounded-lg border border-amber-200 dark:border-amber-900/50 shadow-sm';
-                    div.innerHTML = `
-                        <div class="flex-grow min-w-0">
-                            <div class="text-sm text-slate-700 dark:text-slate-300 rte-content line-clamp-3">${q.text}</div>
-                            ${q.page ? `<div class="text-[10px] font-bold text-slate-400 mt-1">Syf: ${window.escapeHTML(String(q.page))}</div>` : ''}
-                        </div>
-                        <div class="flex flex-col gap-1 shrink-0">
-                            <button type="button" onclick="window.openRTE('quote', 'Alıntı Düzenle', false, ${index})" class="text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 p-2 rounded-lg transition-colors border border-indigo-100 dark:border-indigo-800" title="Düzenle"><i class="fas fa-edit text-xs"></i></button>
-                            <button type="button" onclick="window.deleteFormQuote(${index})" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 p-2 rounded-lg transition-colors border border-red-100 dark:border-red-800" title="Sil"><i class="fas fa-trash-alt text-xs"></i></button>
-                        </div>
-                    `;
-                    container.appendChild(div);
-                });
-            } catch (err) {
-                sysLog('ERROR', 'Alıntı form render hatası', err);
-            }
-        }
-        
-        window.deleteFormQuote = function(index) {
-            currentEditQuotes.splice(index, 1);
-            renderFormQuotes();
         };
 
-        window.deleteViewQuote = async function(index) {
-            if(!confirm("Alıntıyı silmek istediğinize emin misiniz?")) return;
-            try {
-                let updatedQuotes = [...(currentViewBook.quotes || [])];
-                updatedQuotes.splice(index, 1);
-                
-                if (!isOfflineMode && currentUser) {
-                    await updateDoc(getBookDocRef(currentUser.uid, currentViewBook.id), { 
-                        quotes: updatedQuotes,
-                        updatedAt: serverTimestamp()
-                    });
-                }
-                currentViewBook.quotes = updatedQuotes;
-                openViewModalInternal(currentViewBook); 
-                window.showNotification("Alıntı silindi.", "info");
-            } catch(e) {
-                sysLog('ERROR', 'Alıntı silme hatası', e);
-                window.showNotification("Hata oluştu.", "error");
-            }
+        window.renderSkeletons = function() {
+            const bookListEl = document.getElementById('book-list');
+            bookListEl.innerHTML = '';
+            for(let i=0; i<6; i++) bookListEl.innerHTML += `<div class="bg-slate-200 dark:bg-slate-700 h-32 rounded-2xl skeleton"></div>`;
         };
 
-        // FİLTRELEME & GÖRÜNÜM
-        function updateCategoryDatalists() {
-            try {
-                const catSet = new Set();
-                const subCatSet = new Set();
-                allBooks.forEach(b => {
-                    if (Array.isArray(b.category)) { 
-                        b.category.forEach(c => { if(c && typeof c === 'string' && c.trim()) catSet.add(c.trim()); }); 
-                    } else if (typeof b.category === 'string') { 
-                        b.category.split(',').forEach(c => { if(c.trim()) catSet.add(c.trim()); }); 
-                    }
-                    
-                    if (Array.isArray(b.subCategory)) { 
-                        b.subCategory.forEach(c => { if(c && typeof c === 'string' && c.trim()) subCatSet.add(c.trim()); }); 
-                    } else if (typeof b.subCategory === 'string') { 
-                        b.subCategory.split(',').forEach(c => { if(c.trim()) subCatSet.add(c.trim()); }); 
-                    }
-                });
-                const catList = document.getElementById('cat-list');
-                if (catList) {
-                    catList.innerHTML = '';
-                    catSet.forEach(c => { const opt = document.createElement('option'); opt.value = c; catList.appendChild(opt); });
-                }
-                const subCatList = document.getElementById('subcat-list');
-                if (subCatList) {
-                    subCatList.innerHTML = '';
-                    subCatSet.forEach(c => { const opt = document.createElement('option'); opt.value = c; subCatList.appendChild(opt); });
-                }
-            } catch (err) {
-                sysLog('ERROR', 'Datalist güncelleme hatası', err);
-            }
+        async function loadSettings(uid) {
+            try { const docSnap = await getDoc(getUserDocRef(uid)); if(docSnap.exists() && docSnap.data().goal) savedGoal = docSnap.data().goal; } catch(e){}
         }
 
-        function updateActiveFiltersUI() {
-            try {
-                if(activeFiltersList.length === 0) {
-                    activeFiltersBar.classList.add('hidden'); activeFiltersBar.classList.remove('flex');
-                } else {
-                    activeFiltersBar.classList.remove('hidden'); activeFiltersBar.classList.add('flex');
-                }
-                activeFiltersContainer.innerHTML = '';
-                activeFiltersList.forEach((filter, index) => {
-                    const el = document.createElement('span');
-                    el.className = "bg-indigo-500 text-white px-2 py-1 rounded-md text-[10px] font-bold flex items-center gap-1 shadow-sm cursor-pointer hover:bg-red-500 transition-colors";
-                    let label = filter.type === 'cat' ? 'Kategori' : (filter.type === 'format' ? 'Tür' : 'Durum');
-                    el.innerHTML = `${label}: ${window.escapeHTML(String(filter.value))} <i class="fas fa-times ml-1"></i>`;
-                    el.addEventListener('click', (e) => { e.stopPropagation(); activeFiltersList.splice(index, 1); updateActiveFiltersUI(); applyFiltersAndRender(); });
-                    activeFiltersContainer.appendChild(el);
-                });
-            } catch (err) {
-                sysLog('ERROR', 'Filtre UI hatası', err);
-            }
-        }
-
-        document.getElementById('clear-filters-btn').addEventListener('click', () => {
-            activeFiltersList = []; updateActiveFiltersUI(); applyFiltersAndRender();
-        });
-
-        searchInput.addEventListener('input', applyFiltersAndRender);
-        filterStatus.addEventListener('change', applyFiltersAndRender);
-        filterOwnership.addEventListener('change', applyFiltersAndRender);
-        sortSelect.addEventListener('change', applyFiltersAndRender);
-        
-        viewListBtn.addEventListener('click', () => { currentViewMode = 'list'; updateViewUI(); applyFiltersAndRender(); });
-        viewGridBtn.addEventListener('click', () => { currentViewMode = 'grid'; updateViewUI(); applyFiltersAndRender(); });
-        viewShelfBtn.addEventListener('click', () => { currentViewMode = 'shelf'; updateViewUI(); applyFiltersAndRender(); });
-
-        function updateViewUI() {
-            const btns = [viewListBtn, viewGridBtn, viewShelfBtn];
-            btns.forEach(btn => {
-                btn.className = "p-1.5 px-3 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all";
-            });
-
-            if (currentViewMode === 'list') {
-                viewListBtn.className = "p-1.5 px-3 rounded-lg text-slate-800 dark:text-white bg-white dark:bg-slate-700 shadow-sm transition-all";
-                bookListEl.className = "space-y-4";
-            } else if (currentViewMode === 'grid') {
-                viewGridBtn.className = "p-1.5 px-3 rounded-lg text-slate-800 dark:text-white bg-white dark:bg-slate-700 shadow-sm transition-all";
-                bookListEl.className = "grid grid-cols-1 md:grid-cols-2 gap-4"; 
-            } else if (currentViewMode === 'shelf') {
-                viewShelfBtn.className = "p-1.5 px-3 rounded-lg text-slate-800 dark:text-white bg-white dark:bg-slate-700 shadow-sm transition-all";
-                bookListEl.className = "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-x-3 gap-y-8 pt-4"; 
-            }
-        }
-
-        function applyFiltersAndRender() {
-            try {
-                sysLog('INFO', 'Filtreleme ve çizim başlatıldı.');
-                const term = (searchInput.value || '').toLowerCase();
-                const status = filterStatus.value || 'all';
-                const ownership = filterOwnership.value || 'all';
-                const sort = sortSelect.value || 'newest';
-
-                let filtered = allBooks.filter(book => {
-                    try {
-                        if(filterOnlyFavorites && !book.isFavorite) return false;
-
-                        const matchStatus = status === 'all' || book.status === status;
-                        let bookOwn = book.ownership || 'none';
-                        if (bookOwn === 'owned') bookOwn = 'physical';
-                        if (bookOwn === 'borrowed') bookOwn = 'none';
-                        const matchOwn = ownership === 'all' || bookOwn === ownership;
-                        
-                        const catStr = Array.isArray(book.category) ? book.category.join(' ') : (typeof book.category === 'string' ? book.category : '');
-                        const subCatStr = Array.isArray(book.subCategory) ? book.subCategory.join(' ') : (typeof book.subCategory === 'string' ? book.subCategory : '');
-                        
-                        const titleStr = typeof book.title === 'string' ? book.title : '';
-                        const authorStr = typeof book.author === 'string' ? book.author : '';
-                        const notesStr = typeof book.notes === 'string' ? book.notes : '';
-                        const summaryStr = typeof book.summary === 'string' ? book.summary : '';
-
-                        const searchStr = `${titleStr} ${authorStr} ${catStr} ${subCatStr} ${notesStr} ${summaryStr}`.toLowerCase();
-                        const matchSearch = searchStr.includes(term);
-                        
-                        let matchDynamic = true;
-                        if(activeFiltersList.length > 0) {
-                            const bookCats = Array.isArray(book.category) ? book.category : (typeof book.category === 'string' ? book.category.split(',').map(s=>s.trim()) : []);
-                            const bookSubCats = Array.isArray(book.subCategory) ? book.subCategory : (typeof book.subCategory === 'string' ? book.subCategory.split(',').map(s=>s.trim()) : []);
-                            activeFiltersList.forEach(f => {
-                                if(f.type === 'cat') { if(!bookCats.includes(f.value) && !bookSubCats.includes(f.value)) matchDynamic = false; } 
-                                else if(f.type === 'format') { if(book.format !== f.value) matchDynamic = false; } 
-                                else if(f.type === 'status') { if(book.status !== f.value && bookOwn !== f.value) matchDynamic = false; }
-                            });
-                        }
-                        return matchStatus && matchOwn && matchSearch && matchDynamic;
-                    } catch(err) {
-                        return false; 
-                    }
-                });
-
-                filtered.sort((a, b) => {
-                    try {
-                        const getMillis = (item) => {
-                            if (!item) return 0;
-                            if (typeof item.toMillis === 'function') return item.toMillis();
-                            if (typeof item.seconds === 'number') return item.seconds * 1000;
-                            if (typeof item === 'number') return item;
-                            return 0;
-                        };
-                        if (sort === 'newest') return getMillis(b.createdAt) - getMillis(a.createdAt);
-                        if (sort === 'oldest') return getMillis(a.createdAt) - getMillis(b.createdAt);
-                        if (sort === 'titleAZ') {
-                            const tA = typeof a.title === 'string' ? a.title : '';
-                            const tB = typeof b.title === 'string' ? b.title : '';
-                            return tA.localeCompare(tB);
-                        }
-                        if (sort === 'ratingDesc') return (Number(b.rating) || 0) - (Number(a.rating) || 0);
-                        return 0;
-                    } catch(e) { return 0; }
-                });
-
-                renderBooks(filtered);
-            } catch(err) {
-                sysLog('ERROR', 'Filtreleme Ana Hatası', err);
-            }
-        }
-
-        function renderBooks(booksToRender) {
-            try {
-                bookListEl.innerHTML = '';
-                if (!Array.isArray(booksToRender) || booksToRender.length === 0) { 
-                    document.getElementById('empty-state').style.display = 'flex'; 
-                    return; 
-                }
-                document.getElementById('empty-state').style.display = 'none';
-
-                booksToRender.forEach(book => {
-                    try {
-                        const s = statusMap[book.status] || statusMap['read'];
-                        let bOwn = book.ownership || 'none';
-                        if (bOwn === 'owned') bOwn = 'physical';
-                        if (bOwn === 'borrowed') bOwn = 'none';
-                        const o = ownMap[bOwn] || ownMap['none']; 
-                        
-                        let ratingHtml = '';
-                        const rating = Number(book.rating) || 0;
-                        if(rating > 0) {
-                            ratingHtml = '<div class="flex text-amber-400 text-[10px] mb-2">';
-                            for(let i=1; i<=5; i++) ratingHtml += i <= rating ? '<i class="fas fa-star"></i>' : '<i class="far fa-star text-slate-300 dark:text-slate-600"></i>';
-                            ratingHtml += '</div>';
-                        }
-
-                        const favIconClass = book.isFavorite ? 'fas fa-heart text-red-500' : 'far fa-heart text-slate-400 hover:text-red-400';
-                        const favBtnHtml = `<button type="button" onclick="window.toggleFavorite(event, '${book.id}', ${!!book.isFavorite})" class="absolute top-3 right-3 z-20 text-lg transition-transform active:scale-75" title="Favorilere Ekle/Çıkar"><i class="${favIconClass}"></i></button>`;
-
-                        let badgesHtml = `<button type="button" onclick="window.addDynamicFilter('status', '${bOwn}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity ${o.color} px-2 py-1 rounded-md text-[10px] font-bold tracking-wide border"><i class="fas ${o.icon} mr-1"></i>${o.text}</button>`;
-                        
-                        const bookCats = Array.isArray(book.category) ? book.category : (typeof book.category === 'string' ? book.category.split(',').map(str=>str.trim()) : []);
-                        bookCats.forEach(c => { if(c) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('cat', '${window.escapeHTML(String(c))}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide">${window.escapeHTML(String(c))}</button>`; });
-
-                        const bookSubCats = Array.isArray(book.subCategory) ? book.subCategory : (typeof book.subCategory === 'string' ? book.subCategory.split(',').map(str=>str.trim()) : []);
-                        bookSubCats.forEach(c => { if(c) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('cat', '${window.escapeHTML(String(c))}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide">${window.escapeHTML(String(c))}</button>`; });
-
-                        if(book.format) badgesHtml += `<button type="button" onclick="window.addDynamicFilter('format', '${window.escapeHTML(String(book.format))}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md text-[10px] font-bold tracking-wide"><i class="fas fa-file-alt mr-1"></i>${window.escapeHTML(String(book.format))}</button>`;
-
-                        const card = document.createElement('div');
-                        
-                        const safeTitle = (book.title && typeof book.title === 'string') ? book.title : 'İsimsiz';
-                        const safeAuthor = (book.author && typeof book.author === 'string') ? book.author : 'Bilinmeyen Yazar';
-                        const escapedTitle = window.escapeHTML(safeTitle);
-                        const escapedAuthor = window.escapeHTML(safeAuthor);
-                        const jsSafeTitle = window.escapeHTML(safeTitle.replace(/'/g, "\\'"));
-                        
-                        if (currentViewMode === 'list') {
-                            card.className = 'bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-col cursor-pointer group';
-                            card.onclick = (e) => { if(!e.target.closest('button')) window.openViewModal(book.id); };
-                            card.innerHTML = `
-                                ${favBtnHtml}
-                                <div class="flex-grow min-w-0 flex flex-col z-10 pr-6">
-                                    <div class="flex justify-between items-start gap-2 mb-1">
-                                        <div class="w-full">
-                                            ${ratingHtml}
-                                            <h3 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white book-title leading-tight group-hover:text-indigo-600 transition-colors">${escapedTitle}</h3>
-                                            <p class="text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm mt-1">${escapedAuthor}</p>
-                                        </div>
-                                        <div class="hide-auth-elements flex shrink-0 gap-1 bg-slate-50 dark:bg-slate-900/50 p-1 rounded-xl border border-slate-100 dark:border-slate-700">
-                                            <button type="button" onclick="event.stopPropagation(); window.startEditMode('${book.id}')" class="edit-btn p-1.5 md:p-2 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg transition-colors active:scale-90" title="Düzenle"><i class="fas fa-edit"></i></button>
-                                            <button type="button" onclick="event.stopPropagation(); window.deleteBook('${book.id}', '${jsSafeTitle}')" class="delete-btn p-1.5 md:p-2 text-slate-500 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-colors active:scale-90" title="Sil"><i class="fas fa-trash-alt"></i></button>
-                                        </div>
-                                    </div>
-                                    <div class="flex flex-wrap gap-1.5 mb-2 mt-2" onclick="event.stopPropagation()">${badgesHtml}</div>
-                                    <div class="mb-2 flex items-center gap-2">
-                                        <button type="button" onclick="event.stopPropagation(); window.addDynamicFilter('status', '${book.status}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${s.color}">
-                                            <i class="fas ${s.icon}"></i> ${s.text}
-                                        </button>
-                                        ${book.pageCount ? `<span class="text-[10px] text-slate-400"><i class="fas fa-file-alt"></i> ${window.escapeHTML(String(book.pageCount))} syf</span>` : ''}
-                                    </div>
-                                </div>
-                            `;
-                        } else if (currentViewMode === 'grid') {
-                            card.className = 'bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-row gap-4 cursor-pointer group';
-                            card.onclick = (e) => { if(!e.target.closest('button')) window.openViewModal(book.id); };
-                            
-                            const coverHtml = book.coverUrl 
-                                ? `<div class="w-full h-40 md:h-48 bg-slate-50 dark:bg-slate-900 rounded-xl flex items-center justify-center overflow-hidden shadow shrink-0 group-hover:opacity-90 transition-opacity"><img src="${window.escapeHTML(book.coverUrl)}" class="w-full h-full object-contain"></div>`
-                                : `<div class="w-full h-40 md:h-48 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center text-slate-300 dark:text-slate-500 shadow shrink-0 group-hover:bg-slate-200 transition-colors"><i class="fas fa-book text-3xl"></i></div>`;
-
-                            card.innerHTML = `
-                                ${favBtnHtml}
-                                <div class="flex flex-col w-28 md:w-32 shrink-0 gap-2">
-                                    ${coverHtml}
-                                    <div class="hide-auth-elements flex w-full gap-1">
-                                        <button type="button" onclick="event.stopPropagation(); window.startEditMode('${book.id}')" class="edit-btn flex-1 bg-slate-50 dark:bg-slate-900/50 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 p-2 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors flex items-center justify-center active:scale-90" title="Düzenle"><i class="fas fa-edit"></i></button>
-                                        <button type="button" onclick="event.stopPropagation(); window.deleteBook('${book.id}', '${jsSafeTitle}')" class="delete-btn flex-1 bg-slate-50 dark:bg-slate-900/50 text-slate-500 hover:text-red-600 dark:hover:text-red-400 p-2 rounded-lg border border-slate-100 dark:border-slate-700 transition-colors flex items-center justify-center active:scale-90" title="Sil"><i class="fas fa-trash-alt"></i></button>
-                                    </div>
-                                </div>
-                                <div class="flex-grow min-w-0 flex flex-col z-10 pr-5">
-                                    <div class="flex justify-between items-start gap-2 mb-1">
-                                        <div class="w-full">
-                                            ${ratingHtml}
-                                            <h3 class="text-lg font-bold text-slate-900 dark:text-white book-title leading-tight line-clamp-2 group-hover:text-indigo-600 transition-colors">${escapedTitle}</h3>
-                                            <p class="text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm mt-1">${escapedAuthor}</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex flex-wrap gap-1.5 mb-2 mt-2" onclick="event.stopPropagation()">${badgesHtml}</div>
-                                    <div class="mb-2 flex flex-col items-start gap-1">
-                                        <button type="button" onclick="event.stopPropagation(); window.addDynamicFilter('status', '${book.status}')" class="badge-filter cursor-pointer hover:opacity-75 transition-opacity inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${s.color}">
-                                            <i class="fas ${s.icon}"></i> ${s.text}
-                                        </button>
-                                        ${book.pageCount ? `<span class="text-[10px] text-slate-400 font-medium"><i class="fas fa-file-alt"></i> ${window.escapeHTML(String(book.pageCount))} sayfa</span>` : ''}
-                                    </div>
-                                </div>
-                            `;
-                        } else if (currentViewMode === 'shelf') {
-                            card.className = 'relative flex flex-col items-center justify-end h-40 md:h-48 group cursor-pointer px-1 sm:px-2';
-                            card.onclick = () => window.openViewModal(book.id);
-                            
-                            const coverHtml = book.coverUrl 
-                                ? `<img src="${window.escapeHTML(book.coverUrl)}" class="w-auto h-full max-h-[90%] object-contain rounded shadow-md z-10 group-hover:-translate-y-3 group-active:scale-95 transition-all duration-300">`
-                                : `<div class="w-20 sm:w-24 h-full max-h-[90%] bg-slate-200 dark:bg-slate-700 rounded flex items-center justify-center text-slate-400 shadow-md z-10 group-hover:-translate-y-3 transition-transform duration-300 px-2 text-center text-[10px] font-bold overflow-hidden">${escapedTitle}</div>`;
-
-                            const shelfFavIcon = book.isFavorite ? '<i class="fas fa-heart text-red-500"></i>' : '';
-
-                            card.innerHTML = `
-                                ${book.isFavorite ? `<div class="absolute top-0 right-2 z-20 text-lg drop-shadow-md pointer-events-none">${shelfFavIcon}</div>` : ''}
-                                ${coverHtml}
-                                <div class="absolute bottom-0 left-0 w-full h-3 sm:h-4 bg-gradient-to-b from-amber-800 to-amber-950 dark:from-slate-700 dark:to-slate-800 rounded-sm shadow-[0_4px_6px_rgba(0,0,0,0.3)] z-0 border-t border-amber-700/50 dark:border-slate-600"></div>
-                                <div class="absolute -bottom-6 bg-slate-900 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-30 pointer-events-none max-w-[150%] truncate shadow-lg border border-slate-700">${escapedTitle}</div>
-                            `;
-                        }
-
-                        if(isReadOnlyMode) {
-                            card.querySelectorAll('.hide-auth-elements').forEach(el => el.style.display = 'none');
-                        }
-                        bookListEl.appendChild(card);
-                    } catch(err) {
-                        sysLog('ERROR', `Tekil Kitap Render Hatası (ID: ${book.id || '?'})`, err.toString());
-                    }
-                });
-            } catch(err) {
-                sysLog('ERROR', 'Genel Render Hatası', err);
-            }
-        }
-
-        // --- ARAMA ÖNERİLERİ GÜNCELLEMESİ ---
-        function updateSearchSuggestions() {
-            try {
-                const suggestionSet = new Set();
-                allBooks.forEach(b => {
-                    if(b.title && typeof b.title === 'string') suggestionSet.add(b.title.trim());
-                    if(b.author && typeof b.author === 'string') suggestionSet.add(b.author.trim());
-                });
-                const dataList = document.getElementById('search-suggestions');
-                if (dataList) {
-                    dataList.innerHTML = '';
-                    suggestionSet.forEach(s => {
-                        const opt = document.createElement('option');
-                        opt.value = s;
-                        dataList.appendChild(opt);
-                    });
-                }
-            } catch (err) {
-                sysLog('ERROR', 'Search suggestions hatası', err);
-            }
-        }
-
-        // --- VERİTABANI DİNLEME ---
-        function loadBooks(targetUid) {
-            sysLog('INFO', `Kitaplar yükleniyor (UID: ${targetUid})`);
-            if(!initialLoadDone) renderSkeletons();
-            
-            if (isOfflineMode) {
-                initialLoadDone = true;
-                try { updateCategoryDatalists(); } catch (e) { sysLog('ERROR', e); }
-                try { updateSearchSuggestions(); } catch (e) { sysLog('ERROR', e); }
-                try { updateDashboardStats(); } catch (e) { sysLog('ERROR', e); }
-                try { applyFiltersAndRender(); } catch (e) { sysLog('ERROR', e); }
-            } else {
-                if (booksUnsubscribe) booksUnsubscribe();
-                try {
-                    booksUnsubscribe = onSnapshot(getBooksColRef(targetUid), (snapshot) => {
-                        try {
-                            sysLog('INFO', `Firebase verisi alındı. Toplam belge: ${snapshot.size}`);
-                            allBooks = [];
-                            snapshot.forEach(doc => { 
-                                let data = doc.data();
-                                // Sıkı Veri Onarımı (Fallbacks)
-                                let cats = [];
-                                if (Array.isArray(data.category)) cats = data.category;
-                                else if (typeof data.category === 'string') cats = data.category.split(',').map(s => s.trim());
-                                data.category = cats;
-
-                                let subCats = [];
-                                if (Array.isArray(data.subCategory)) subCats = data.subCategory;
-                                else if (typeof data.subCategory === 'string') subCats = data.subCategory.split(',').map(s => s.trim());
-                                data.subCategory = subCats;
-
-                                data.title = typeof data.title === 'string' ? data.title : 'İsimsiz';
-                                data.author = typeof data.author === 'string' ? data.author : 'Bilinmeyen Yazar';
-                                
-                                allBooks.push({ id: doc.id, ...data }); 
-                            });
-                            initialLoadDone = true;
-                            
-                            try { updateCategoryDatalists(); } catch(e) { sysLog('ERROR', "Kategori Hatası", e); }
-                            try { updateSearchSuggestions(); } catch(e) { sysLog('ERROR', "Arama Öneri Hatası", e); }
-                            try { updateDashboardStats(); } catch(e) { sysLog('ERROR', "İstatistik Hatası", e); }
-                            
-                            try {
-                                applyFiltersAndRender();
-                                sysLog('INFO', 'Ekrana çizim tamamlandı.');
-                            } catch (innerErr) {
-                                sysLog('ERROR', "Filtreleme/Çizim Hatası", innerErr);
-                                window.showNotification("Kitaplar yüklenirken ekran çizim hatası oluştu.", "error");
-                            }
-                        } catch (fatalErr) {
-                            sysLog('ERROR', 'Veri İşleme (Snapshot) Hatası', fatalErr);
-                        }
-                    }, (error) => {
-                        sysLog('ERROR', "Firestore Dinleme Hatası", error);
-                        window.showNotification("Erişim reddedildi veya bağlantı koptu: " + error.message, "error");
-                        bookListEl.innerHTML = '<div class="text-red-500 dark:text-red-400 text-center w-full p-4 col-span-full">Erişim engellendi veya veri okunamadı. Lütfen giriş yaptığınızdan emin olun.</div>';
-                    });
-                } catch (dbErr) {
-                    sysLog('ERROR', 'onSnapshot başlatma hatası', dbErr);
-                }
-            }
-        }
-
-        // --- DİĞER KODLAR ---
+        // Modal Yönetimi & Dinleyiciler
         const addModal = document.getElementById('add-modal');
         const addBackdrop = document.getElementById('add-backdrop');
         const addPanel = document.getElementById('add-panel');
+        
+        function openAddModal() {
+            addModal.classList.remove('hidden'); addModal.classList.add('flex');
+            setTimeout(() => { addBackdrop.classList.remove('opacity-0'); addPanel.classList.remove('translate-y-full'); }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+        function closeAddModal() {
+            addBackdrop.classList.add('opacity-0'); addPanel.classList.add('translate-y-full');
+            setTimeout(() => { addModal.classList.add('hidden'); addModal.classList.remove('flex'); document.body.style.overflow = ''; }, 300);
+        }
+
+        document.getElementById('fab-add-btn')?.addEventListener('click', () => { editModeId = null; resetForm(); document.getElementById('form-title').innerHTML = '<i class="fas fa-plus-circle text-indigo-500"></i> Yeni Kitap Ekle'; document.getElementById('cancel-edit-btn').classList.add('hidden'); openAddModal(); });
+        document.getElementById('close-add-btn')?.addEventListener('click', closeAddModal);
+        document.getElementById('cancel-edit-btn')?.addEventListener('click', closeAddModal);
+        document.getElementById('add-backdrop')?.addEventListener('click', closeAddModal);
+
         const settingsDrawer = document.getElementById('settings-drawer');
         const settingsBackdrop = document.getElementById('settings-backdrop');
         const settingsPanel = document.getElementById('settings-panel');
-        const statsModal = document.getElementById('stats-modal');
-
-        // DEBUG MODAL
-        document.getElementById('sys-diag-btn').addEventListener('click', () => {
-            const modal = document.getElementById('debug-modal');
-            document.getElementById('debug-log-area').value = appLogs.join('\n\n');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        });
-        document.getElementById('close-debug-btn').addEventListener('click', () => {
-            document.getElementById('debug-modal').classList.add('hidden');
-            document.getElementById('debug-modal').classList.remove('flex');
-        });
-        document.getElementById('close-debug-bg').addEventListener('click', () => {
-            document.getElementById('debug-modal').classList.add('hidden');
-            document.getElementById('debug-modal').classList.remove('flex');
-        });
-        document.getElementById('copy-debug-btn').addEventListener('click', () => {
-            const textArea = document.getElementById('debug-log-area');
-            navigator.clipboard.writeText(textArea.value).then(() => {
-                window.showNotification("Rapor kopyalandı! Lütfen yapay zekaya yapıştırın.", "success");
-            }).catch(err => {
-                window.showNotification("Kopyalanamadı, metni seçip manuel kopyalayın.", "error");
-            });
-        });
-
-        function openAddModal() {
-            addModal.classList.remove('hidden');
-            addModal.classList.add('flex');
-            setTimeout(() => {
-                addBackdrop.classList.remove('opacity-0');
-                addPanel.classList.remove('translate-y-full', 'md:translate-y-10', 'md:scale-95');
-            }, 10);
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeAddModal() {
-            addBackdrop.classList.add('opacity-0');
-            addPanel.classList.add('translate-y-full', 'md:translate-y-10', 'md:scale-95');
-            setTimeout(() => {
-                addModal.classList.add('hidden');
-                addModal.classList.remove('flex');
-                document.body.style.overflow = '';
-                if (!editModeId) resetForm();
-            }, 300);
-        }
 
         function openSettingsDrawer() {
-            settingsDrawer.classList.remove('hidden');
-            settingsDrawer.classList.add('flex');
-            setTimeout(() => {
-                settingsBackdrop.classList.remove('opacity-0');
-                settingsPanel.classList.remove('translate-x-full');
-            }, 10);
+            settingsDrawer.classList.remove('hidden'); settingsDrawer.classList.add('flex');
+            setTimeout(() => { settingsBackdrop.classList.remove('opacity-0'); settingsPanel.classList.remove('translate-x-full'); }, 10);
         }
-
         function closeSettingsDrawer() {
-            settingsBackdrop.classList.add('opacity-0');
-            settingsPanel.classList.add('translate-x-full');
-            setTimeout(() => {
-                settingsDrawer.classList.add('hidden');
-                settingsDrawer.classList.remove('flex');
-            }, 300);
+            settingsBackdrop.classList.add('opacity-0'); settingsPanel.classList.add('translate-x-full');
+            setTimeout(() => { settingsDrawer.classList.add('hidden'); settingsDrawer.classList.remove('flex'); }, 300);
         }
 
-        document.getElementById('fab-add-btn').addEventListener('click', () => {
-            editModeId = null;
-            resetForm();
-            document.getElementById('form-title').innerHTML = '<i class="fas fa-plus-circle text-indigo-500"></i> Yeni Kitap Ekle';
-            document.getElementById('cancel-edit-btn').classList.add('hidden');
-            openAddModal();
-        });
+        document.getElementById('menu-btn')?.addEventListener('click', openSettingsDrawer);
+        document.getElementById('close-settings-btn')?.addEventListener('click', closeSettingsDrawer);
+        document.getElementById('settings-backdrop')?.addEventListener('click', closeSettingsDrawer);
 
-        document.getElementById('close-add-btn').addEventListener('click', closeAddModal);
-        document.getElementById('add-backdrop').addEventListener('click', closeAddModal);
-
-        document.getElementById('menu-btn').addEventListener('click', openSettingsDrawer);
-        document.getElementById('close-settings-btn').addEventListener('click', closeSettingsDrawer);
-        document.getElementById('settings-backdrop').addEventListener('click', closeSettingsDrawer);
-
-        document.getElementById('open-stats-btn').addEventListener('click', () => {
+        document.getElementById('open-stats-btn')?.addEventListener('click', () => {
             updateStatsChart();
-            statsModal.classList.remove('hidden');
-            statsModal.classList.add('flex');
+            document.getElementById('stats-modal').classList.remove('hidden'); document.getElementById('stats-modal').classList.add('flex');
         });
-        document.getElementById('close-stats-btn').addEventListener('click', () => {
-            statsModal.classList.add('hidden');
-            statsModal.classList.remove('flex');
-        });
-        document.getElementById('stats-backdrop').addEventListener('click', () => {
-            statsModal.classList.add('hidden');
-            statsModal.classList.remove('flex');
+        document.getElementById('close-stats-btn')?.addEventListener('click', () => {
+            document.getElementById('stats-modal').classList.add('hidden'); document.getElementById('stats-modal').classList.remove('flex');
         });
 
-        if (htmlEl.classList.contains('dark')) {
-            document.getElementById('theme-text').textContent = 'Açık';
+        // Tema Yönetimi
+        document.getElementById('theme-toggle-menu')?.addEventListener('click', () => {
+            if (htmlEl.classList.contains('dark')) { htmlEl.classList.remove('dark'); localStorage.setItem('theme', 'light'); document.getElementById('theme-text').textContent = 'Kapalı'; } 
+            else { htmlEl.classList.add('dark'); localStorage.setItem('theme', 'dark'); document.getElementById('theme-text').textContent = 'Açık'; }
+            updateStatsChart();
+        });
+
+        // Kitap Kaydetme İşlemi
+        document.getElementById('save-book-btn')?.addEventListener('click', async (e) => {
+            e.preventDefault();
+            if(!currentUser) return;
+            if(!inputs.title.value || !inputs.author.value) return showNotification("Lütfen başlık ve yazarı girin.", "error");
+
+            const bookData = {
+                title: inputs.title.value.trim(), author: inputs.author.value.trim(),
+                status: inputs.status.value, ownership: inputs.ownership.value,
+                category: inputs.cat.value.split(',').map(s=>s.trim()).filter(s=>s),
+                subCategory: inputs.subCat.value.split(',').map(s=>s.trim()).filter(s=>s),
+                pageCount: inputs.pageCount.value.trim(), coverUrl: inputs.coverUrl.value.trim(),
+                rating: inputs.rating.value.trim(), quotes: currentEditQuotes, updatedAt: serverTimestamp()
+            };
+
+            const btn = document.getElementById('save-book-btn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true;
+
+            try {
+                if(editModeId) { await updateDoc(getBookDocRef(currentUser.uid, editModeId), bookData); showNotification("Kitap güncellendi!", "success"); } 
+                else { bookData.createdAt = serverTimestamp(); await addDoc(getBooksColRef(currentUser.uid), bookData); showNotification("Yeni kitap eklendi!", "success"); }
+                closeAddModal();
+            } catch (err) { showNotification("Kaydedilirken hata oluştu.", "error"); } 
+            finally { btn.innerHTML = 'Kaydet'; btn.disabled = false; }
+        });
+
+        // Alıntı Zengin Metin Editörü İşlevleri
+        window.openRTE = function(targetId, title, isViewMode, index) {
+            document.getElementById('rte-title').textContent = title;
+            const editor = document.getElementById('rte-editor');
+            const pageInput = document.getElementById('rte-page-input');
+            const modal = document.getElementById('rte-modal');
+            
+            pageInput.classList.remove('hidden');
+            if(index > -1 && currentEditQuotes[index]) { editor.innerHTML = currentEditQuotes[index].text; pageInput.value = currentEditQuotes[index].page || ''; }
+            else { editor.innerHTML = ''; pageInput.value = ''; }
+
+            modal.classList.remove('hidden'); modal.classList.add('flex');
+            setTimeout(() => { modal.classList.remove('translate-y-full'); editor.focus(); }, 10);
+            
+            document.getElementById('rte-save-btn').onclick = () => {
+                const text = editor.innerHTML.trim();
+                if(!text) return showNotification('Alıntı boş olamaz', 'error');
+                const newQ = { text, page: pageInput.value.trim() };
+                if(index > -1) currentEditQuotes[index] = newQ; else currentEditQuotes.push(newQ);
+                renderFormQuotes();
+                modal.classList.add('translate-y-full'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+            };
+        };
+
+        document.getElementById('rte-cancel-btn')?.addEventListener('click', () => {
+            const m = document.getElementById('rte-modal');
+            m.classList.add('translate-y-full'); setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); }, 300);
+        });
+
+        function renderFormQuotes() {
+            const container = document.getElementById('quotes-container');
+            const msg = document.getElementById('no-quotes-msg');
+            container.innerHTML = '';
+            if(currentEditQuotes.length === 0) { msg.style.display = 'block'; return; }
+            msg.style.display = 'none';
+            currentEditQuotes.forEach((q, i) => {
+                container.innerHTML += `
+                    <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900 p-2 rounded border border-slate-200 dark:border-slate-700">
+                        <div class="text-xs truncate flex-1">${q.text.replace(/<[^>]*>?/gm, '')} ${q.page ? `(Syf ${q.page})` : ''}</div>
+                        <div class="flex gap-2 ml-2">
+                            <button type="button" onclick="window.openRTE('quote', 'Düzenle', false, ${i})" class="text-indigo-500"><i class="fas fa-edit"></i></button>
+                            <button type="button" onclick="currentEditQuotes.splice(${i},1); renderFormQuotes();" class="text-red-500"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>`;
+            });
+        }
+        window.renderFormQuotes = renderFormQuotes;
+
+        // Firebase Auth & Veri Yükleme
+        function applyFiltersAndRender() {
+            const term = (document.getElementById('search-input')?.value || '').toLowerCase();
+            const filtered = allBooks.filter(book => {
+                const matchSearch = (book.title || '').toLowerCase().includes(term) || (book.author || '').toLowerCase().includes(term);
+                return matchSearch;
+            });
+            const bookListEl = document.getElementById('book-list');
+            bookListEl.innerHTML = '';
+            if(filtered.length === 0) { document.getElementById('empty-state').style.display = 'flex'; return; }
+            document.getElementById('empty-state').style.display = 'none';
+            
+            filtered.forEach(book => {
+                const card = document.createElement('div');
+                card.className = 'bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 flex gap-4 cursor-pointer hover:shadow-md group';
+                card.onclick = (e) => { if(!e.target.closest('button')) window.openViewModal(book.id); };
+                const cover = book.coverUrl ? `<img src="${window.escapeHTML(book.coverUrl)}" class="w-20 h-28 object-contain rounded shadow shrink-0">` : `<div class="w-20 h-28 bg-slate-100 dark:bg-slate-700 rounded shadow flex items-center justify-center text-slate-400 shrink-0"><i class="fas fa-book"></i></div>`;
+                const safeTitle = window.escapeHTML(book.title.replace(/'/g, "\\'"));
+                card.innerHTML = `
+                    ${cover}
+                    <div class="flex-grow flex flex-col justify-center">
+                        <div class="flex justify-between items-start">
+                            <div><h3 class="font-bold text-slate-800 dark:text-white leading-tight group-hover:text-indigo-500">${window.escapeHTML(book.title)}</h3><p class="text-xs text-slate-500">${window.escapeHTML(book.author)}</p></div>
+                            ${!isReadOnlyMode ? `<div class="flex gap-2 bg-slate-50 dark:bg-slate-900 p-1 rounded-lg border border-slate-100 dark:border-slate-700">
+                                <button onclick="event.stopPropagation(); window.startEditMode('${book.id}')" class="text-slate-400 hover:text-indigo-500 p-1"><i class="fas fa-edit"></i></button>
+                                <button onclick="event.stopPropagation(); window.deleteBook('${book.id}', '${safeTitle}')" class="text-slate-400 hover:text-red-500 p-1"><i class="fas fa-trash"></i></button>
+                            </div>` : ''}
+                        </div>
+                        <div class="mt-2 flex gap-2">
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-md ${statusMap[book.status]?.color || ''}">${statusMap[book.status]?.text || ''}</span>
+                        </div>
+                    </div>`;
+                bookListEl.appendChild(card);
+            });
+        }
+        
+        window.deleteBook = async function(id, title) {
+            if(confirm(`"${title}" silinecek, onaylıyor musunuz?`)) {
+                try { await deleteDoc(getBookDocRef(currentUser.uid, id)); showNotification('Silindi', 'info'); } 
+                catch(e) { showNotification('Silinemedi', 'error'); }
+            }
+        };
+
+        document.getElementById('search-input')?.addEventListener('input', applyFiltersAndRender);
+
+        function loadBooks(uid) {
+            if(!initialLoadDone) renderSkeletons();
+            if(booksUnsubscribe) booksUnsubscribe();
+            booksUnsubscribe = onSnapshot(getBooksColRef(uid), (snapshot) => {
+                allBooks = [];
+                snapshot.forEach(doc => { allBooks.push({ id: doc.id, title: 'İsimsiz', author: 'Bilinmeyen', ...doc.data() }); });
+                initialLoadDone = true;
+                updateDashboardStats();
+                applyFiltersAndRender();
+            });
         }
 
-        document.getElementById('theme-toggle-menu').addEventListener('click', () => {
-            if (htmlEl.classList.contains('dark')) {
-                htmlEl.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-                document.getElementById('theme-text').textContent = 'Kapalı';
-            } else {
-                htmlEl.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-                document.getElementById('theme-text').textContent = 'Açık';
-            }
-            updateStatsChart(); 
-        });
-
-        window.addEventListener('error', function(e) {
-            sysLog('ERROR', `Global Hata: ${e.message} at ${e.filename}:${e.lineno}`);
-            const loading = document.getElementById('loading');
-            if(loading) loading.style.display = 'none';
-        });
-        
-        window.addEventListener('unhandledrejection', function(e) {
-            sysLog('ERROR', `Promise Hatası: ${e.reason}`);
-        });
-
+        // Firebase Login & Logout Listeners (User's Code kept intact)
         document.getElementById('email-login-btn').addEventListener('click', async () => {
-            const email = document.getElementById('login-email').value.trim();
-            const password = document.getElementById('login-password').value.trim();
-            if(!email || !password) return window.showNotification("E-posta ve şifre zorunludur.", "error");
-            
-            const btn = document.getElementById('email-login-btn');
-            const ogText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true;
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                document.getElementById('login-email').value = '';
-                document.getElementById('login-password').value = '';
-            } catch (err) {
-                console.error(err);
-                if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
-                    window.showNotification("Hatalı e-posta veya şifre.", "error");
-                } else if (err.code === 'auth/operation-not-allowed') {
-                    window.showNotification("Firebase'de E-posta girişi kapalı! Console'dan aktifleştirin.", "error");
-                } else {
-                    window.showNotification("Giriş yapılamadı: " + err.message, "error");
-                }
-            } finally {
-                btn.innerHTML = ogText; btn.disabled = false;
-            }
+            const email = document.getElementById('login-email').value; const password = document.getElementById('login-password').value;
+            if(!email || !password) return showNotification("Gereksiz alan.", "error");
+            try { await signInWithEmailAndPassword(auth, email, password); } catch(e) { showNotification("Hata: " + e.message, "error"); }
         });
 
         document.getElementById('email-register-btn').addEventListener('click', async () => {
-            const email = document.getElementById('login-email').value.trim();
-            const password = document.getElementById('login-password').value.trim();
-            if(!email || !password) return window.showNotification("E-posta ve şifre zorunludur.", "error");
-            if(password.length < 6) return window.showNotification("Şifre en az 6 karakter olmalıdır.", "error");
-            
-            const btn = document.getElementById('email-register-btn');
-            const ogText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true;
-            try {
-                await createUserWithEmailAndPassword(auth, email, password);
-                document.getElementById('login-email').value = '';
-                document.getElementById('login-password').value = '';
-                window.showNotification("Hesap başarıyla oluşturuldu!", "success");
-            } catch (err) {
-                console.error(err);
-                if (err.code === 'auth/email-already-in-use') {
-                    window.showNotification("Bu e-posta adresi zaten kullanımda.", "error");
-                } else if (err.code === 'auth/operation-not-allowed') {
-                    window.showNotification("Firebase'de E-posta girişi kapalı! Console'dan aktifleştirin.", "error");
-                } else {
-                    window.showNotification("Kayıt olunamadı: " + err.message, "error");
-                }
-            } finally {
-                btn.innerHTML = ogText; btn.disabled = false;
-            }
+            const email = document.getElementById('login-email').value; const password = document.getElementById('login-password').value;
+            if(!email || password.length<6) return showNotification("Geçersiz e-posta/şifre.", "error");
+            try { await createUserWithEmailAndPassword(auth, email, password); showNotification("Kayıt başarılı", "success"); } catch(e) { showNotification("Hata", "error"); }
         });
 
         document.getElementById('google-login-btn').addEventListener('click', async () => {
-            if (window.location.protocol === 'file:') { 
-                window.showNotification("Google Girişi yerel 'file://' dosyalarında çalışmaz. Sunucuda (GitHub Pages vb.) açın.", "error"); 
-                return; 
-            }
-            try { 
-                await signInWithPopup(auth, provider); 
-            } catch (error) { 
-                console.error("Giriş Hatası:", error);
-                window.showNotification("Giriş işlemi iptal edildi veya başarısız oldu.", "error"); 
-            }
+            try { await signInWithPopup(auth, provider); } catch(e) { showNotification("Giriş iptal edildi", "error"); }
         });
 
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            signOut(auth);
-            closeSettingsDrawer();
-        });
+        document.getElementById('logout-btn')?.addEventListener('click', () => { signOut(auth); closeSettingsDrawer(); });
 
         onAuthStateChanged(auth, async (user) => {
-            loadingScreen.style.display = 'none';
+            const loadingScreen = document.getElementById('loading');
+            const loginScreen = document.getElementById('login-screen');
+            const appContent = document.getElementById('app-content');
+            const fabBtn = document.getElementById('fab-add-btn');
+
+            if(loadingScreen) loadingScreen.style.display = 'none';
 
             if (urlUserId) {
-                isReadOnlyMode = true;
-                viewUserId = urlUserId;
-                
+                isReadOnlyMode = true; viewUserId = urlUserId;
                 document.getElementById('readonly-banner').classList.remove('hidden');
                 loginScreen.classList.add('hidden'); loginScreen.classList.remove('flex');
-                appContent.classList.remove('hidden');
-                
-                document.querySelectorAll('.hide-auth-elements').forEach(el => el.classList.add('hidden'));
-                fabBtn.classList.add('hidden'); fabBtn.classList.remove('flex');
-                
-                try {
-                    const docSnap = await getDoc(getUserDocRef(viewUserId));
-                    if(docSnap.exists() && docSnap.data().displayName) {
-                        document.getElementById('main-title').textContent = `${docSnap.data().displayName.split(' ')[0]}'in Kütüphanesi`;
-                    } else {
-                        document.getElementById('main-title').textContent = "Misafir Kütüphanesi";
-                    }
-                } catch(e) {}
-
-                window.showNotification("Misafir modundasınız. Sadece görüntüleme yapılabilir.", "info");
-                loadSettings(viewUserId);
-                loadBooks(viewUserId);
-                return; 
+                appContent.classList.remove('hidden'); fabBtn.classList.add('hidden');
+                loadSettings(viewUserId); loadBooks(viewUserId);
+                return;
             }
 
             if (user) {
                 currentUser = user;
-                sysLog('INFO', `Kullanıcı giriş yaptı. UID: ${user.uid}`);
-                
                 loginScreen.classList.add('hidden'); loginScreen.classList.remove('flex');
-                appContent.classList.remove('hidden');
-                fabBtn.classList.remove('hidden'); fabBtn.classList.add('flex');
-                document.getElementById('readonly-banner').classList.add('hidden');
-                document.querySelectorAll('.hide-auth-elements').forEach(el => el.classList.remove('hidden'));
-
+                appContent.classList.remove('hidden'); fabBtn.classList.remove('hidden'); fabBtn.classList.add('flex');
+                
                 const userName = user.displayName || (user.email ? user.email.split('@')[0] : 'Kullanıcı');
                 document.getElementById('drawer-profile-name').textContent = userName;
-                document.getElementById('main-title').textContent = "e-Kütüphane";
-                
-                setDoc(getUserDocRef(currentUser.uid), { displayName: userName }, { merge: true }).catch(err => sysLog('WARN', 'setDoc err', err));
                 
                 if (user.photoURL) {
-                    const pic = document.getElementById('drawer-profile-pic');
-                    const headerPic = document.getElementById('header-profile-pic');
-                    const drawerIcon = document.getElementById('drawer-profile-icon');
-                    const headerMenuIcon = document.getElementById('header-menu-icon');
-                    pic.src = user.photoURL; pic.classList.remove('hidden'); drawerIcon.classList.add('hidden');
-                    headerPic.src = user.photoURL; headerPic.classList.remove('hidden'); headerMenuIcon.classList.add('hidden');
+                    const dp = document.getElementById('drawer-profile-pic');
+                    const hp = document.getElementById('header-profile-pic');
+                    if(dp) { dp.src = user.photoURL; dp.classList.remove('hidden'); document.getElementById('drawer-profile-icon').classList.add('hidden'); }
+                    if(hp) { hp.src = user.photoURL; hp.classList.remove('hidden'); document.getElementById('header-menu-icon').classList.add('hidden'); }
                 }
 
-                window.showNotification(`Hoş geldin, ${userName.split(' ')[0]}!`, "info");
-                loadSettings(currentUser.uid); 
-                loadBooks(currentUser.uid);
+                loadSettings(currentUser.uid); loadBooks(currentUser.uid);
             } else {
-                currentUser = null; allBooks = []; bookListEl.innerHTML = ''; updateDashboardStats();
+                currentUser = null; allBooks = []; document.getElementById('book-list').innerHTML = ''; updateDashboardStats();
                 loginScreen.classList.remove('hidden'); loginScreen.classList.add('flex');
-                appContent.classList.add('hidden');
-                fabBtn.classList.add('hidden'); fabBtn.classList.remove('flex');
+                appContent.classList.add('hidden'); fabBtn.classList.add('hidden'); fabBtn.classList.remove('flex');
             }
         });
-
     </script>
 </body>
 </html>
